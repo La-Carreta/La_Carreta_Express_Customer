@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:la_carreta_express_cs/config/router/app_router.dart';
+import 'package:la_carreta_express_cs/config/theme/app_theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -7,16 +9,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'La Carreta Express App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
+      routerConfig: AppRouter.appRouter,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme().getTheme(),
     );
   }
 }
