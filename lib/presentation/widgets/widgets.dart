@@ -1,0 +1,7 @@
+export 'package:la_carreta_express_cs/presentation/widgets/shared/registered_trademark.dart';
+export 'package:la_carreta_express_cs/presentation/widgets/home/drawer_cart_section.dart';
+export 'package:la_carreta_express_cs/presentation/widgets/home/list_categorias.dart';
+export 'package:la_carreta_express_cs/presentation/widgets/home/card_badge.dart';
+export 'package:la_carreta_express_cs/presentation/widgets/home/list_platos.dart';
+
+
