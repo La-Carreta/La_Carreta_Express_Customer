@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DrawerCartSection extends StatelessWidget {
   const DrawerCartSection({super.key});
@@ -9,12 +10,12 @@ class DrawerCartSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: (){}, //TODO: Implementar la apertura del drawer
+          onPressed: () => Scaffold.of(context).openDrawer(),
           icon: const Icon(Icons.menu, size: 30,)
         ),
           
         IconButton(
-          onPressed: (){}, //TODO: Implementar la redireccion al carrito
+          onPressed: () => context.push("/cart"),
           icon: const Icon(Icons.shopping_cart_outlined, size: 30,)
         ),
       ],

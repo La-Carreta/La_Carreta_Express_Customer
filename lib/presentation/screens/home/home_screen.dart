@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:la_carreta_express_cs/presentation/widgets/home/custom_drawer.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {   
@@ -11,7 +12,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xffF5F5F5),
-      body: _HomeView(),
+      body: _HomeView(),      
+      drawer: CustomDrawer(),
     );
   }
 }

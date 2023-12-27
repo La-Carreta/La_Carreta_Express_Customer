@@ -29,12 +29,18 @@ class AppRouter{
         builder: (context, state) => const ResetPasswordScreen()
       ),
 
+      GoRoute(
+        path: "/info-plato",
+        name: InfoPlatoScreen.name,
+        builder: (context, state) => const InfoPlatoScreen()
+      ),
 
-      // GoRoute(
-      //   path: "/cards",
-      //   name: CardsScreen.name,
-      //   builder: (context, state) => const CardsScreen()
-      // ),
+      GoRoute(
+        path: "/cart",
+        name: CartScreen.name,
+        builder: (context, state) => const CartScreen()
+      ),
+
     ]
   );
 
