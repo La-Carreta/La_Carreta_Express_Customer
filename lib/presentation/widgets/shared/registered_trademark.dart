@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class RegisteredTradeMark extends StatelessWidget {
-  const RegisteredTradeMark({super.key});
+  final double width;
+  const RegisteredTradeMark({super.key, this.width = double.infinity});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: width,
       height: 50,
       alignment: Alignment.center,
       color: const Color(0xffe9ecef),

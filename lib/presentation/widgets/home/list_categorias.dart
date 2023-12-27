@@ -47,7 +47,7 @@ class _ItemListCategorias extends StatelessWidget {
 
           //TODO: Traer data de la base de datos o json file
           //Name
-          Text(categoria.nombre, style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(categoria.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );

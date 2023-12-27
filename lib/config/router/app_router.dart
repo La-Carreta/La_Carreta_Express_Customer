@@ -3,7 +3,7 @@ import 'package:la_carreta_express_cs/presentation/screens/screens.dart';
 
 class AppRouter{
   static final appRouter = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/sign-in',
     routes: [
       GoRoute(
         path: "/",
@@ -11,11 +11,24 @@ class AppRouter{
         builder: (context, state) => const HomeScreen()
       ),
 
-      // GoRoute(
-      //   path: "/buttons",
-      //   name: ButtonsScreen.name,
-      //   builder: (context, state) => const ButtonsScreen()
-      // ),
+      GoRoute(
+        path: "/sign-in",
+        name: SignInScreen.name,
+        builder: (context, state) => const SignInScreen()
+      ),
+
+      GoRoute(
+        path: "/sign-up",
+        name: SignUpScreen.name,
+        builder: (context, state) => const SignUpScreen()
+      ),
+
+      GoRoute(
+        path: "/reset-password",
+        name: ResetPassworScreen.name,
+        builder: (context, state) => const ResetPassworScreen()
+      ),
+
 
       // GoRoute(
       //   path: "/cards",
