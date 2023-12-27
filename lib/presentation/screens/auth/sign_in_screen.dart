@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/password_validator.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
 import 'package:la_carreta_express_cs/presentation/ui/input_decoration.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/shared/registered_trademark.dart';
 
@@ -77,7 +77,7 @@ class _SignInView extends StatelessWidget {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                 backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
               ),
-              onPressed: () => debugPrint("Sign In"), 
+              onPressed: () => context.go('/'), 
               child: const Text("Sign In", style: TextStyle(fontSize: 17),)
             ),
           ),
@@ -141,12 +141,7 @@ class _FormSignIn extends StatelessWidget {
               prefixIcon: Icons.alternate_email,
               colors: colors
             ),
-            validator: (value){
-              if (value!.isEmpty) {
-                return 'Por favor ingrese su correo electrónico.';
-              }
-              return null;
-            },
+            validator: (value) => validateEmail(value ?? ''),
           ),
 
           const SizedBox(height: 10),
