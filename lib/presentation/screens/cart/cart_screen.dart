@@ -67,6 +67,7 @@ class _DetallePedido extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
               itemCount: 15,
               itemBuilder: (context, index) {
                 return _ItemCartPlato(maximiunWidth:maximiunWidth);
@@ -76,31 +77,15 @@ class _DetallePedido extends StatelessWidget {
 
           const SizedBox(height: 15),
           const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-
-          Container(
-            width: double.infinity,
-            height: 70,
-            color: Colors.red,
+          
+          TextFormField(
+            minLines: 3,
+            maxLines: 6,
+            keyboardType: TextInputType.multiline,
           ),
 
-          const Divider(),
+          const SizedBox(height: 10),
 
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Subtotal", style: TextStyle(fontSize: 18)),
-              Text("\$39.70", style: TextStyle(fontSize: 18))
-            ],
-          ),
-          const Divider(),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Uso de la app", style: TextStyle(fontSize: 18)),
-              Text("\$0.70", style: TextStyle(fontSize: 18))
-            ],
-          ),
-          const Divider(),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
