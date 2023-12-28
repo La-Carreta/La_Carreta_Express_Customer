@@ -19,8 +19,16 @@ class CustomDrawer extends StatelessWidget {
               const SizedBox(height: 60),
 
               //TODO: Redireccionar a las pantallas y cambiar el fondo del boton seleccionado                     
-              _MenuItem(icon: Icons.fastfood,title: "Menu", onTap: ()=>debugPrint("Menu"),),
-              _MenuItem(icon: Icons.restaurant_menu,title: "Pedidos", onTap: () => debugPrint("Pedidos"), color: Colors.transparent,),
+              _MenuItem(icon: Icons.fastfood,title: "Menu", onTap: (){                
+                context.go("/");
+                Scaffold.of(context).closeDrawer();
+              }),
+
+              _MenuItem(icon: Icons.restaurant_menu,title: "Pedidos", color: Colors.transparent, onTap: (){ 
+                context.push("/pedidos");
+                Scaffold.of(context).closeDrawer();
+              }),
+
               _MenuItem(icon: Icons.notifications,title: "Notificaciones", onTap: () => debugPrint("Notificaciones"), color: Colors.transparent,),
 
               const Spacer(),

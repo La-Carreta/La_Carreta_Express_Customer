@@ -3,7 +3,7 @@ import 'package:la_carreta_express_cs/presentation/screens/screens.dart';
 
 class AppRouter{
   static final appRouter = GoRouter(
-    initialLocation: '/sign-in',
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: "/",
@@ -41,6 +41,17 @@ class AppRouter{
         builder: (context, state) => const CartScreen()
       ),
 
+      GoRoute(
+        path: "/pedidos",
+        name: PedidosScreen.name,
+        builder: (context, state) => const PedidosScreen()
+      ),
+
+      GoRoute(
+        path: "/seguimiento-pedido",
+        name: SeguimientoPedidoScreen.name,
+        builder: (context, state) => const SeguimientoPedidoScreen()
+      ),
     ]
   );
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:la_carreta_express_cs/presentation/widgets/shared/custom_back_button.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class CartScreen extends StatelessWidget {
