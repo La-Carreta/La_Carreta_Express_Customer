@@ -23,13 +23,22 @@ final urlIcons = [
   "https://res.cloudinary.com/dwexseytn/image/upload/v1703722798/La_Carreta_Express/Various_icons/pierna-de-pollo_ww3dcc.png",
   "https://res.cloudinary.com/dwexseytn/image/upload/v1703722827/La_Carreta_Express/Various_icons/pollo_wc3rcg.png",
   "https://res.cloudinary.com/dwexseytn/image/upload/v1703722880/La_Carreta_Express/Various_icons/carne_pqck25.png"
-
 ];
 
+final urlIconsNotificaciones = [
+  "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_1_mzglvm.png",
+  "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_inopx7.png",
+  "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_2_v6vn2g.png"
+];
 
-String getUrlIcon(){
+String getUrlIconPlatos(){
   Random random = Random();
   int numAleatorio = random.nextInt(urlIcons.length);
   return urlIcons[numAleatorio];
 }
 
+String getUrlIconNotificaciones(){
+  Random random = Random();
+  int numAleatorio = random.nextInt(urlIconsNotificaciones.length);
+  return urlIconsNotificaciones[numAleatorio];
+}

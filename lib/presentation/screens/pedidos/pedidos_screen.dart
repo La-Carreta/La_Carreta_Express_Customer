@@ -76,7 +76,7 @@ class _Pedidos extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: 15,
               itemBuilder: (context, index) {
-                final urlIcon = getUrlIcon();
+                final urlIcon = getUrlIconPlatos();
                 return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon);
               },
             )
@@ -100,7 +100,7 @@ class _ItemPlato extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 120,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,

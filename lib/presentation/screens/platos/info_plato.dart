@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:la_carreta_express_cs/presentation/widgets/shared/custom_back_button.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class InfoPlatoScreen extends StatelessWidget {
    
   static const String name = 'info_plato_screen';
 
-  const InfoPlatoScreen({Key? key}) : super(key: key);
+  const InfoPlatoScreen({super.key});
   
   @override
   Widget build(BuildContext context) {

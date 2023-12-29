@@ -52,7 +52,24 @@ class AppRouter{
         name: SeguimientoPedidoScreen.name,
         builder: (context, state) => const SeguimientoPedidoScreen()
       ),
+
+      GoRoute(
+        path: "/detalle-pedido",
+        name: DetallePedidoScreen.name,
+        builder: (context, state) => const DetallePedidoScreen()
+      ),
+
+      GoRoute(
+        path: "/notificaciones",
+        name: NotificacionesScreen.name,
+        builder: (context, state) => const NotificacionesScreen()
+      ),
+
+      GoRoute(
+        path: "/account-user",
+        name: AccountUserScreen.name,
+        builder: (context, state) => const AccountUserScreen()
+      ),
     ]
   );
-
 }

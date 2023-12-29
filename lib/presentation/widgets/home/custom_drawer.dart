@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatelessWidget {
   
-  const CustomDrawer({Key? key}) : super(key: key);
+  const CustomDrawer({super.key});
   
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,10 @@ class CustomDrawer extends StatelessWidget {
                 Scaffold.of(context).closeDrawer();
               }),
 
-              _MenuItem(icon: Icons.notifications,title: "Notificaciones", onTap: () => debugPrint("Notificaciones"), color: Colors.transparent,),
+              _MenuItem(icon: Icons.notifications,title: "Notificaciones", color: Colors.transparent, onTap: (){
+                context.push("/notificaciones");
+                Scaffold.of(context).closeDrawer();
+              }),
 
               const Spacer(),
 
@@ -109,7 +112,13 @@ class _UserRow extends StatelessWidget {
     
         const Spacer(),
         //Pencil edit
-        IconButton(onPressed: (){}, icon: const Icon(Icons.edit_note_outlined))
+        IconButton(
+          icon: const Icon(Icons.edit_note_outlined),
+          onPressed: (){
+            context.push("/account-user");
+            Scaffold.of(context).closeDrawer();
+          }, 
+        )
       ],
     );
   }

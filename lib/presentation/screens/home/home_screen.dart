@@ -6,7 +6,7 @@ class HomeScreen extends StatelessWidget {
 
   static const String name = 'home_screen';
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomFilterButton extends StatelessWidget {
   
   final VoidCallback onPressed;
-  const CustomFilterButton({Key? key, required this.onPressed}) : super(key: key);
+  const CustomFilterButton({super.key, required this.onPressed});
   
   @override
   Widget build(BuildContext context) {

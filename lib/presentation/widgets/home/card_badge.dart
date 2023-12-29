@@ -5,7 +5,7 @@ class CardPresentationHome extends StatelessWidget {
   final String imgUrl;
   final String personUrl;
 
-  const CardPresentationHome({Key? key, required this.imgUrl, required this.personUrl}) : super(key: key);
+  const CardPresentationHome({super.key, required this.imgUrl, required this.personUrl});
   
   @override
   Widget build(BuildContext context) {
