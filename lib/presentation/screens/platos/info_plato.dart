@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
+//TODO: Definir logica para controlar el contador de plato en el menu.
 class InfoPlatoScreen extends StatelessWidget {
    
   static const String name = 'info_plato_screen';
@@ -57,6 +60,9 @@ class _InfoPlatoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final counterPlatoProvider = context.watch<NumberPlatesInfoProvider>();
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -110,11 +116,11 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: ()=> counterPlatoProvider.subtractCounter(), 
                 child: const Icon(Icons.remove),                
               ),
               const SizedBox(width: 5,),
-              const Text("10", style: TextStyle(fontSize: 25),),
+              Text("${counterPlatoProvider.cantidad}", style: const TextStyle(fontSize: 25),),
               const SizedBox(width: 5,),
 
               FilledButton(
@@ -122,7 +128,7 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: () => counterPlatoProvider.addCounter(), 
                 child: const Icon(Icons.add),                
               ),
 
@@ -133,7 +139,7 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: () => counterPlatoProvider.resetCounter(), 
                 child: const Text("Agregar al carrito"),                
               ),
 
