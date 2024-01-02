@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
+import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_provider.dart';
 
-class ListCategorias extends StatelessWidget {
+class ListCategorias extends ConsumerWidget {
   const ListCategorias({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final cat = Categoria(nombre: "Hamburguer");
-    return SizedBox(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final categoriasList = ref.watch( categoriasProvider );
+    final categorialeccionada = ref.watch(categoriaSeleccionadaProvider);
+
+    if(categoriasList.isEmpty) return const Center(child: CircularProgressIndicator());
+
+    return Container(
       width: double.infinity,
       height: 60,
+      margin: const EdgeInsets.only(left: 20),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 15,
+        itemCount: categoriasList.length,
         itemBuilder: (context, index) {
-          return _ItemListCategorias(cat);
+          final categoria = categoriasList[index];
+          final optionSelected = categorialeccionada;
+          final isOptionSelected = optionSelected == index;
+
+          return _ItemListCategorias(
+            categoria: categoria, 
+            onTap: ()=> ref.read(categoriaSeleccionadaProvider.notifier).state = index, 
+            isOptionSelected: isOptionSelected
+          );
         },
       ),
     );
@@ -24,31 +39,43 @@ class ListCategorias extends StatelessWidget {
 class _ItemListCategorias extends StatelessWidget {
   
   final Categoria categoria;
-  const _ItemListCategorias(this.categoria);
+  final VoidCallback onTap;
+  final bool isOptionSelected;
   
+  const _ItemListCategorias({required this.categoria, required this.onTap, this.isOptionSelected = false});  
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 170,
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFdee2e6),
-        borderRadius: BorderRadius.circular(20)
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          //TODO: Traer data de la base de datos o json file
-          //Icon
-          const CircleAvatar(
-            child: Text("IC"),
-          ),
+    final colorLetter = isOptionSelected ? Colors.white : Colors.black;
+    final backgroundOption = isOptionSelected ? const Color(0xff582F0E) : const Color(0xFFdee2e6);
 
-          //TODO: Traer data de la base de datos o json file
-          //Name
-          Text(categoria.nombre, style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        width: 170,
+        height: 50,
+        margin: const EdgeInsets.only(right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 5),
+
+        decoration: BoxDecoration(
+          color: backgroundOption,
+          borderRadius: BorderRadius.circular(20)
+        ),
+        duration: const Duration(seconds: 1),
+        curve: Curves.linear,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            //Icon
+            CircleAvatar(
+              backgroundImage: NetworkImage(categoria.urlImg),
+              // child: Text("IC"),
+            ), 
+            const SizedBox(width: 10),
+            //Name
+            Text(categoria.nombre, style:  TextStyle(fontWeight: FontWeight.w600, color: colorLetter)),
+          ],
+        ),
       ),
     );
   }
