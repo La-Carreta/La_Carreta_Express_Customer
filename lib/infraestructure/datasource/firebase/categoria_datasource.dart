@@ -11,22 +11,22 @@ class CategoriaDatasource extends CategoriasDatasource{
 
   @override
   Future<List<Categoria>> getCategorias() async{
-    try {
-      final CollectionReference collectionReference = firebase.collection("categorias");
-      final QuerySnapshot response = await collectionReference.orderBy("nombre", descending: true).get();
+      try {
+        final CollectionReference collectionReference = firebase.collection("categorias");
+        final QuerySnapshot response = await collectionReference.orderBy("nombre", descending: true).get();
 
-      if(response.docs.isNotEmpty){
-        final categoriaResponseList = response.docs.map((cat) => CategoriaModel.fromJson(cat.id,cat.data() as Map<String, dynamic>)).toList();        
-        final List<Categoria> categorias = categoriaResponseList.map(
-          (cat) => CategoriaMapper.categoriaToEntity(cat),
-        ).toList();
+        if(response.docs.isNotEmpty){
+          final categoriaResponseList = response.docs.map((cat) => CategoriaModel.fromJson(cat.id,cat.data() as Map<String, dynamic>)).toList();        
+          final List<Categoria> categorias = categoriaResponseList.map(
+            (cat) => CategoriaMapper.categoriaToEntity(cat),
+          ).toList();
 
-        return categorias;
+          return categorias;
+        }
+        return [];
+      } catch (e) {
+        debugPrint("Error al consultar las categorias: ${e.toString()}");
+        return [];
       }
-      return [];
-    } catch (e) {
-      debugPrint("Error al consultar las categorias: ${e.toString()}");
-      return [];
-    }
   }  
 }

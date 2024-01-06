@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/platos_provider.dart';
 
-class ListPlatos extends StatelessWidget {
+//TODO: Ojo con este fragmento de codigo
+class ListPlatos extends ConsumerWidget {
   const ListPlatos({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final platos = ref.watch(platosProvider);
+    
+    // if( platos.isEmpty ){ //&& categoria.isNotEmpty
+    //   ref.read(platosProvider.notifier).loadPlatosByCategoria("Hamburguesas");
+    // }
+
+    if(platos.isEmpty) return const Center(child: CircularProgressIndicator());
+
+    print("Plato 1: ${platos[0].nombre}");
+
     return SizedBox(
       width: double.infinity,
       height: 320,

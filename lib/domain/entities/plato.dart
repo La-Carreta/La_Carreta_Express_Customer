@@ -1,5 +1,5 @@
 class Plato{
-  final int id;
+  final String id;
   final String nombre;
   final String descripcion;
   final double precio;
@@ -9,7 +9,7 @@ class Plato{
   final String platoUrl;
 
   Plato({
-    this.id = 0, 
+    this.id = "",
     required this.nombre, 
     required this.descripcion, 
     required this.precio, 

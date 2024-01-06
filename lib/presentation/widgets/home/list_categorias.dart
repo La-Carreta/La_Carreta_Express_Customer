@@ -9,7 +9,7 @@ class ListCategorias extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriasList = ref.watch( categoriasProvider );
-    final categorialeccionada = ref.watch(categoriaSeleccionadaProvider);
+    final categoriaSeleccionada = ref.watch(categoriaSeleccionadaProvider);
 
     if(categoriasList.isEmpty) return const Center(child: CircularProgressIndicator());
 
@@ -22,12 +22,16 @@ class ListCategorias extends ConsumerWidget {
         itemCount: categoriasList.length,
         itemBuilder: (context, index) {
           final categoria = categoriasList[index];
-          final optionSelected = categorialeccionada;
+          final optionSelected = categoriaSeleccionada;
           final isOptionSelected = optionSelected == index;
 
           return _ItemListCategorias(
             categoria: categoria, 
-            onTap: ()=> ref.read(categoriaSeleccionadaProvider.notifier).state = index, 
+            onTap: (){
+              ref.read(categoriaSeleccionadaProvider.notifier).state = index;
+              //TODO: Review it
+              //ref.read(categoriaProvider.notifier).state = categoria.nombre;
+            }, 
             isOptionSelected: isOptionSelected
           );
         },

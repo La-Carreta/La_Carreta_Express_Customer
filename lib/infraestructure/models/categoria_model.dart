@@ -11,9 +11,15 @@ class CategoriaModel {
   });
 
   factory CategoriaModel.fromJson(String id, Map<String, dynamic> json) => CategoriaModel(
-    id: id,
+    id: id == "" ? json['id'] : id,
     nombre: json["nombre"],
     imgUrl: json['imgUrl']    
   );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "imgUrl": imgUrl,
+    "nombre": nombre,
+  };
 }
 

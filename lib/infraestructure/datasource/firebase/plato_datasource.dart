@@ -1,0 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:la_carreta_express_cs/domain/datasource/platos_datasource.dart';
+import 'package:la_carreta_express_cs/domain/entities/plato.dart';
+import 'package:la_carreta_express_cs/infraestructure/mappers/plato_mapper.dart';
+import 'package:la_carreta_express_cs/infraestructure/models/plato_model.dart';
+
+class PlatoDatasource extends PlatosDatasource{
+  final firebase = FirebaseFirestore.instance;
+
+  @override
+  Future<List<Plato>> getPlatos() async{
+    try {
+      final CollectionReference collectionReference = firebase.collection("platos");
+      final QuerySnapshot response = await collectionReference.orderBy("nombre", descending: true).get();
+
+      if(response.docs.isNotEmpty){
+        final platosResponseList = response.docs.map((plato) => PlatoModel.fromJson(plato.id, plato.data() as Map<String, dynamic>)).toList();        
+        final List<Plato> platos = platosResponseList.map(
+          (plato) => PlatoMapper.platoToEntity(plato),
+        ).toList();
+
+        return platos;
+      }
+      return [];
+    } catch (e) {
+      debugPrint("Error al consultar las categorias: ${e.toString()}");
+      return [];
+    }
+
+  }
+
+  @override
+  Future<List<Plato>> getPlatosByCategoria(String categoria) async{
+    try { 
+      final CollectionReference collectionReference = firebase.collection("platos");
+      final QuerySnapshot response = await collectionReference
+        .where("categoria.nombre", isEqualTo: categoria)
+        .orderBy("nombre", descending: true).get();
+
+      if(response.docs.isNotEmpty){
+        final platosResponseList = response.docs.map((plato) => PlatoModel.fromJson(plato.id, plato.data() as Map<String, dynamic>)).toList();        
+        final List<Plato> platos = platosResponseList.map(
+          (plato) => PlatoMapper.platoToEntity(plato),
+        ).toList();
+
+        print("Si hay datos, ${platos.length}");
+        return platos;
+      }
+      return [];
+    } catch (e) {
+       debugPrint("Error al consultar las categorias por categoria: ${e.toString()}");
+      return [];     
+    }
+  }
+
+}
