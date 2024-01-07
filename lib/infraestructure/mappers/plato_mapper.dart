@@ -6,10 +6,12 @@ class PlatoMapper{
     id: platoModel.id,
     nombre: platoModel.nombre, 
     descripcion: platoModel.descripcion, 
+    descripcionCorta: platoModel.descripcionCorta, 
     precio: platoModel.precio, 
     disponibilidad: platoModel.disponibilidad, 
     tiempoPreparacion: platoModel.tiempoPreparacion, 
     categoria: platoModel.categoria.nombre, 
-    platoUrl: platoModel.categoria.imgUrl
+    platoUrl: platoModel.imgUrl,
+    popular: platoModel.popular    
   );
 }

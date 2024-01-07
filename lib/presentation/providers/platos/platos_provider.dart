@@ -7,7 +7,7 @@ import 'package:la_carreta_express_cs/presentation/providers/platos/platos_repos
 final platosProvider = StateNotifierProvider<PlatosNotifier, List<Plato>>((ref){
   final fetchPlatos = ref.watch( platoRepositoryProvider ).getPlatos;
   final fetchPlatosByCategoria = ref.watch( platoRepositoryProvider ).getPlatosByCategoria;
-
+  
   return PlatosNotifier(fetchPlatos: fetchPlatos, fetchPlatosByCategoria: fetchPlatosByCategoria);
 });
 

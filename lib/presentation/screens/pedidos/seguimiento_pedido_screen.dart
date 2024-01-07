@@ -101,9 +101,7 @@ class _SiguimientoPedidoView extends StatelessWidget {
 }
 
 class _TimeLinePedido extends StatelessWidget {
-  const _TimeLinePedido({
-    super.key,
-  });
+  const _TimeLinePedido();
 
   @override
   Widget build(BuildContext context) {
@@ -198,9 +196,7 @@ class _TimeLinePedido extends StatelessWidget {
 }
 
 class _EstimatedTimeBox extends StatelessWidget {
-  const _EstimatedTimeBox({
-    super.key,
-  });
+  const _EstimatedTimeBox();
 
   @override
   Widget build(BuildContext context) {

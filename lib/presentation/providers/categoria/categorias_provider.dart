@@ -5,16 +5,16 @@ import 'package:la_carreta_express_cs/presentation/providers/categoria/categoria
 
 final categoriaSeleccionadaProvider = StateProvider((ref) => 0);
 
-// final categoriaProvider = StateProvider((ref){
-//   int i = ref.watch(categoriaSeleccionadaProvider);
-//   List<Categoria> categorias = ref.watch(categoriasProvider);
-//   String cat = "";
-//   if(categorias.isNotEmpty){
-//     cat = categorias[i].nombre;
-//   }
+final categoriaProvider = StateProvider((ref){
+  // int i = ref.watch(categoriaSeleccionadaProvider);
+  // List<Categoria> categorias = ref.watch(categoriasProvider);
+  // String cat = "";
+  // if(categorias.isNotEmpty){
+  //   cat = categorias[i].nombre;
+  // }
 
-//   return cat;
-// });
+  return "";
+});
 
 final categoriasProvider = StateNotifierProvider<CategoriasNotifier, List<Categoria>>((ref){
   final fetchCategorias = ref.watch( categoriaRepositoryProvider ).getCategorias;

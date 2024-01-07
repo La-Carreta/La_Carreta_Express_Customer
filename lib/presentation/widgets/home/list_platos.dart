@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_provider.dart';
+import 'package:la_carreta_express_cs/domain/entities/plato.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/platos_provider.dart';
+import 'package:lottie/lottie.dart';
 
-//TODO: Ojo con este fragmento de codigo
 class ListPlatos extends ConsumerWidget {
   const ListPlatos({
     super.key,
@@ -12,24 +12,22 @@ class ListPlatos extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final platos = ref.watch(platosProvider);
+    final platos = ref.watch(platosProvider);  
+
+    if(platos.isEmpty) return const Center(child: _NoData());
     
-    // if( platos.isEmpty ){ //&& categoria.isNotEmpty
-    //   ref.read(platosProvider.notifier).loadPlatosByCategoria("Hamburguesas");
-    // }
-
-    if(platos.isEmpty) return const Center(child: CircularProgressIndicator());
-
-    print("Plato 1: ${platos[0].nombre}");
-
     return SizedBox(
       width: double.infinity,
       height: 320,
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: platos.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return _CardPlato(onTap: () => context.push('/info-plato',extra: index),);
+          final plato = platos[index];
+          return _CardPlato(
+            onTap: () => context.push('/info-plato', extra: index),
+            plato: plato
+          );
         },
       ),
     );
@@ -38,25 +36,27 @@ class ListPlatos extends ConsumerWidget {
 
 class _CardPlato extends StatelessWidget {  
   final VoidCallback? onTap;
-
+  final Plato plato;
+  
   const _CardPlato({
-    this.onTap,
+    this.onTap, 
+    required this.plato,
   });
 
   @override
   Widget build(BuildContext context) {
     final boxDecoration = BoxDecoration(
-        color: const Color(0XFFFFFFFF),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow:const [
-          BoxShadow(
-            color: Color(0xFFadb5bd),
-            offset: Offset(0, 2),
-            blurRadius: 5,
-            spreadRadius: 1,
-          ),      
-        ]
-      );
+      color: const Color(0XFFFFFFFF),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow:const [
+        BoxShadow(
+          color: Color(0xFFadb5bd),
+          offset: Offset(0, 2),
+          blurRadius: 5,
+          spreadRadius: 1,
+        ),      
+      ]
+    );
 
     return GestureDetector(
       onTap: onTap,
@@ -64,46 +64,81 @@ class _CardPlato extends StatelessWidget {
         width: 200,
         height: 300,
         margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: boxDecoration,
         child: Center(
           child: Stack(
             children: [
-              Positioned(
-                right: 0,
-                top: 10,
-                child: Image.asset("assets/menu/fuego.png", width: 20,)
-              ),
-          
+              if(plato.popular)...[
+                Positioned(
+                  right: 0,
+                  top: 10,
+                  child: Image.asset("assets/menu/fuego.png", width: 20,)
+                )
+              ],          
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const FadeInImage(
-                    placeholder: AssetImage("assets/no-data/no-image.jpg"), 
-                    image: NetworkImage("https://res.cloudinary.com/dwexseytn/image/upload/v1703556404/La_Carreta_Express/Menu/Hamburguer/BK-Stacker-Doble-con-Queso_ujsfsw.png"),
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: FadeInImage(
+                        placeholder: const AssetImage("assets/no-data/no-image.jpg"), 
+                        image: NetworkImage(plato.platoUrl),
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ), 
               
                   //Title
-                  const Text("Beef Burguer", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18,overflow: TextOverflow.ellipsis), maxLines: 2),
+                  Text(plato.nombre, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18,overflow: TextOverflow.ellipsis), maxLines: 2),
                   //Litte description
-                  const Text("Cheese Mozarella"),
+                  Text(plato.descripcionCorta, textAlign: TextAlign.justify),
                   const SizedBox(height: 15,),
                   //Costo
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(text: '\$', style: TextStyle(fontSize: 12, color: Color(0xffFF0000), fontWeight: FontWeight.bold)),
-                        TextSpan(text: '17.25', style: TextStyle(fontSize: 16, color: Colors.black)),
-                      ]
-                    ),            
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(text: '\$', style: TextStyle(fontSize: 12, color: Color(0xffFF0000), fontWeight: FontWeight.bold)),
+                          TextSpan(text: plato.precio.toString(), style: const TextStyle(fontSize: 16, color: Colors.black)),
+                        ]
+                      ),            
+                    ),
                   )          
                 ],
               ),
             ],
           ),
         ),      
+      ),
+    );
+  }
+}
+
+class _NoData extends StatelessWidget {
+  const _NoData();
+  
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      width: size.width,
+      height: 320,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset("assets/lottie/json/Not-Found.json"),
+          const Text(
+            "Platos no disponibles, \n vuelva a intentarlo más tarde.", 
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+          )
+        ],
       ),
     );
   }

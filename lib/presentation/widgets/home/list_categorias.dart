@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
 import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/platos_provider.dart';
 
 class ListCategorias extends ConsumerWidget {
   const ListCategorias({super.key});
@@ -29,8 +30,7 @@ class ListCategorias extends ConsumerWidget {
             categoria: categoria, 
             onTap: (){
               ref.read(categoriaSeleccionadaProvider.notifier).state = index;
-              //TODO: Review it
-              //ref.read(categoriaProvider.notifier).state = categoria.nombre;
+              ref.read( platosProvider.notifier ).loadPlatosByCategoria(categoria.nombre);
             }, 
             isOptionSelected: isOptionSelected
           );
