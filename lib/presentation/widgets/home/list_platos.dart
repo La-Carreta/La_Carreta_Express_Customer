@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
-import 'package:la_carreta_express_cs/presentation/providers/platos/platos_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
+import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:lottie/lottie.dart';
 
 class ListPlatos extends ConsumerWidget {
@@ -12,10 +13,17 @@ class ListPlatos extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final platos = ref.watch(platosProvider);  
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if(initialLoading) return const FullScreenLoader();
 
-    if(platos.isEmpty) return const Center(child: _NoData());
+    final categoria = ref.watch(categoriaProvider);
+    ref.watch( platosByCategoriaProvider.notifier ).loadPlatosByCategoria(categoria);
     
+    final initialLoadingPlatos = ref.watch(initialLoadingPlatosProvider);
+    if(initialLoadingPlatos) return const FullScreenLoader();
+
+    final platos = ref.watch(platosByCategoriaProvider);  
+    if(platos.isEmpty) return const Center(child: _NoData());
     return SizedBox(
       width: double.infinity,
       height: 320,

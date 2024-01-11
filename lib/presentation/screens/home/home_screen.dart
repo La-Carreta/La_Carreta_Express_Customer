@@ -27,35 +27,41 @@ class _HomeView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Drawer and Cart Button
+          //*Drawer and Cart Button
           DrawerCartSection(),
-          //Sizebox
+
           SizedBox(height: 20),
-          //Badge Card
+
+          //* Badge Card
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: CardPresentationHome(imgUrl: "assets/home/badge.png", personUrl: "assets/home/Chef-Badge.png"),
           ),
 
           SizedBox(height: 20),
-          //Categorias
+
+          //* Categorias
           Padding(
             padding: EdgeInsets.only(left: 10, bottom: 10),
             child: Text("Categorias", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
           ),          
-          //Lista de Categorias
+
+          //* Lista de Categorias
           ListCategorias(),
           SizedBox(height: 10),
-          //Mas populares
+
+          //* Mas populares
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text("Más populares", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
           ),  
 
           SizedBox(height: 10),
-          //Listado de platos
+
+          //* Listado de platos
           ListPlatos(),
-          //Marca registrada
+
+          //* Marca registrada
           Spacer(),
           RegisteredTradeMark()          
         ],

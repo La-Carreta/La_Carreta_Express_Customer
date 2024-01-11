@@ -5,15 +5,10 @@ import 'package:la_carreta_express_cs/presentation/providers/categoria/categoria
 
 final categoriaSeleccionadaProvider = StateProvider((ref) => 0);
 
-final categoriaProvider = StateProvider((ref){
-  // int i = ref.watch(categoriaSeleccionadaProvider);
-  // List<Categoria> categorias = ref.watch(categoriasProvider);
-  // String cat = "";
-  // if(categorias.isNotEmpty){
-  //   cat = categorias[i].nombre;
-  // }
-
-  return "";
+final categoriaProvider = Provider((ref){
+  final fetchCategorias = ref.watch( categoriasProvider );
+  if(fetchCategorias.isEmpty) return "";
+  return fetchCategorias[0].nombre;
 });
 
 final categoriasProvider = StateNotifierProvider<CategoriasNotifier, List<Categoria>>((ref){
