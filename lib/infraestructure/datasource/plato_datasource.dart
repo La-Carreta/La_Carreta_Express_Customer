@@ -53,5 +53,20 @@ class PlatoDatasource extends PlatosDatasource{
       return [];     
     }
   }
+  
+  @override
+  Future<Plato> getPlatoById(String id) async{
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> doc = await firebase.collection("platos").doc(id).get();
+      if(doc.exists){
+        final data = doc.data();
+        final Plato plato = PlatoMapper.platoToEntity(PlatoModel.fromJson(doc.id, data!));
+        return plato;
+      } 
+      throw Exception("Error al consultar el plato con id $id");    
+    } catch (e) {
+      throw Exception("Error al consultar el plato con id $id");    
+    }
+  }
 
 }

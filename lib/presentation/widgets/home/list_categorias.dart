@@ -4,6 +4,8 @@ import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
 import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/platos_provider.dart';
 
+//TODO: Considerar el cambio de importacion en base al dataset a consumirse.
+
 class ListCategorias extends ConsumerWidget {
   const ListCategorias({super.key});
 

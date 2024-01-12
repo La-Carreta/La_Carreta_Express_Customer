@@ -13,7 +13,7 @@ class PlatoModel {
   final int numCalorias;
   final bool popular;
   final double precio;
-  final String tiempoPreparacion;
+  final String? tiempoPreparacion;
 
   PlatoModel({
     required this.id,
@@ -26,7 +26,7 @@ class PlatoModel {
     required this.numCalorias,
     required this.popular,
     required this.precio,
-    required this.tiempoPreparacion,
+    this.tiempoPreparacion,
   });
 
     String toRawJson() => json.encode(toJson());

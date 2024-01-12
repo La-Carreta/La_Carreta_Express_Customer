@@ -2,13 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
 import 'package:la_carreta_express_cs/presentation/providers/categoria/categorias_repository_provider.dart';
 
-
+//TODO: Importante - En las importaciones cambiar de firebase a node_backend si asi el cambio lo amerita.
 final categoriaSeleccionadaProvider = StateProvider((ref) => 0);
 
 final categoriaProvider = Provider((ref){
   final fetchCategorias = ref.watch( categoriasProvider );
   if(fetchCategorias.isEmpty) return "";
-  return fetchCategorias[0].nombre;
+  return fetchCategorias[0].nombre; 
 });
 
 final categoriasProvider = StateNotifierProvider<CategoriasNotifier, List<Categoria>>((ref){

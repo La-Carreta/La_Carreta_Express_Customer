@@ -33,7 +33,7 @@ class ListPlatos extends ConsumerWidget {
         itemBuilder: (context, index) {
           final plato = platos[index];
           return _CardPlato(
-            onTap: () => context.push('/info-plato', extra: index),
+            onTap: () => context.push('/info-plato/${plato.id}', extra: index),
             plato: plato
           );
         },
@@ -92,7 +92,7 @@ class _CardPlato extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: FadeInImage(
-                        placeholder: const AssetImage("assets/no-data/no-image.jpg"), 
+                        placeholder: const AssetImage("assets/loaders/loading.gif"), 
                         image: NetworkImage(plato.platoUrl),
                         width: 150,
                         height: 150,

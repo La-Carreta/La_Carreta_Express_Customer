@@ -9,7 +9,8 @@ class PlatoMapper{
     descripcionCorta: platoModel.descripcionCorta, 
     precio: platoModel.precio, 
     disponibilidad: platoModel.disponibilidad, 
-    tiempoPreparacion: platoModel.tiempoPreparacion, 
+    numCalorias: platoModel.numCalorias,
+    tiempoPreparacion: platoModel.tiempoPreparacion == null ? "" : platoModel.tiempoPreparacion!, 
     categoria: platoModel.categoria.nombre, 
     platoUrl: platoModel.imgUrl,
     popular: platoModel.popular    

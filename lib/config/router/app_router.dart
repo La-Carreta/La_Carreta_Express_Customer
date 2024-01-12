@@ -8,7 +8,23 @@ class AppRouter{
       GoRoute(
         path: "/",
         name: HomeScreen.name,
-        builder: (context, state) => const HomeScreen()
+        builder: (context, state) => const HomeScreen(),
+        routes: const []
+      ),
+      
+      GoRoute(
+        path: "/info-plato/:id",
+        name: InfoPlatoScreen.name,
+        builder: (context, state){
+          final platoId = state.pathParameters['id'] ?? "no-id";
+          return InfoPlatoScreen(platoId: platoId);
+        }
+      ),
+
+      GoRoute(
+        path: "/cart",
+        name: CartScreen.name,
+        builder: (context, state) => const CartScreen()
       ),
 
       GoRoute(
@@ -27,18 +43,6 @@ class AppRouter{
         path: "/reset-password",
         name: ResetPasswordScreen.name,
         builder: (context, state) => const ResetPasswordScreen()
-      ),
-
-      GoRoute(
-        path: "/info-plato",
-        name: InfoPlatoScreen.name,
-        builder: (context, state) => const InfoPlatoScreen()
-      ),
-
-      GoRoute(
-        path: "/cart",
-        name: CartScreen.name,
-        builder: (context, state) => const CartScreen()
       ),
 
       GoRoute(

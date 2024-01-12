@@ -18,4 +18,9 @@ class PlatoRepositoryImp extends PlatosRepository{
     return datasource.getPlatosByCategoria(categoria);
   }
   
+  @override
+  Future<Plato> getPlatoById(String id) {
+    return datasource.getPlatoById(id);
+  }
+  
 }

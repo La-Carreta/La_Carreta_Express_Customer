@@ -9,6 +9,7 @@ class Plato{
   final String categoria;
   final String platoUrl;
   final bool popular;
+  final int numCalorias;
 
   Plato({
     this.id = "",
@@ -20,6 +21,21 @@ class Plato{
     required this.tiempoPreparacion, 
     required this.categoria, 
     required this.platoUrl,
-    required this.popular
+    required this.popular,
+    required this.numCalorias
   }); 
+
+  Plato.empty():
+    id="",
+    nombre = '',
+    descripcion = '',
+    descripcionCorta = '',
+    precio = 0.0,
+    disponibilidad = false,
+    tiempoPreparacion = '',
+    categoria = '',
+    platoUrl = '',
+    numCalorias = 0,
+    popular = false;
+
 }
