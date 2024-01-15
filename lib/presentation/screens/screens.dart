@@ -8,4 +8,4 @@ export 'package:la_carreta_express_cs/presentation/screens/notificaciones/notifi
 export 'package:la_carreta_express_cs/presentation/screens/pedidos/detalle_pedido_screen.dart';
 export 'package:la_carreta_express_cs/presentation/screens/pedidos/pedidos_screen.dart';
 export 'package:la_carreta_express_cs/presentation/screens/pedidos/seguimiento_pedido_screen.dart';
-export 'package:la_carreta_express_cs/presentation/screens/platos/info_plato.dart';
+export 'package:la_carreta_express_cs/presentation/screens/platos/info_plato_screen.dart';

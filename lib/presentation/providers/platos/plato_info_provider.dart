@@ -8,7 +8,6 @@ final platoInfoProvider = StateNotifierProvider<PlatoMapNotifier, Map<String, Pl
   return PlatoMapNotifier(
     getPlato: platoRepository.getPlatoById
   );
-
 });
 
 typedef GetPlatoCallBack = Future<Plato> Function(String movieId);

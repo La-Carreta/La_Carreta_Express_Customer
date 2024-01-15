@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/counter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/plato_info_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -12,10 +13,12 @@ class InfoPlatoScreen extends ConsumerWidget {
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(platoInfoProvider.notifier).loadPlato(platoId);    
+    ref.read( platoInfoProvider.notifier ).loadPlato(platoId);    
+    ref.read( counterPlatoProvider.notifier ).loadQuantityPlato(platoId, 1);
+
     final platoProvider = ref.watch(platoInfoProvider);
-    if(platoProvider.isEmpty) return const Center(child: CircularProgressIndicator(),);
-    if(!platoProvider.containsKey(platoId)) return const Scaffold(body:Center(child:Text("Plato no encontrado")));
+    if(platoProvider.isEmpty) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if(!platoProvider.containsKey(platoId)) return const Scaffold(body: Center(child: CircularProgressIndicator()));
     final plato = platoProvider[platoId];
 
     final size = MediaQuery.of(context).size;
@@ -59,7 +62,7 @@ class InfoPlatoScreen extends ConsumerWidget {
   }
 }
 
-class _InfoPlatoView extends StatelessWidget {
+class _InfoPlatoView extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
   final Plato plato;
@@ -71,7 +74,10 @@ class _InfoPlatoView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final int counterPlato = ref.watch( counterPlatoProvider )[plato.id] ?? 0;
+    
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -129,11 +135,11 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: () => ref.watch( counterPlatoProvider.notifier ).decreaseQuantityPlato(plato.id, 1),
                 child: const Icon(Icons.remove),                
               ),
               const SizedBox(width: 5,),
-              const Text("10", style: TextStyle(fontSize: 25),),
+              Text("$counterPlato", style: const TextStyle(fontSize: 25),),
               const SizedBox(width: 5,),
 
               FilledButton(
@@ -141,7 +147,7 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: () => ref.watch( counterPlatoProvider.notifier ).increaseQuantityPlato(plato.id, 1), 
                 child: const Icon(Icons.add),                
               ),
 
@@ -152,7 +158,8 @@ class _InfoPlatoView extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
-                onPressed: (){}, 
+                onPressed: (){
+                }, 
                 child: const Text("Agregar al carrito"),                
               ),
 
