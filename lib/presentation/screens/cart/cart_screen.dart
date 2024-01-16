@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
+import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
   static const String name = 'cart_screen';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch( cartProvider.notifier ).loadCart();
+ 
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if(initialLoading) return const FullScreenLoader();
+
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -40,7 +49,7 @@ class CartScreen extends StatelessWidget {
   }
 }
 
-class _DetallePedido extends StatelessWidget {
+class _DetallePedido extends ConsumerWidget{
   final double maximiunHeight;
   final double maximiunWidth;
 
@@ -49,7 +58,14 @@ class _DetallePedido extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final List<DetallePedido> carrito = ref.watch( cartProvider );
+
+    if(carrito.isEmpty) {
+      return const Center(child: Text("No hay data"));
+    }
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,

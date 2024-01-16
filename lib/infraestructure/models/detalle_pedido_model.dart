@@ -26,8 +26,8 @@ class DetallePedidoModel {
     );
 
     Map<String, dynamic> toJson() => {
-        "cantidadPlato": cantidadPlato,
-        "valorTotal": valorTotal,
-        "plato": plato.toJson(),
+      "cantidadPlato": cantidadPlato,
+      "valorTotal": valorTotal,
+      "plato": plato.toJson(),
     };
 }

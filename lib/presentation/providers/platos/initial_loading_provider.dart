@@ -20,3 +20,4 @@ final initialLoadingPlatosProvider = Provider<bool>((ref){
   return false; //Terminamos de cargar
 
 });
+

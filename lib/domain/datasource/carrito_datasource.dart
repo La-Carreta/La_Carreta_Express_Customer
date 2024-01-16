@@ -4,4 +4,5 @@ abstract class CarritoDatasource{
   Future<List<DetallePedido>> getCarrito();
   Future<void> updateDetallePedido(String idDetalle, int cantidad);
   Future<void> deleteDetallePedido(String idDetalle);
+  Future<void> createDetallePedido(DetallePedido detallePedido);  
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
+import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/counter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/plato_info_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
@@ -159,6 +161,9 @@ class _InfoPlatoView extends ConsumerWidget {
                   backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
                 ),
                 onPressed: (){
+                  final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
+                  ref.watch( cartProvider.notifier ).addItemCart(newItem);
+                  print("Se ha agregado carrito satisfactoriament");
                 }, 
                 child: const Text("Agregar al carrito"),                
               ),

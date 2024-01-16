@@ -59,4 +59,9 @@ class PlatosByCategoriaNotifier extends StateNotifier<List<Plato>>{
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }
+
+  Future<void> cleanData() async{
+    state = [];
+  }
+
 }

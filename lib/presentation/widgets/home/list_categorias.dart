@@ -32,6 +32,7 @@ class ListCategorias extends ConsumerWidget {
             categoria: categoria, 
             onTap: (){
               ref.read(categoriaSeleccionadaProvider.notifier).state = index;
+              ref.read( platosByCategoriaProvider.notifier ).cleanData();
               ref.read( platosByCategoriaProvider.notifier ).loadPlatosByCategoria(categoria.nombre);
             }, 
             isOptionSelected: isOptionSelected

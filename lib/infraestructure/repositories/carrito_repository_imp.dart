@@ -19,6 +19,11 @@ class CarritoRepositoryImpl extends CarritoRepository{
 
   @override
   Future<void> updateDetallePedido(String idDetalle, int cantidad) {
-    return updateDetallePedido(idDetalle, cantidad);
+    return datasource.updateDetallePedido(idDetalle, cantidad);
+  }
+  
+  @override
+  Future<void> createDetallePedido(DetallePedido detallePedido) {
+    return datasource.createDetallePedido(detallePedido);
   }
 }

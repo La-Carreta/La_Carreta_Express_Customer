@@ -1,18 +1,10 @@
+import 'package:hive/hive.dart';
 import 'package:la_carreta_express_cs/domain/datasource/carrito_datasource.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 
 class CarritoDatasourceImp extends CarritoDatasource{
 
-  bool isLoading = true;
-
-  // Future<Isar> openDB() async {
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   if (Isar.instanceNames.isEmpty) {
-  //     return await Isar.open([WirelessDataSchema], directory: dir.path);
-  //   }
-
-  //   return Future.value(Isar.getInstance());
-  // }
+  final _cartBox = Hive.box<DetallePedido>('cart');
 
   @override
   Future<void> deleteDetallePedido(String idDetalle) {
@@ -21,15 +13,31 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
 
   @override
-  Future<List<DetallePedido>> getCarrito() {
-    // TODO: implement getCarrito
-    throw UnimplementedError();
+  Future<List<DetallePedido>> getCarrito() async{
+    try {
+      final resp = _cartBox.toMap();
+      print("Tam del carrito");
+      print(resp.length);
+      return [];
+    } catch (e) {
+      throw Exception("Error al consultar el carrito");
+    }
   }
 
   @override
   Future<void> updateDetallePedido(String idDetalle, int cantidad) {
     // TODO: implement updateDetallePedido
     throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> createDetallePedido(DetallePedido detallePedido) async {
+    try {
+      _cartBox.add(detallePedido);
+      print("Cart lenght ${_cartBox.length}");
+    } catch (e) {
+      throw Exception("Error al cargar plato en el carrito");      
+    }
   }
 
 }
