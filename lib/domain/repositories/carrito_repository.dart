@@ -1,9 +1,11 @@
+import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
+import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 
 abstract class CarritoRepository{
-  Future<List<DetallePedido>> getCarrito();
-  Future<void> updateDetallePedido(String idDetalle, int cantidad);
-  Future<void> deleteDetallePedido(String idDetalle);
-  Future<void> createDetallePedido(DetallePedido detallePedido);  
-
+  Future<Carrito> getCarrito({required Cliente cliente});
+  Future<void> updateDetallePedido({required String idCarrito, required String idDetalle, required int cantidad});
+  Future<void> deleteDetallePedido({required String idCarrito, required String idDetalle});
+  Future<void> createDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
+  Future<void> deleteCart({required String idCarrito});
 }

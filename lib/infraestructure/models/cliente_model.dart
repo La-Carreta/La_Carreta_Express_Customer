@@ -11,29 +11,27 @@ class ClienteModel {
     final String uuid;
 
     ClienteModel({
-        this.id = "",
-        required this.nombre,
-        required this.apellido,
-        required this.celular,
-        required this.direccion,
-        required this.email,
-        required this.imgUrl,
-        required this.uuid,
+      this.id = "",
+      required this.nombre,
+      required this.apellido,
+      required this.celular,
+      required this.direccion,
+      required this.email,
+      required this.imgUrl,
+      required this.uuid,
     });
-
-    factory ClienteModel.fromRawJson(String str) => ClienteModel.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory ClienteModel.fromJson(Map<String, dynamic> json) => ClienteModel(
-        id: json["id"],
-        nombre: json["nombre"],
-        apellido: json["apellido"],
-        celular: json["celular"],
-        direccion: json["direccion"],
-        email: json["email"],
-        imgUrl: json["imgUrl"],
-        uuid: json["uuid"],
+    factory ClienteModel.fromJson(String id, Map<String, dynamic> json) => ClienteModel(
+      id: id,
+      nombre: json["nombre"],
+      apellido: json["apellido"],
+      celular: json["celular"],
+      direccion: json["direccion"],
+      email: json["email"],
+      imgUrl: json["imgUrl"],
+      uuid: json["uuid"],
     );
 
     Map<String, dynamic> toJson() => {

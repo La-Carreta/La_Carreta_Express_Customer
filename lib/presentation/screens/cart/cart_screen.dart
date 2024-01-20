@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
+import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
@@ -11,7 +13,9 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch( cartProvider.notifier ).loadCart();
+
+    //Envio del cliente
+    ref.watch( cartProvider.notifier ).loadCart(Cliente.empty()); //deleteCart -> set once time
  
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
@@ -60,9 +64,9 @@ class _DetallePedido extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final List<DetallePedido> carrito = ref.watch( cartProvider );
+    final Carrito carrito = ref.watch( cartProvider );
 
-    if(carrito.isEmpty) {
+    if(carrito.detallesPedido.isEmpty) {
       return const Center(child: Text("No hay data"));
     }
 
@@ -83,9 +87,10 @@ class _DetallePedido extends ConsumerWidget{
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: 15,
+              itemCount: carrito.detallesPedido.length,
               itemBuilder: (context, index) {
-                return _ItemCartPlato(maximiunWidth:maximiunWidth);
+                final item = carrito.detallesPedido[index];
+                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item);
               },
             )
           ),
@@ -125,9 +130,11 @@ class _DetallePedido extends ConsumerWidget{
 }
 
 class _ItemCartPlato extends StatelessWidget {
+  final DetallePedido item;
   final double maximiunWidth;
   const _ItemCartPlato({
-    required this.maximiunWidth,
+    required this.maximiunWidth, 
+    required this.item,
   });
 
   @override
@@ -145,18 +152,15 @@ class _ItemCartPlato extends StatelessWidget {
       child: Row(
         children: [
           //Img del plato
-          Image.network("https://res.cloudinary.com/dwexseytn/image/upload/v1703556398/La_Carreta_Express/Menu/Hamburguer/Veggie-800x800-2_v6aq06.png", width: 80, fit: BoxFit.cover,), 
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(item.plato.platoUrl, width: 80, fit: BoxFit.cover,)
+          ), 
           const SizedBox(width: 10),
-          const Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Beef Burguer", overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-                Text("Cheese Mozarrella"),
-                SizedBox(height: 15),          
-              ],
-            ),
+
+          SizedBox(
+            width: maximiunWidth * 0.35,
+            child: Text(item.plato.nombre, overflow: TextOverflow.ellipsis, maxLines: 2, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),)
           ),
 
           SizedBox(
@@ -174,9 +178,11 @@ class _ItemCartPlato extends StatelessWidget {
                         backgroundColor: MaterialStateProperty.all(const Color.fromARGB(126, 88, 47, 14))
                       ),
                     ),
-                    const Text('15'),
+                    Text("${item.cantidadPlato}", style: const TextStyle(fontSize: 20),),
                     IconButton(
-                      onPressed: (){}, 
+                      onPressed: (){
+                        //TODO: Agregar funcionalidad
+                      }, 
                       icon: const Icon(Icons.add), 
                       color: Colors.white,
                       style: ButtonStyle(                        
@@ -185,7 +191,7 @@ class _ItemCartPlato extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Text('\$6.79', style: TextStyle(fontSize: 17),),
+                Text('\$${item.valorTotal}', style: const TextStyle(fontSize: 17),),
               ],
             ),
           )

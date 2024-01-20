@@ -1,3 +1,5 @@
+import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
+
 class Plato{
   final String id;
   final String nombre;
@@ -6,7 +8,7 @@ class Plato{
   final double precio;
   final bool disponibilidad;
   final String tiempoPreparacion;
-  final String categoria;
+  final Categoria categoria;
   final String platoUrl;
   final bool popular;
   final int numCalorias;
@@ -33,7 +35,7 @@ class Plato{
     precio = 0.0,
     disponibilidad = false,
     tiempoPreparacion = '',
-    categoria = '',
+    categoria = Categoria.empty(),
     platoUrl = '',
     numCalorias = 0,
     popular = false;

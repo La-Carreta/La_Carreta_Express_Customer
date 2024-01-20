@@ -5,6 +5,13 @@ class CategoriaMapper{
   static Categoria categoriaToEntity(CategoriaModel categoriaModel) => Categoria(
     id: categoriaModel.id, 
     nombre: categoriaModel.nombre, 
-    urlImg: categoriaModel.imgUrl
+    imgUrl: categoriaModel.imgUrl
+  );
+
+
+  static CategoriaModel categoriaToModel(Categoria categoria) => CategoriaModel(
+    id: categoria.id, 
+    nombre: categoria.nombre, 
+    imgUrl: categoria.imgUrl, 
   );
 }

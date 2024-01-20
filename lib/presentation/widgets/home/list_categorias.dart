@@ -75,7 +75,7 @@ class _ItemListCategorias extends StatelessWidget {
           children: [
             //Icon
             CircleAvatar(
-              backgroundImage: NetworkImage(categoria.urlImg),
+              backgroundImage: NetworkImage(categoria.imgUrl),
               // child: Text("IC"),
             ), 
             const SizedBox(width: 10),

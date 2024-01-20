@@ -1,10 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:la_carreta_express_cs/config/router/app_router.dart';
 import 'package:la_carreta_express_cs/config/theme/app_theme.dart';
-import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -15,10 +13,6 @@ Future<void> main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  await Hive.initFlutter();
-  Hive.registerAdapter(DetallePedidoAdapter());
-  await Hive.openBox<DetallePedido>("cart");
 
   runApp(
     const ProviderScope(child: MyApp())

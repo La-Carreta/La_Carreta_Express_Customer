@@ -1,6 +1,6 @@
-# la_carreta_express_cs
+# La Carreta Express - Customer
 
-A new Flutter project.
+Ejecutar el comando --flutter pub run build_runner build
 
 ## Getting Started
 

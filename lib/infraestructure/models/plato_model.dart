@@ -29,7 +29,7 @@ class PlatoModel {
     this.tiempoPreparacion,
   });
 
-    String toRawJson() => json.encode(toJson());
+  String toRawJson() => json.encode(toJson());
 
   factory PlatoModel.fromJson(String id, Map<String, dynamic> json) => PlatoModel(
     id: id,
@@ -45,16 +45,16 @@ class PlatoModel {
     tiempoPreparacion: json["tiempoPreparacion"],
   );
 
-    Map<String, dynamic> toJson() => {
-      "categoria": categoria.toJson(),
-      "descripcion": descripcion,
-      "descripcionCorta": descripcionCorta,
-      "disponibilidad": disponibilidad,
-      "imgUrl": imgUrl,
-      "nombre": nombre,
-      "numCalorias": numCalorias,
-      "popular": popular,
-      "precio": precio,
-      "tiempoPreparacion": tiempoPreparacion,
-  };
+  Map<String, dynamic> toJson() => {
+    "categoria": categoria.toJson(),
+    "descripcion": descripcion,
+    "descripcionCorta": descripcionCorta,
+    "disponibilidad": disponibilidad,
+    "imgUrl": imgUrl,
+    "nombre": nombre,
+    "numCalorias": numCalorias,
+    "popular": popular,
+    "precio": precio,
+    "tiempoPreparacion": tiempoPreparacion,
+};
 }

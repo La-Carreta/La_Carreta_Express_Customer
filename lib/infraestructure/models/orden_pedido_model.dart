@@ -31,7 +31,7 @@ class OrdenPedidoModel {
   String toRawJson() => json.encode(toJson());
 
   factory OrdenPedidoModel.fromJson(Map<String, dynamic> json) => OrdenPedidoModel(
-    cliente: ClienteModel.fromJson(json["cliente"]),
+    cliente: ClienteModel.fromJson(json["cliente"]['id'],json["cliente"]),
     detalles: List<DetallePedidoModel>.from(json["detalles"].map((x) => DetallePedidoModel.fromJson(x))),
     estado: json["estado"],
     fecha: DateTime.parse(json["fecha"]),

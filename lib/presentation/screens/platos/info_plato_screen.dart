@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
@@ -162,7 +163,11 @@ class _InfoPlatoView extends ConsumerWidget {
                 ),
                 onPressed: (){
                   final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
-                  ref.watch( cartProvider.notifier ).addItemCart(newItem);
+
+                  //TODO: Considerar el envio de id's
+                  //TODO: Cambiar los id's
+                  ref.watch( cartProvider.notifier ).addOrUpdateItemCart(cliente: Cliente.empty(), item: newItem);
+
                   print("Se ha agregado carrito satisfactoriament");
                 }, 
                 child: const Text("Agregar al carrito"),                
