@@ -27,16 +27,16 @@ class CarritoModel {
 
   String toRawJson() => json.encode(toJson());
 
-  factory CarritoModel.fromJson(String id,Map<String, dynamic> json) => CarritoModel(
-      id: id,
-      cliente: ClienteModel.fromJson(json["cliente"]["id"],json["cliente"]),
-      detallesPedido: List<DetallePedidoModel>.from(json["detallesPedido"].map((x) => DetallePedidoModel.fromJson(x))),
+  factory CarritoModel.fromJson(String id, Map<String, dynamic> json) => CarritoModel(
+    id: id,
+    cliente: ClienteModel.fromJson(json["cliente"]["id"],json["cliente"]),
+    detallesPedido: List<DetallePedidoModel>.from(json["detallesPedido"].map((x) => DetallePedidoModel.fromJson(x))),
   );
 
-    Map<String, dynamic> toJson() => {
-      "cliente": cliente.toJson(),
-      "detallesPedido": List<dynamic>.from(detallesPedido.map((x) => x.toJson())),
-    };
+  Map<String, dynamic> toJson() => {
+    "cliente": cliente.toJson(),
+    "detallesPedido": List<dynamic>.from(detallesPedido.map((x) => x.toJson())),
+  };
 }
 
 

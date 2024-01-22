@@ -16,4 +16,14 @@ class Carrito{
     id = "",
     detallesPedido = [],
     cliente = Cliente.empty();
+
+  static Carrito copyWith({
+    String? id,
+    List<DetallePedido>? detallesPedido,
+    Cliente? cliente,
+  }) => Carrito(
+    id: id ?? '',
+    detallesPedido: detallesPedido ?? [], 
+    cliente: cliente ?? Cliente.empty()
+  );
 }

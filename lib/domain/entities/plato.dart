@@ -40,4 +40,10 @@ class Plato{
     numCalorias = 0,
     popular = false;
 
+
+  @override
+  String toString(){
+    return 'ID: $id nombre: $nombre';
+  }
+
 }

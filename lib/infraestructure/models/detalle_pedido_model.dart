@@ -26,7 +26,7 @@ class DetallePedidoModel {
     id: json["id"],
     cantidadPlato: json["cantidadPlato"],
     valorTotal: json["valorTotal"]?.toDouble(),
-    plato: PlatoModel.fromJson(json['id'],json["plato"]),
+    plato: PlatoModel.fromJson(json["plato"]['id'],json["plato"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -35,4 +35,9 @@ class DetallePedidoModel {
     "valorTotal": valorTotal,
     "plato": plato.toJson(),
   };
+
+  @override
+  String toString(){
+    return "ID: $id cantidad: $cantidadPlato total: $valorTotal plato: $plato";
+  }
 }

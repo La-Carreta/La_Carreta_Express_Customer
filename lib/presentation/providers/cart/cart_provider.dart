@@ -4,19 +4,19 @@ import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_repository_provider.dart';
 
-final cartProvider = StateNotifierProvider<CartNotifier, Carrito>((ref){
+final cartProvider = StateNotifierProvider<CartNotifier, List<DetallePedido>>((ref){
   final fetchCarrito = ref.watch( cartRepositoryProvider ).getCarrito;
-  final addItemCart = ref.watch( cartRepositoryProvider ).createDetallePedido;
+  final addItemCart = ref.watch( cartRepositoryProvider ).createOrUpdateDetallePedido;
   final emptyCart = ref.watch( cartRepositoryProvider ).deleteCart;
 
   return CartNotifier(getCarrito: fetchCarrito, addItem: addItemCart, emptyCart: emptyCart);
 });
 
-typedef CarritoCallBack = Future<Carrito> Function({required Cliente cliente});
+typedef CarritoCallBack = Future<Carrito> Function({required String idCliente});
 typedef DetalleCallBack = Future<void> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
 typedef EmptyCartCallBack = Future<void> Function({required String idCarrito});
 
-class CartNotifier extends StateNotifier<Carrito>{
+class CartNotifier extends StateNotifier<List<DetallePedido>>{
   final CarritoCallBack getCarrito;
   final DetalleCallBack addItem;
   final EmptyCartCallBack emptyCart;
@@ -26,16 +26,15 @@ class CartNotifier extends StateNotifier<Carrito>{
     required this.getCarrito,
     required this.addItem,
     required this.emptyCart
-  }):super(Carrito.empty());
+  }):super([]);
 
 
-  Future<void> loadCart(Cliente cliente) async{
+  Future<void> loadCart(String idCliente) async{
     if(isLoading) return;
     isLoading = true;
 
-    final Carrito carrito = await getCarrito(cliente: cliente);
-    print("Carrito data");
-    state = carrito;
+    final Carrito carrito = await getCarrito(idCliente: idCliente);
+    state = [...carrito.detallesPedido];
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
@@ -45,7 +44,7 @@ class CartNotifier extends StateNotifier<Carrito>{
     if(isLoading) return;
     isLoading = true;
     //Buscar si el pedido se encuentra en la lista
-    final itemFound = state.detallesPedido.firstWhere((det) => det.id == item.id, orElse: ()=> DetallePedido.empty());
+    final itemFound = state.firstWhere((det) => det.id == item.id, orElse: () => DetallePedido.empty());
     if(itemFound.id == ""){
       print("Agregando item....");
       //TODO: OJO CON EL ID DEL CARRITO
@@ -53,7 +52,6 @@ class CartNotifier extends StateNotifier<Carrito>{
 
       //TODO: Revisar como manejar el estado
 //      state = [...state, item];
-
     }
 
     await Future.delayed(const Duration(milliseconds: 300));

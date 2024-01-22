@@ -15,8 +15,8 @@ class CarritoRepositoryImpl extends CarritoRepository{
   }
 
   @override
-  Future<Carrito> getCarrito({required Cliente cliente}) {
-    return datasource.getCarrito(cliente: cliente);
+  Future<Carrito> getCarrito({required String idCliente}) {
+    return datasource.getCarrito(idCliente: idCliente);
   }
 
   @override
@@ -25,8 +25,8 @@ class CarritoRepositoryImpl extends CarritoRepository{
   }
   
   @override
-  Future<void> createDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) {
-    return datasource.createDetallePedido(idCarrito: idCarrito, cliente: cliente, detallePedido: detallePedido);
+  Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) {
+    return datasource.createOrUpdateDetallePedido(idCarrito: idCarrito, cliente: cliente, detallePedido: detallePedido);
   }
   
   @override

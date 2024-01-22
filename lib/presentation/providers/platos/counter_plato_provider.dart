@@ -16,30 +16,20 @@ class CounterPlatoNotifier extends StateNotifier<Map<String, int>>{
     if(state[platoId] != null ) return;
     await Future.delayed(const Duration(milliseconds: 300), (){
       state = {...state, platoId: quantity};    
-      print("Cargado cantidades de los platos en Cache");
     });
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
-
-    print("Stado del isloading (loadQuantity): $isLoading ");
   }
 
   Future<void> increaseQuantityPlato(String platoId, int quantity) async{
-    print("Stado del isloading: $isLoading ");
-    if(isLoading) return;
-    isLoading = true;
-
     if( state[platoId] == null ) return;
 
     int cantidad = state[platoId]!;
     cantidad += quantity;
     //Actualizar cantidad en base al id del plato
     state = {...state, platoId: cantidad};
-    print("Actualizando las cantidades de los platos en Cache");
-
     await Future.delayed(const Duration(milliseconds: 300));
-    isLoading = false;
   }
 
   Future<void> decreaseQuantityPlato(String platoId, int quantity) async{

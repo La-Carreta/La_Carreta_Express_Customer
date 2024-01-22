@@ -3,9 +3,9 @@ import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 
 abstract class CarritoDatasource{
-  Future<Carrito> getCarrito({required Cliente cliente});
+  Future<Carrito> getCarrito({required String idCliente});
   Future<void> updateDetallePedido({required String idCarrito, required String idDetalle, required int cantidad});
   Future<void> deleteDetallePedido({required String idCarrito, required String idDetalle});
-  Future<void> createDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
+  Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
   Future<void> deleteCart({required String idCarrito});
 }

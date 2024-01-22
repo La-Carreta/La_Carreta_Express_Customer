@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
-import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
@@ -14,8 +12,8 @@ class CartScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    //Envio del cliente
-    ref.watch( cartProvider.notifier ).loadCart(Cliente.empty()); //deleteCart -> set once time
+    //** TODO: Envio del cliente
+    ref.watch( cartProvider.notifier ).loadCart("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
  
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
@@ -64,9 +62,9 @@ class _DetallePedido extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final Carrito carrito = ref.watch( cartProvider );
+    final carrito = ref.watch( cartProvider );
 
-    if(carrito.detallesPedido.isEmpty) {
+    if(carrito.isEmpty) {
       return const Center(child: Text("No hay data"));
     }
 
@@ -87,9 +85,9 @@ class _DetallePedido extends ConsumerWidget{
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: carrito.detallesPedido.length,
+              itemCount: carrito.length,
               itemBuilder: (context, index) {
-                final item = carrito.detallesPedido[index];
+                final item = carrito[index];
                 return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item);
               },
             )

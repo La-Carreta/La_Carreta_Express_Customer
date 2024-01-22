@@ -46,6 +46,7 @@ class PlatoModel {
   );
 
   Map<String, dynamic> toJson() => {
+    "id": id,
     "categoria": categoria.toJson(),
     "descripcion": descripcion,
     "descripcionCorta": descripcionCorta,
@@ -56,5 +57,10 @@ class PlatoModel {
     "popular": popular,
     "precio": precio,
     "tiempoPreparacion": tiempoPreparacion,
-};
+  };
+
+  @override
+  String toString(){
+    return 'idPlato: $id, categoria: $categoria, descripcion: $descripcion, descripcionCorta: $descripcionCorta, disponibilidad: $disponibilidad, imgUrl: $imgUrl, nombre: $nombre, numCalorias: $numCalorias, popular: $popular, precio: $precio, tiempoPreparacion: $tiempoPreparacion';
+  }
 }
