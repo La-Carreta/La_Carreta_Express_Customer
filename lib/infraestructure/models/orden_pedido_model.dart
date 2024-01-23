@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:la_carreta_express_cs/infraestructure/models/cliente_model.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/detalle_pedido_model.dart';
-import 'package:la_carreta_express_cs/infraestructure/models/mesero_model.dart';
+import 'package:la_carreta_express_cs/infraestructure/models/empleado_model.dart';
 
 class OrdenPedidoModel {
   final ClienteModel cliente;
@@ -9,7 +9,7 @@ class OrdenPedidoModel {
   final String estado;
   final DateTime fecha;
   final DateTime fechaAprobacion;
-  final MeseroModel mesero;
+  final EmpleadoModel mesero;
   final int numMesa;
   final String numOrden;
   final double total;
@@ -36,7 +36,7 @@ class OrdenPedidoModel {
     estado: json["estado"],
     fecha: DateTime.parse(json["fecha"]),
     fechaAprobacion: DateTime.parse(json["fechaAprobacion"]),
-    mesero: MeseroModel.fromJson(json["mesero"]),
+    mesero: EmpleadoModel.fromJson(json["mesero"]),
     numMesa: json["numMesa"],
     numOrden: json["numOrden"],
     total: json["total"]?.toDouble(),

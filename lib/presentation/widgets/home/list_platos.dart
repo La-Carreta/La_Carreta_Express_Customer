@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos_bug/counter_initial_loading_plates.dart';
 import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:lottie/lottie.dart';
@@ -17,8 +18,17 @@ class ListPlatos extends ConsumerWidget {
     if(initialLoading) return const FullScreenLoader();
 
     final categoria = ref.watch(categoriaProvider);
-    ref.watch( platosByCategoriaProvider.notifier ).loadPlatosByCategoria(categoria);
-    
+
+    //* Solucion al bug: de carga multiple de datos.
+    final countInitialState = ref.watch(counterInitialLoadingPlates);
+    if(countInitialState == 1){
+      //* Este proceso solo se debe realizar una vez, al iniciar la app, para controlar el problema de carga.  
+      ref.watch( platosByCategoriaProvider.notifier ).loadPlatosByCategoria(categoria);
+      Future.delayed(const Duration(milliseconds: 300), (){
+        ref.watch(counterInitialLoadingPlates.notifier).state ++;
+      });
+    }
+
     final initialLoadingPlatos = ref.watch(initialLoadingPlatosProvider);
     if(initialLoadingPlatos) return const FullScreenLoader();
 
