@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/counter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/plato_info_provider.dart';
@@ -167,12 +168,10 @@ class _InfoPlatoView extends ConsumerWidget {
                   //TODO: Considerar el envio de id's
                   //TODO: Cambiar los id's
                   ref.watch( cartProvider.notifier ).addOrUpdateItemCart(cliente: Cliente.empty(), item: newItem);
-
-                  print("Se ha agregado carrito satisfactoriament");
+                  showCustomSnackbar(context: context, title: "Item agregado satisfactoriamente.");
                 }, 
                 child: const Text("Agregar al carrito"),                
               ),
-
             ],
           ),
           const SizedBox(height: 15),

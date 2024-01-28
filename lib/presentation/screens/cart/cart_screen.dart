@@ -169,7 +169,9 @@ class _ItemCartPlato extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: (){}, 
+                      onPressed: (){
+                        print("Quitar un item del id del carrito ${item.id}");
+                      }, 
                       icon: const Icon(Icons.remove), 
                       color: Colors.white,
                       style: ButtonStyle(                        
@@ -180,6 +182,7 @@ class _ItemCartPlato extends StatelessWidget {
                     IconButton(
                       onPressed: (){
                         //TODO: Agregar funcionalidad
+                        print("Agregar producto");
                       }, 
                       icon: const Icon(Icons.add), 
                       color: Colors.white,
