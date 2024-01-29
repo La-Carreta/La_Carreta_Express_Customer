@@ -4,6 +4,7 @@ import 'package:la_carreta_express_cs/infraestructure/models/detalle_pedido_mode
 import 'package:la_carreta_express_cs/infraestructure/models/empleado_model.dart';
 
 class OrdenPedidoModel {
+  final String id;
   final ClienteModel cliente;
   final List<DetallePedidoModel> detalles;
   final String estado;
@@ -13,8 +14,10 @@ class OrdenPedidoModel {
   final int numMesa;
   final String numOrden;
   final double total;
+  final String observaciones;
 
   OrdenPedidoModel({
+    required this.id,
     required this.cliente,
     required this.detalles,
     required this.estado,
@@ -24,13 +27,13 @@ class OrdenPedidoModel {
     required this.numMesa,
     required this.numOrden,
     required this.total,
+    required this.observaciones
   });
-
-  factory OrdenPedidoModel.fromRawJson(String str) => OrdenPedidoModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory OrdenPedidoModel.fromJson(Map<String, dynamic> json) => OrdenPedidoModel(
+  factory OrdenPedidoModel.fromJson(String id, Map<String, dynamic> json) => OrdenPedidoModel(
+    id: id,
     cliente: ClienteModel.fromJson(json["cliente"]['id'],json["cliente"]),
     detalles: List<DetallePedidoModel>.from(json["detalles"].map((x) => DetallePedidoModel.fromJson(x))),
     estado: json["estado"],
@@ -40,11 +43,12 @@ class OrdenPedidoModel {
     numMesa: json["numMesa"],
     numOrden: json["numOrden"],
     total: json["total"]?.toDouble(),
+    observaciones: json['observaciones']
   );
 
     Map<String, dynamic> toJson() => {
       "cliente": cliente.toJson(),
-      "detalles": List<DetallePedidoModel>.from(detalles.map((x) => x.toJson())),
+      "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
       "estado": estado,
       "fecha": "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
       "fechaAprobacion": "${fechaAprobacion.year.toString().padLeft(4, '0')}-${fechaAprobacion.month.toString().padLeft(2, '0')}-${fechaAprobacion.day.toString().padLeft(2, '0')}",
@@ -52,6 +56,7 @@ class OrdenPedidoModel {
       "numMesa": numMesa,
       "numOrden": numOrden,
       "total": total,
+      "observaciones": observaciones
     };
 }
 

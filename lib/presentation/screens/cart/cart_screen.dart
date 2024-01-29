@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
+import 'package:la_carreta_express_cs/domain/entities/mesero.dart';
+import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/infraestructure/models/orden_pedido_model.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/order_number_generator.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/cart/mesa_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_repository_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -64,6 +72,8 @@ class _DetallePedido extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref) {
 
     final Carrito carrito = ref.watch( cartProvider );
+    final TextEditingController controller = TextEditingController();
+    final numMesa = ref.watch( numMesaProvider );
 
     if(carrito.detallesPedido.isEmpty) {
       return const Center(child: Text("No hay data"));
@@ -94,11 +104,28 @@ class _DetallePedido extends ConsumerWidget{
             )
           ),
 
+          const SizedBox(height: 15),        
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Num. de mesa: ", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+              SizedBox(
+                width: 60,
+                child: DropdownButtonFormField(
+                  value: numMesa,
+                  items: List.generate(15, (index) => DropdownMenuItem(value: index + 1,child: Text("${index + 1}"),)), 
+                  onChanged: (value) => ref.watch( numMesaProvider.notifier ).state = value ?? 1,
+                ),
+              )
+            ],
+          ),
+
           const SizedBox(height: 15),
           const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
           
           TextFormField(
-            minLines: 3,
+            controller: controller,
+            minLines: 3,            
             maxLines: 6,
             keyboardType: TextInputType.multiline,
           ),
@@ -119,7 +146,25 @@ class _DetallePedido extends ConsumerWidget{
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
               backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
             ),
-            onPressed: (){}, 
+            onPressed: (){
+              final observaciones = controller.text;
+              final ordenPedido = OrdenPedido(
+                cliente: carrito.cliente,
+                fechaEmision: DateTime.now(), 
+                fechaAprobacion: DateTime.now(), 
+                mesero: Mesero.empty(), 
+                costoTotalPedido: carrito.total,
+                numOrden: generateOrderNumber(), 
+                observaciones: observaciones, 
+                numMesa: numMesa, 
+                detalles: carrito.detallesPedido
+              );
+
+              //TODO: Implementar funcionalidad.
+              ref.watch( ordenPedidoProvider.notifier ).createOrder(order: ordenPedido);
+              showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
+
+            }, 
             child: const Text("Realizar Pedido", style: TextStyle(fontWeight: FontWeight.bold),),                
           ),
         ],
