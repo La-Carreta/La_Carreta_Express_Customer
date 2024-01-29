@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
@@ -62,9 +63,9 @@ class _DetallePedido extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final carrito = ref.watch( cartProvider );
+    final Carrito carrito = ref.watch( cartProvider );
 
-    if(carrito.isEmpty) {
+    if(carrito.detallesPedido.isEmpty) {
       return const Center(child: Text("No hay data"));
     }
 
@@ -85,10 +86,10 @@ class _DetallePedido extends ConsumerWidget{
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: carrito.length,
+              itemCount: carrito.detallesPedido.length,
               itemBuilder: (context, index) {
-                final item = carrito[index];
-                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item);
+                final item = carrito.detallesPedido[index];
+                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item, cart: carrito);
               },
             )
           ),
@@ -104,11 +105,11 @@ class _DetallePedido extends ConsumerWidget{
 
           const SizedBox(height: 10),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text("\$40.70", style: TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
+              const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text("\$${carrito.total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
             ],
           ),
 
@@ -127,16 +128,19 @@ class _DetallePedido extends ConsumerWidget{
   }
 }
 
-class _ItemCartPlato extends StatelessWidget {
+class _ItemCartPlato extends ConsumerWidget {
   final DetallePedido item;
+  final Carrito cart;
   final double maximiunWidth;
+
   const _ItemCartPlato({
     required this.maximiunWidth, 
-    required this.item,
+    required this.item, 
+    required this.cart
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       height: 120,
@@ -170,7 +174,8 @@ class _ItemCartPlato extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: (){
-                        print("Quitar un item del id del carrito ${item.id}");
+                        final int cantidad = item.cantidadPlato - 1;
+                        ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
                       }, 
                       icon: const Icon(Icons.remove), 
                       color: Colors.white,
@@ -181,8 +186,8 @@ class _ItemCartPlato extends StatelessWidget {
                     Text("${item.cantidadPlato}", style: const TextStyle(fontSize: 20),),
                     IconButton(
                       onPressed: (){
-                        //TODO: Agregar funcionalidad
-                        print("Agregar producto");
+                        final int cantidad = item.cantidadPlato + 1;
+                        ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
                       }, 
                       icon: const Icon(Icons.add), 
                       color: Colors.white,
@@ -192,7 +197,7 @@ class _ItemCartPlato extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text('\$${item.valorTotal}', style: const TextStyle(fontSize: 17),),
+                Text('\$${item.valorTotal.toStringAsFixed(2)}', style: const TextStyle(fontSize: 17),),
               ],
             ),
           )

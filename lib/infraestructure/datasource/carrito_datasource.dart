@@ -16,7 +16,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
 
   @override
-  Future<Carrito> getCarrito({required String idCliente}) async{
+  Future<Carrito> getCarritoByIdCliente({required String idCliente}) async{
     try {
       final CollectionReference collectionReference = firebase.collection("cart");
       final QuerySnapshot response = await collectionReference
@@ -39,23 +39,61 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
 
   @override
-  Future<void> updateDetallePedido({required String idCarrito, required String idDetalle, required int cantidad}) {
-    // TODO: implement updateDetallePedido
-    throw UnimplementedError();
+  Future<Carrito> updateDetallePedido({required Carrito carrito, required String idDetalle, required int cantidad}) async{
+    try {
+      //** 1. Consultar el detalle en el carrito por su id 
+      CollectionReference collectionReference = firebase.collection('cart');
+      final detalleToUpdate = carrito.detallesPedido.firstWhere((item) => item.id == idDetalle, orElse: DetallePedido.empty);
+      final valorTotalActualizado = detalleToUpdate.plato.precio * cantidad;
+
+      final detalleUpdated = DetallePedido.copyWith(
+        id: detalleToUpdate.id,
+        cantidadPlato: cantidad,
+        plato: detalleToUpdate.plato,
+        valorTotal: valorTotalActualizado
+      );
+
+      List<DetallePedido> newDetailsCart = carrito.detallesPedido.where((item) => item.id != idDetalle).toList();
+      newDetailsCart.add(detalleUpdated);
+      newDetailsCart.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+      
+      double totalUpdated = 0.0;
+
+      for (DetallePedido item in newDetailsCart) { 
+        totalUpdated += item.valorTotal;
+      } 
+
+      //* Actualizar carrito  
+      await updateCart(collectionReference, carrito, newDetailsCart, totalUpdated);
+
+      return Carrito.copyWith(
+        id: carrito.id,
+        cliente: carrito.cliente,
+        detallesPedido: newDetailsCart, 
+        total: totalUpdated,        
+      );
+
+    } catch (e) {
+      throw Exception("Error al actualizar el item con el id del detalle: $idDetalle..., ${e.toString()}");            
+    }
   }
   
   @override
   Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) async{
     try {      
       //** 1. Consultar si el cliente tiene un carrito creado anteriormente. 
-      final carritoFs = await getCarrito(idCliente: cliente.id);
+      final carritoFs = await getCarritoByIdCliente(idCliente: cliente.id);
 
       CollectionReference collectionReference = firebase.collection('cart');
       List<DetallePedido> detalles = [];
+      double totalUpdated = 0.0;
+
       //** No existe el carrito
       if( carritoFs.id.isEmpty ){
         detalles.add(detallePedido);
-        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente));       
+        detalles.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+
+        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente, total: carritoFs.total));       
         await collectionReference.add(carritoData.toJson());
       }
       //** Insertar o actualizar el detalle del carrito
@@ -76,17 +114,27 @@ class CarritoDatasourceImp extends CarritoDatasource{
 
           List<DetallePedido> newDetailsCart = carritoFs.detallesPedido.where((item) => item.plato.id != detallePedido.plato.id).toList();
           newDetailsCart.add(detalle);
+          newDetailsCart.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+
+          for (DetallePedido item in newDetailsCart) { 
+            totalUpdated += item.valorTotal;
+          } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart);
+          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);
         }
         //* Se crea el detalle del pedido en la orden
         else{
           List<DetallePedido> newDetailsCart = carritoFs.detallesPedido.map((item) => item).toList();
           newDetailsCart.add(detallePedido);
+          newDetailsCart.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+
+          for (DetallePedido item in newDetailsCart) { 
+            totalUpdated += item.valorTotal;
+          } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart);          
+          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);          
         }
       }
     } catch (e) {
@@ -101,16 +149,38 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
 
 
-  Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart) async{
+  Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
     Carrito cartUpdated = Carrito.copyWith(
       id: carritoFs.id,
       cliente: carritoFs.cliente,
-      detallesPedido: newDetailsCart
+      detallesPedido: newDetailsCart,
+      total: totalUpdated
     );          
 
     final CarritoModel carritoData = CarritoMapper.carritoToModel(cartUpdated);       
 
     //* Enviar detalle actualizados.
     await collectionReference.doc(carritoFs.id).update(carritoData.toJson());          
+    print(totalUpdated);
+    print("Carrito actualizado");
+  }
+  
+  @override
+  Future<Carrito> getCarritoById({required String idCarrito}) async{
+    try {
+      final CollectionReference collectionReference = firebase.collection("cart");
+      final response = await collectionReference
+        .doc(idCarrito)
+        .get();
+
+      if(response.exists){
+        final carrito =  CarritoMapper.carritoToEntity(CarritoModel.fromJson(idCarrito, response.data() as Map<String, dynamic>));
+        return carrito;
+      }
+
+      return Carrito.empty();
+    } catch (e) {
+      throw Exception("Error al cargar carrito..., ${e.toString()}");            
+    }
   }
 }

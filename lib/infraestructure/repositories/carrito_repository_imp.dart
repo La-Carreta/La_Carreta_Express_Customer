@@ -15,13 +15,13 @@ class CarritoRepositoryImpl extends CarritoRepository{
   }
 
   @override
-  Future<Carrito> getCarrito({required String idCliente}) {
-    return datasource.getCarrito(idCliente: idCliente);
+  Future<Carrito> getCarritoByIdCliente({required String idCliente}) {
+    return datasource.getCarritoByIdCliente(idCliente: idCliente);
   }
 
   @override
-  Future<void> updateDetallePedido({required String idCarrito, required String idDetalle, required int cantidad}) {
-    return updateDetallePedido(idCarrito: idCarrito, idDetalle: idDetalle, cantidad: cantidad);
+  Future<Carrito> updateDetallePedido({required Carrito carrito, required String idDetalle, required int cantidad}) {
+    return datasource.updateDetallePedido(carrito: carrito, cantidad: cantidad, idDetalle:  idDetalle);
   }
   
   @override
@@ -32,5 +32,10 @@ class CarritoRepositoryImpl extends CarritoRepository{
   @override
   Future<void> deleteCart({required String idCarrito}) {
     return datasource.deleteCart(idCarrito: idCarrito);
+  }
+  
+  @override
+  Future<Carrito> getCarritoById({required String idCarrito}) {
+    return datasource.getCarritoById(idCarrito: idCarrito);
   }
 }

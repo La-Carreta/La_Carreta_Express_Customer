@@ -30,7 +30,7 @@ class DetallePedidoModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": uuid.v4(),
+    "id": id.isEmpty ? uuid.v4() : id,
     "cantidadPlato": cantidadPlato,
     "valorTotal": valorTotal,
     "plato": plato.toJson(),

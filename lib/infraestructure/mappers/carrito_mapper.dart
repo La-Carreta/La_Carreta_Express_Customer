@@ -7,13 +7,15 @@ class CarritoMapper {
   static CarritoModel carritoToModel(Carrito carrito) => CarritoModel(
     id: carrito.id, 
     cliente: ClienteMapper.clienteToModel(carrito.cliente), 
-    detallesPedido: carrito.detallesPedido.map((item) => DetallePedidoMapper.detallePedidoToModel(item)).toList()
+    detallesPedido: carrito.detallesPedido.map((item) => DetallePedidoMapper.detallePedidoToModel(item)).toList(),
+    total: carrito.total
   );
 
   static Carrito carritoToEntity(CarritoModel carrito) => Carrito(
     id: carrito.id, 
     cliente: ClienteMapper.clienteToEntity(carrito.cliente), 
-    detallesPedido: carrito.detallesPedido.map((item) => DetallePedidoMapper.detallePedidoToEntity(item)).toList()
+    detallesPedido: carrito.detallesPedido.map((item) => DetallePedidoMapper.detallePedidoToEntity(item)).toList(), 
+    total: carrito.total
   );
 
 }
