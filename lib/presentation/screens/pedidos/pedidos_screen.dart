@@ -8,37 +8,19 @@ import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class PedidosScreen extends ConsumerStatefulWidget {
+class PedidosScreen extends ConsumerWidget {
   static const String name = 'pedidos_screen';
   const PedidosScreen({super.key});
 
   @override
-  PedidosScreenState createState() => PedidosScreenState();
-}
-
-
-class PedidosScreenState extends ConsumerState<PedidosScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
-  }
-
-  @override
-  void dispose() {
-    print("Se destruye el listado de pedidos");
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print("Reconstruccion del listado de pedidos");
+  Widget build(BuildContext context, WidgetRef ref) {
 
     final size = MediaQuery.of(context).size;
+    ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
 
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
+    final pedidoList = ref.watch( ordenPedidoProvider );
 
     return Scaffold(
       body: Stack(
@@ -70,7 +52,11 @@ class PedidosScreenState extends ConsumerState<PedidosScreen> {
           Positioned(
             bottom: 0,
             left: 0,
-            child: _Pedidos(maximiunHeight: size.height * 0.80, maximiunWidth: size.width,)
+            child: _Pedidos(
+              maximiunHeight: size.height * 0.80, 
+              maximiunWidth: size.width,
+              pedidoList: pedidoList
+            )
           ),
         ],
       ),
@@ -82,15 +68,16 @@ class PedidosScreenState extends ConsumerState<PedidosScreen> {
 class _Pedidos extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
+  final List<OrdenPedido> pedidoList;
 
   const _Pedidos({
-    required this.maximiunHeight, required this.maximiunWidth,
+    required this.maximiunHeight, 
+    required this.maximiunWidth,
+    required this.pedidoList
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pedidoList = ref.watch( ordenPedidoProvider );
-    print("Y la data???");
 
     return Container(
       width: maximiunWidth,
@@ -150,7 +137,7 @@ class _ItemPlato extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("#${pedido.numOrden}", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+                Text("Order: #${pedido.numOrden}", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
                 Text("Mesa-${pedido.numMesa}"),
                 Text( formatDate(pedido.fechaEmision) ),//15-Nov-2023 17h15
                
@@ -170,7 +157,7 @@ class _ItemPlato extends StatelessWidget {
             width: maximiunWidth * 0.15,
             child: Center(
               child: IconButton(
-                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}"), 
+                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}", extra: pedido.id), 
                 icon: const Icon(Icons.chevron_right)
               ),
             ),

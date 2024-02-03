@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
-import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,11 +16,13 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;  
-    ref.watch(ordenPedidoProvider.notifier).getOrderById(idPedido);
+    ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido);
 
-    final ordenPedidoList = ref.watch(ordenPedidoProvider);
+    final ordenPedidoList = ref.watch(ordenPedidoInfoProvider);
     if(ordenPedidoList.isEmpty) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    final pedido = ordenPedidoList[0];    
+    if(!ordenPedidoList.containsKey(idPedido)) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    final pedido = ordenPedidoList[idPedido];    
 
     return Scaffold(
       body: Stack(
@@ -48,7 +50,7 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
             child: _SiguimientoPedidoView(
               maximiunHeight: size.height * 0.85, 
               maximiunWidth: size.width,
-              pedido: pedido
+              pedido: pedido!
             )
           ),
         ],

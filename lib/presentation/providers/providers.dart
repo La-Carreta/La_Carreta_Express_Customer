@@ -7,3 +7,4 @@ export 'platos/platos_repository_provider.dart';
 export 'cart/cart_provider.dart';
 export 'cart/mesa_provider.dart';
 export 'orden_pedido/orden_pedido_provider.dart';
+export 'orden_pedido/orden_pedido_info_provider.dart';
