@@ -79,8 +79,7 @@ class _InfoPlatoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final int counterPlato = ref.watch( counterPlatoProvider )[plato.id] ?? 0;
+    final int counterPlato = ref.watch( counterPlatoProvider )[plato.id] ?? 1;
     
     return Container(
       width: maximiunWidth,

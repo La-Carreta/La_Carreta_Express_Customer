@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:la_carreta_express_cs/domain/entities/carrito.dart';
-import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
-import 'package:la_carreta_express_cs/domain/entities/mesero.dart';
-import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
-import 'package:la_carreta_express_cs/infraestructure/models/orden_pedido_model.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/order_number_generator.dart';
-import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
-import 'package:la_carreta_express_cs/presentation/providers/cart/mesa_provider.dart';
-import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
-import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_repository_provider.dart';
-import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/domain/entities/entities.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
+import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class CartScreen extends ConsumerWidget {
@@ -76,14 +68,19 @@ class _DetallePedido extends ConsumerWidget{
     final numMesa = ref.watch( numMesaProvider );
 
     if(carrito.detallesPedido.isEmpty) {
-      return const Center(child: Text("No hay data"));
+      return NoDataFound(
+        maximiunWidth: maximiunWidth, 
+        maximiunHeight: maximiunHeight, 
+        pathLottie: 'assets/lottie/json/empty_cart.json',
+        text: "El carrito esta vacio..."
+      );
     }
 
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-        decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xffF5F5F5),
         borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(25)),
       ),
@@ -113,7 +110,7 @@ class _DetallePedido extends ConsumerWidget{
                 width: 60,
                 child: DropdownButtonFormField(
                   value: numMesa,
-                  items: List.generate(15, (index) => DropdownMenuItem(value: index + 1,child: Text("${index + 1}"),)), 
+                  items: List.generate(15, (index) => DropdownMenuItem(value: index + 1, child: Text("${index + 1}"),)), 
                   onChanged: (value) => ref.watch( numMesaProvider.notifier ).state = value ?? 1,
                 ),
               )
@@ -151,7 +148,6 @@ class _DetallePedido extends ConsumerWidget{
               final ordenPedido = OrdenPedido(
                 cliente: carrito.cliente,
                 fechaEmision: DateTime.now(), 
-                fechaAprobacion: DateTime.now(), 
                 mesero: Mesero.empty(), 
                 costoTotalPedido: carrito.total,
                 numOrden: generateOrderNumber(), 
@@ -160,10 +156,12 @@ class _DetallePedido extends ConsumerWidget{
                 detalles: carrito.detallesPedido
               );
 
-              //TODO: Implementar funcionalidad.
-              ref.watch( ordenPedidoProvider.notifier ).createOrder(order: ordenPedido);
+              ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
+              ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
               showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
 
+              //TODO: Considerar redireccion a pantalla intermedia de ordenes
+              Future.delayed(const Duration(milliseconds: 500), () => context.go('/'));
             }, 
             child: const Text("Realizar Pedido", style: TextStyle(fontWeight: FontWeight.bold),),                
           ),

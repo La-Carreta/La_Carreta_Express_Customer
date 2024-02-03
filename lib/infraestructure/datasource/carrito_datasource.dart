@@ -29,6 +29,8 @@ class CarritoDatasourceImp extends CarritoDatasource{
           (cart) => CarritoMapper.carritoToEntity(cart),
         ).toList();
 
+       cart[0].detallesPedido.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+
         return cart[0];
       }
 
@@ -143,11 +145,23 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
   
   @override
-  Future<void> deleteCart({required String idCarrito}) {
-    // TODO: implement deleteCart
-    throw UnimplementedError();
-  }
+  Future<void> deleteCart({required String idCarrito, required Carrito cart}) async{
+    try {
+      final emptyCart = Carrito.copyWith(
+        id: cart.id,
+        cliente: cart.cliente,
+        detallesPedido: [],
+        total: 0.0
+      );
 
+      final emptyCartModel = CarritoMapper.carritoToModel(emptyCart);
+
+      final CollectionReference collectionReference = firebase.collection("cart");
+      await collectionReference.doc(idCarrito).update(emptyCartModel.toJson());
+    } catch (e) {
+      throw Exception("Error al eliminar carrito..., ${e.toString()}");            
+    }
+  }
 
   Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
     Carrito cartUpdated = Carrito.copyWith(
@@ -161,8 +175,6 @@ class CarritoDatasourceImp extends CarritoDatasource{
 
     //* Enviar detalle actualizados.
     await collectionReference.doc(carritoFs.id).update(carritoData.toJson());          
-    print(totalUpdated);
-    print("Carrito actualizado");
   }
   
   @override

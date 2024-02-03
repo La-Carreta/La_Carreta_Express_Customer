@@ -4,5 +4,5 @@ abstract class OrdenPedidoDatasource{
   Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente});  
   Future<void> createOrder({required OrdenPedido order});  
   Future<void> cancelOrder({required OrdenPedido order});  
-  Future<List<OrdenPedido>> getOrderById({required String idOrdenPedido});  
+  Future<OrdenPedido> getOrderById({required String idOrdenPedido});  
 }

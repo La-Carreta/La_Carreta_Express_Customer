@@ -27,14 +27,21 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
   }
 
   @override
-  Future<List<OrdenPedido>> getOrderById({required String idOrdenPedido}) async{
+  Future<OrdenPedido> getOrderById({required String idOrdenPedido}) async{
     try {
       final CollectionReference collectionReference = firebase.collection("ordenPedido");
       final response = await collectionReference
         .doc(idOrdenPedido)
         .get();
 
-      return [];
+      if(response.exists){
+        final OrdenPedidoModel ordenPedido = OrdenPedidoModel.fromJson(response.id, response.data() as Map<String, dynamic>);
+        final OrdenPedido orden = OrdenPedidoMapper.ordenPedidoToEntity(ordenPedido);
+
+        return orden;
+      }
+
+      return OrdenPedido.empty();
     } catch (e) {
       throw Exception("Error al cargar carrito..., ${e.toString()}");            
     }
@@ -60,7 +67,7 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
 
       return [];
     } catch (e) {
-      throw Exception("Error al cargar carrito..., ${e.toString()}");            
+      throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            
     }
   }
 }

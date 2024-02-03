@@ -22,7 +22,7 @@ typedef CarritoCallBackByCustomer = Future<Carrito> Function({required String id
 typedef CarritoCallBackById = Future<Carrito> Function({required String idCarrito});
 
 typedef DetalleCallBack = Future<void> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
-typedef EmptyCartCallBack = Future<void> Function({required String idCarrito});
+typedef EmptyCartCallBack = Future<void> Function({required String idCarrito, required Carrito cart});
 typedef CartCallBack = Future<Carrito> Function({required Carrito carrito, required String idDetalle, required int cantidad});
 
 
@@ -69,13 +69,11 @@ class CartNotifier extends StateNotifier<Carrito>{
     isLoading = false;
   }
 
-  Future<void> deleteCart(String idCarrito) async{
+  Future<void> deleteCart(String idCarrito, Carrito cart) async{
     if(isLoading) return;
     isLoading = true;
 
-    await emptyCart(idCarrito: idCarrito);
-
-    print("Carrito vacio");
+    await emptyCart(idCarrito: idCarrito, cart: cart);
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;

@@ -13,10 +13,10 @@ class OrdenPedidoMapper{
     detalles: order.detalles.map((item) => DetallePedidoMapper.detallePedidoToModel(item)).toList(),
     estado: order.estadoOrden,
     fecha: order.fechaEmision,
-    fechaAprobacion: DateTime.now(),
     mesero: MeseroMapper.empleadoToModel(order.mesero),
     numMesa: order.numMesa,
     numOrden: order.numOrden,
+    tiempoEstimado: order.tiempoEstimado,
     observaciones: order.observaciones
   );
 
@@ -28,8 +28,8 @@ class OrdenPedidoMapper{
     mesero: MeseroMapper.empleadoToEntity(order.mesero),
     numMesa: order.numMesa,
     numOrden: order.numOrden,
+    tiempoEstimado: order.tiempoEstimado,
     fechaEmision: order.fecha,
     observaciones: order.observaciones, 
-    fechaAprobacion: order.fechaAprobacion
   );
 }

@@ -6,20 +6,13 @@ final counterPlatoProvider = StateNotifierProvider<CounterPlatoNotifier, Map<Str
 
 class CounterPlatoNotifier extends StateNotifier<Map<String, int>>{
   CounterPlatoNotifier():super({});
-  bool isLoading = false;
 
 
   Future<void> loadQuantityPlato(String platoId, int quantity) async{
-    if(isLoading) return;
-    isLoading = true;
-
     if(state[platoId] != null ) return;
     await Future.delayed(const Duration(milliseconds: 300), (){
       state = {...state, platoId: quantity};    
     });
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    isLoading = false;
   }
 
   Future<void> increaseQuantityPlato(String platoId, int quantity) async{

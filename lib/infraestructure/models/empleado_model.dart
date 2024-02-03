@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EmpleadoModel {
   final String id;
   final String apellido;
@@ -60,7 +62,7 @@ class EmpleadoModel {
       apellido: json["apellido"],
       email: json["email"],
       estado: json["estado"],
-      fechaContratacion: DateTime.parse(json["fechaContratacion"]),
+      fechaContratacion: json["fechaContratacion"] != null ? (json["fechaContratacion"] as Timestamp).toDate() : DateTime.now(),
       nombre: json["nombre"],
       areaTrabajo: json["areaTrabajo"],
       celular: json["celular"],
@@ -73,7 +75,7 @@ class EmpleadoModel {
       "apellido": apellido,
       "email": email,
       "estado": estado,
-      "fechaContratacion": fechaContratacion.toIso8601String(),
+      "fechaContratacion": Timestamp.fromDate(fechaContratacion),
       "nombre": nombre,
       "areaTrabajo": areaTrabajo,
       "celular": celular,

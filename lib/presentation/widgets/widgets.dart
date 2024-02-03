@@ -8,3 +8,4 @@ export 'shared/custom_filter_button.dart';
 export 'shared/full_screen_loader.dart';
 export 'shared/indicador_estado.dart';
 export 'shared/registered_trademark.dart';
+export 'shared/no_data_found.dart';

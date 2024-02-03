@@ -19,7 +19,7 @@ class OrdenPedidoRepositoryImp extends OrdenPedidoRepository{
   }
 
   @override
-  Future<List<OrdenPedido>> getOrderById({required String idOrdenPedido}) {
+  Future<OrdenPedido> getOrderById({required String idOrdenPedido}) {
     return datasource.getOrderById(idOrdenPedido: idOrdenPedido);
   }
 

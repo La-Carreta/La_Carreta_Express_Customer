@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/cliente_model.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/detalle_pedido_model.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/empleado_model.dart';
@@ -9,12 +10,12 @@ class OrdenPedidoModel {
   final List<DetallePedidoModel> detalles;
   final String estado;
   final DateTime fecha;
-  final DateTime fechaAprobacion;
   final EmpleadoModel mesero;
   final int numMesa;
   final String numOrden;
   final double total;
   final String observaciones;
+  final String tiempoEstimado;
 
   OrdenPedidoModel({
     required this.id,
@@ -22,11 +23,11 @@ class OrdenPedidoModel {
     required this.detalles,
     required this.estado,
     required this.fecha,
-    required this.fechaAprobacion,
     required this.mesero,
     required this.numMesa,
     required this.numOrden,
     required this.total,
+    required this.tiempoEstimado,
     required this.observaciones
   });
 
@@ -37,11 +38,11 @@ class OrdenPedidoModel {
     cliente: ClienteModel.fromJson(json["cliente"]['id'],json["cliente"]),
     detalles: List<DetallePedidoModel>.from(json["detalles"].map((x) => DetallePedidoModel.fromJson(x))),
     estado: json["estado"],
-    fecha: DateTime.parse(json["fecha"]),
-    fechaAprobacion: DateTime.parse(json["fechaAprobacion"]),
+    fecha: json["fecha"] != null ? (json["fecha"] as Timestamp).toDate() : DateTime.now(),
     mesero: EmpleadoModel.fromJson(json["mesero"]),
     numMesa: json["numMesa"],
     numOrden: json["numOrden"],
+    tiempoEstimado: json["tiempoEstimado"],   
     total: json["total"]?.toDouble(),
     observaciones: json['observaciones']
   );
@@ -50,16 +51,15 @@ class OrdenPedidoModel {
       "cliente": cliente.toJson(),
       "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
       "estado": estado,
-      "fecha": "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-      "fechaAprobacion": "${fechaAprobacion.year.toString().padLeft(4, '0')}-${fechaAprobacion.month.toString().padLeft(2, '0')}-${fechaAprobacion.day.toString().padLeft(2, '0')}",
+      "fecha": Timestamp.fromDate(fecha),
       "mesero": mesero.toJson(),
       "numMesa": numMesa,
       "numOrden": numOrden,
+      "tiempoEstimado": tiempoEstimado,
       "total": total,
       "observaciones": observaciones
     };
 }
-
 
 
 

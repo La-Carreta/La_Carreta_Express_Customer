@@ -52,7 +52,7 @@ class PlatosByCategoriaNotifier extends StateNotifier<List<Plato>>{
   Future<void> loadPlatosByCategoria(String categoria) async {
     if(isLoading) return;
     isLoading = true;
-    print("Estamos cargando platos");
+
     final List<Plato> platos = await fetchPlatosByCategoria(categoria);
     state = [...platos];
 

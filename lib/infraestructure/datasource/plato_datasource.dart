@@ -44,7 +44,6 @@ class PlatoDatasource extends PlatosDatasource{
           (plato) => PlatoMapper.platoToEntity(plato),
         ).toList();
 
-        print("Si hay datos, ${platos.length}");
         return platos;
       }
       return [];

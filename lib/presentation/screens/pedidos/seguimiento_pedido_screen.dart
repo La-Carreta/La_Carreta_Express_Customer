@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SeguimientoPedidoScreen extends StatelessWidget {
+class SeguimientoPedidoScreen extends ConsumerWidget {
   static const String name = 'seguimiento_pedido_screen';
-  const SeguimientoPedidoScreen({super.key});
+
+  const SeguimientoPedidoScreen({super.key, required this.idPedido});
+  final String idPedido;
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.of(context).size;  
+    ref.watch(ordenPedidoProvider.notifier).getOrderById(idPedido);
+
+    final ordenPedidoList = ref.watch(ordenPedidoProvider);
+    if(ordenPedidoList.isEmpty) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    final pedido = ordenPedidoList[0];    
+
     return Scaffold(
       body: Stack(
         children: [
@@ -34,7 +45,11 @@ class SeguimientoPedidoScreen extends StatelessWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: _SiguimientoPedidoView(maximiunHeight: size.height * 0.85, maximiunWidth: size.width,)
+            child: _SiguimientoPedidoView(
+              maximiunHeight: size.height * 0.85, 
+              maximiunWidth: size.width,
+              pedido: pedido
+            )
           ),
         ],
       ),
@@ -45,9 +60,12 @@ class SeguimientoPedidoScreen extends StatelessWidget {
 class _SiguimientoPedidoView extends StatelessWidget {
   final double maximiunHeight;
   final double maximiunWidth;
+  final OrdenPedido pedido;
 
   const _SiguimientoPedidoView({
-    required this.maximiunHeight, required this.maximiunWidth,
+    required this.maximiunHeight, 
+    required this.maximiunWidth, 
+    required this.pedido,
   });
 
   @override
@@ -64,7 +82,7 @@ class _SiguimientoPedidoView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
           //Time Box
-          const _EstimatedTimeBox(),
+          _EstimatedTimeBox(estimatedTime: pedido.tiempoEstimado, numOrder: pedido.numOrden),
 
           const SizedBox(height: 10),
 
@@ -196,7 +214,13 @@ class _TimeLinePedido extends StatelessWidget {
 }
 
 class _EstimatedTimeBox extends StatelessWidget {
-  const _EstimatedTimeBox();
+  final String estimatedTime;
+  final String numOrder;
+
+  const _EstimatedTimeBox({
+    required this.estimatedTime,
+    required this.numOrder
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -205,24 +229,22 @@ class _EstimatedTimeBox extends StatelessWidget {
       height: 70,
       color: const Color(0xffD9D9D9),
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("TIEMPO ESTIMADO", style: TextStyle(fontWeight: FontWeight.bold)),
-              //TODO: El tiempo se debe llenar en base al objeto recibido de la base de datos
-              Text("30 minutos")
+              const Text("TIEMPO ESTIMADO", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(estimatedTime.isEmpty ? "10 min" : estimatedTime)
             ],
           ),
 
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("NUMERO DE ORDEN", style: TextStyle(fontWeight: FontWeight.bold)),
-              //TODO: El tiempo se debe llenar en base al objeto recibido de la base de datos
-              Text("#25646541")
+              const Text("NUMERO DE ORDEN", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("#$numOrder")
             ],
           ),
 

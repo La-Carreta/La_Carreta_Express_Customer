@@ -52,9 +52,12 @@ class AppRouter{
       ),
 
       GoRoute(
-        path: "/seguimiento-pedido",
+        path: "/seguimiento-pedido/:id",
         name: SeguimientoPedidoScreen.name,
-        builder: (context, state) => const SeguimientoPedidoScreen()
+        builder: (context, state){
+          final idPedido = state.pathParameters['id'] ?? "no-id";
+          return SeguimientoPedidoScreen(idPedido: idPedido);
+        }
       ),
 
       GoRoute(
