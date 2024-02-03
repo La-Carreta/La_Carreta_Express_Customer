@@ -1,15 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class PedidosScreen extends StatelessWidget {
+class PedidosScreen extends ConsumerStatefulWidget {
   static const String name = 'pedidos_screen';
   const PedidosScreen({super.key});
 
   @override
+  PedidosScreenState createState() => PedidosScreenState();
+}
+
+
+class PedidosScreenState extends ConsumerState<PedidosScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
+  }
+
+  @override
+  void dispose() {
+    print("Se destruye el listado de pedidos");
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("Reconstruccion del listado de pedidos");
+
     final size = MediaQuery.of(context).size;
+
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if(initialLoading) return const FullScreenLoader();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -49,7 +79,7 @@ class PedidosScreen extends StatelessWidget {
 }
 
 
-class _Pedidos extends StatelessWidget {
+class _Pedidos extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
 
@@ -58,7 +88,10 @@ class _Pedidos extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pedidoList = ref.watch( ordenPedidoProvider );
+    print("Y la data???");
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -70,14 +103,13 @@ class _Pedidos extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
-
           Expanded(
-            child: ListView.builder(
+            child: ListView.builder(  
               physics: const BouncingScrollPhysics(),
-              itemCount: 15,
+              itemCount: pedidoList.length,
               itemBuilder: (context, index) {
                 final urlIcon = getUrlIconPlatos();
-                return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon);
+                return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
               },
             )
           ),
@@ -90,9 +122,10 @@ class _Pedidos extends StatelessWidget {
 class _ItemPlato extends StatelessWidget {
   final double maximiunWidth;
   final String urlIcon;
-  
+  final OrdenPedido pedido;
+
   const _ItemPlato({
-    required this.maximiunWidth, required this.urlIcon,
+    required this.maximiunWidth, required this.urlIcon, required this.pedido,
   });
 
   @override
@@ -112,21 +145,21 @@ class _ItemPlato extends StatelessWidget {
           //Img del plato
           Image.network(urlIcon, width: 80, fit: BoxFit.cover,), 
           const SizedBox(width: 10),
-          const Expanded(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("#0000062161", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-                Text("Mesa-1"),
-                Text("15-Nov-2023 17h15"),
+                Text("#${pedido.numOrden}", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+                Text("Mesa-${pedido.numMesa}"),
+                Text( formatDate(pedido.fechaEmision) ),//15-Nov-2023 17h15
                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    IndicadorEstado(state: "Pedido Confirmado"),
-                    SizedBox(width: 10),
-                    Text("Realizado", maxLines: 2, overflow: TextOverflow.ellipsis,)
+                    IndicadorEstado(state: pedido.estadoOrden),
+                    const SizedBox(width: 10),
+                    Text(pedido.estadoOrden, maxLines: 2, overflow: TextOverflow.ellipsis,)
                   ],
                 )
               ],
@@ -137,7 +170,7 @@ class _ItemPlato extends StatelessWidget {
             width: maximiunWidth * 0.15,
             child: Center(
               child: IconButton(
-                onPressed: ()=>context.push("/seguimiento-pedido", extra: "send the object"), 
+                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}"), 
                 icon: const Icon(Icons.chevron_right)
               ),
             ),
