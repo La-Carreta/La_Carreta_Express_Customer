@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/infraestructure/models/time_line_data.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_time_line_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -59,7 +61,7 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
   }
 }
 
-class _SiguimientoPedidoView extends StatelessWidget {
+class _SiguimientoPedidoView extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
   final OrdenPedido pedido;
@@ -71,7 +73,11 @@ class _SiguimientoPedidoView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(ordenPedidoInfoTimelineProvider.notifier).getTimelineData(statusOrder: pedido.estadoOrden, idOrder: pedido.id);  
+    final currentState = ref.watch(ordenPedidoInfoTimelineProvider)[pedido.id];
+    if(currentState == null) return const Center(child: CircularProgressIndicator());
+    
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -89,7 +95,7 @@ class _SiguimientoPedidoView extends StatelessWidget {
           const SizedBox(height: 10),
 
           //Linea de tiempo
-          const _TimeLinePedido(),
+          _TimeLinePedido(currentState),
 
           const SizedBox(height: 10),
 
@@ -121,7 +127,9 @@ class _SiguimientoPedidoView extends StatelessWidget {
 }
 
 class _TimeLinePedido extends StatelessWidget {
-  const _TimeLinePedido();
+  const _TimeLinePedido(this.timelineData);
+
+  final TimelineData timelineData;
 
   @override
   Widget build(BuildContext context) {
@@ -135,57 +143,64 @@ class _TimeLinePedido extends StatelessWidget {
               isFirst: true,
               lineXY: 0.1,
               alignment: TimelineAlign.start,
-              indicatorStyle: const IndicatorStyle(
+              indicatorStyle: IndicatorStyle(
                 width: 20,
-                color: Color(0xFF27AA69),
-                padding: EdgeInsets.all(6),
+                color: timelineData.colors[0].indicatorColor, 
+                padding: const EdgeInsets.all(6),
               ),
-              endChild: const _RightChild(
+              endChild: _TimelineOption(
                 asset: 'assets/pedidos-icons/order_placed.png',
                 title: 'Pedido realizado',
                 message: 'Hemos recibido su pedido.',
+                index: 1,
+                disabled: !timelineData.colors[0].statePassed,
               ),
-              beforeLineStyle: const LineStyle(
-                color: Color(0xFF27AA69),
+              beforeLineStyle: LineStyle(
+                color: timelineData.colors[0].beforeLineColor,
               ),
             ), 
       
             TimelineTile(
               alignment: TimelineAlign.start,
               lineXY: 0.1,
-              indicatorStyle: const IndicatorStyle(
+              indicatorStyle: IndicatorStyle(
                 width: 20,
-                color: Color(0xFF27AA69),
-                padding: EdgeInsets.all(6),
+                color: timelineData.colors[1].indicatorColor,
+                padding: const EdgeInsets.all(6),
               ),
-              endChild: const _RightChild(
+              endChild: _TimelineOption(
                 asset: 'assets/pedidos-icons/order_confirmed.png',
                 title: 'Pedido confirmado',
                 message: 'Tu pedido ha sido confirmado.',
+                index: 2,
+                disabled: !timelineData.colors[1].statePassed,
               ),
-              beforeLineStyle: const LineStyle(
-                color: Color(0xFF27AA69),
-              ),
+              beforeLineStyle: LineStyle(
+                color: timelineData.colors[1].beforeLineColor,
+              ),//0xFFDADADA
             ),        
       
             TimelineTile(
               alignment: TimelineAlign.start,
               lineXY: 0.1,
-              indicatorStyle: const IndicatorStyle(
+              indicatorStyle: IndicatorStyle(
                 width: 20,
-                color: Color(0xFF2B619C),
-                padding: EdgeInsets.all(6),
+                color: timelineData.colors[2].indicatorColor,
+                padding: const EdgeInsets.all(6),
               ),
-              endChild: const _RightChild(
+              endChild: _TimelineOption(
                 asset: 'assets/pedidos-icons/order_processed.png',
                 title: 'Pedido en proceso',
                 message: 'Estamos preparando tu pedido.',
+                index: 3,
+                disabled: !timelineData.colors[2].statePassed,
               ),
-              beforeLineStyle: const LineStyle(
-                color: Color(0xFF27AA69),
+              beforeLineStyle: LineStyle(
+                color: timelineData.colors[2].beforeLineColor,
               ),
-              afterLineStyle: const LineStyle(
-                color: Color(0xFFDADADA),
+              afterLineStyle: LineStyle(
+                color: timelineData.colors[2].afterLineColor,
+              //  color: Color(0xFFDADADA),
               ),
             ),
       
@@ -193,19 +208,20 @@ class _TimeLinePedido extends StatelessWidget {
               alignment: TimelineAlign.start,
               lineXY: 0.1,
               isLast: true,
-              indicatorStyle: const IndicatorStyle(
+              indicatorStyle: IndicatorStyle(
                 width: 20,
-                color: Color(0xFFDADADA),
-                padding: EdgeInsets.all(6),
+                color: timelineData.colors[3].indicatorColor,
+                padding: const EdgeInsets.all(6),
               ),
-              endChild: const _RightChild(
-                disabled: true,
+              endChild: _TimelineOption(
+                disabled: !timelineData.colors[3].statePassed,                
                 asset: 'assets/pedidos-icons/ready_to_pickup.png',
                 title: 'Pedido listo',
                 message: 'Tu pedido esta listo.',
+                index: 4,                                
               ),
-              beforeLineStyle: const LineStyle(
-                color: Color(0xFFDADADA),
+              beforeLineStyle: LineStyle(
+                color: timelineData.colors[3].beforeLineColor,
               ),
             ),
           ],
@@ -256,18 +272,20 @@ class _EstimatedTimeBox extends StatelessWidget {
   }
 }
 
-class _RightChild extends StatelessWidget {
+class _TimelineOption extends StatelessWidget {
 
   final String asset;
   final String title;
   final String message;
   final bool disabled;
+  final int index;
 
-  const _RightChild({
+  const _TimelineOption({
     required this.asset, 
     required this.title, 
     required this.message, 
-    this.disabled = false
+    this.disabled = false, 
+    required this.index
   });
 
   @override

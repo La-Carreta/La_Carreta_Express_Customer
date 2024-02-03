@@ -31,5 +31,6 @@ class OrdenPedidoMapper{
     tiempoEstimado: order.tiempoEstimado,
     fechaEmision: order.fecha,
     observaciones: order.observaciones, 
+    estadoOrden: order.estado
   );
 }

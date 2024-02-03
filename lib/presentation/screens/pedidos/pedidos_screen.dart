@@ -117,6 +117,7 @@ class _ItemPlato extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Estado del pedido: ${pedido.estadoOrden}");
     return Container(
       width: double.infinity,
       height: 120,

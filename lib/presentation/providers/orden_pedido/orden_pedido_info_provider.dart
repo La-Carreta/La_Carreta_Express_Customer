@@ -13,7 +13,6 @@ final ordenPedidoInfoProvider = StateNotifierProvider<OrdenPedidoInfoNotifier, M
 typedef OrdenPedidoCallBackById = Future<OrdenPedido> Function({required String idOrdenPedido});
 
 class OrdenPedidoInfoNotifier extends StateNotifier<Map<String, OrdenPedido>>{
-
   final OrdenPedidoCallBackById fetchtOrderById;
   OrdenPedidoInfoNotifier({required this.fetchtOrderById}):super({});
   
