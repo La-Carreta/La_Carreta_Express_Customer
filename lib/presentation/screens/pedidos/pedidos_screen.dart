@@ -5,6 +5,7 @@ import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/platos/filter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -14,9 +15,11 @@ class PedidosScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final size = MediaQuery.of(context).size;
-    ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+    final optionFilterSelected = ref.watch( filterOptionPlates ); 
+    if(optionFilterSelected == 0){
+      ref.watch( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+    }
 
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
@@ -46,7 +49,9 @@ class PedidosScreen extends ConsumerWidget {
           Positioned(
             top: 50,
             right: 20,
-            child: CustomFilterButton(onPressed: ()=>_showBottomSheet(context),)
+            child: CustomFilterButton(
+              onPressed: ()=> _showBottomSheet(context),
+            )
           ),
 
           Positioned(
@@ -90,7 +95,9 @@ class _Pedidos extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
-          Expanded(
+          pedidoList.isEmpty
+          ? NoDataFound(maximiunWidth: maximiunWidth, maximiunHeight: maximiunHeight * 0.9, pathLottie: "assets/lottie/json/no-orders.json", text: "No hay pedidos")
+          : Expanded(
             child: ListView.builder(  
               physics: const BouncingScrollPhysics(),
               itemCount: pedidoList.length,
@@ -117,7 +124,6 @@ class _ItemPlato extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Estado del pedido: ${pedido.estadoOrden}");
     return Container(
       width: double.infinity,
       height: 120,
@@ -183,107 +189,122 @@ void _showBottomSheet(context) {
           top: Radius.circular(20),
         ),
         child: Container(
-          height: 460,
+          height: 490,
           color: Colors.grey[200],
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: const Text(
+                    "Filtrar pedidos por estado",
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                   ),
                 ),
-                child: const Text(
-                  "Filtrar pedidos por estado",
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+            
+                //Opciones con Radio
+                const SizedBox(height: 10),
+            
+                const _OpcionFiltro(
+                  texto: "Todos",
+                  value: 0,
+                  color: Colors.indigo,
                 ),
-              ),
-
-              //Opciones con Radio
-              const SizedBox(height: 10),
-              const _OpcionFiltro(
-                texto: "Todos",
-                value: 0,
-                color: Colors.indigo,
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido Realizado",
-                value: 1,
-                color: Color(0xff15616d),
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido Confirmado",
-                value: 2,
-                color: Color(0xffff9f1c),
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido En Proceso",
-                value: 3,
-                color: Color(0xff0ead69),
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido En Cola",
-                value: 4,
-                color: Colors.grey,
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido Listo",
-                value: 5,
-                color: Colors.pink,
-              ),
-
-              Divider(
-                height: 0,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-
-              const _OpcionFiltro(
-                texto: "Pedido Cancelado",
-                value: 6,
-                color: Colors.brown,
-              ),
-            ],
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido realizado",
+                  value: 1,
+                  color: Color(0xff15616d),
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido confirmado",
+                  value: 2,
+                  color: Color(0xffff9f1c),
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido en proceso",
+                  value: 3,
+                  color: Color(0xff0ead69),
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido en cola",
+                  value: 4,
+                  color: Colors.grey,
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido listo",
+                  value: 5,
+                  color: Colors.pink,
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido entregado",
+                  value: 6,
+                  color: Colors.pink,
+                ),
+            
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Colors.grey[300],
+                ),
+            
+                const _OpcionFiltro(
+                  texto: "Pedido cancelado",
+                  value: 7,
+                  color: Colors.brown,
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -291,25 +312,35 @@ void _showBottomSheet(context) {
   );
 }
 
-class _OpcionFiltro extends StatelessWidget {
+class _OpcionFiltro extends ConsumerWidget {
   final String texto;
   final int value;
   final Color color;
+
   const _OpcionFiltro({
     required this.texto,
     required this.value,
-    required this.color,
+    required this.color, 
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final optionFilterSelected = ref.watch( filterOptionPlates ); 
     return RadioListTile(
-        title: Text(texto),
-        activeColor: color,
-        value: value,
-        groupValue: "optionSelected",
-        onChanged: (value) {
-          
-      });
+      title: Text(texto),
+      activeColor: color,
+      value: value,
+      tileColor: color,
+      selectedTileColor: color,
+      groupValue: optionFilterSelected,
+      onChanged: (newValue) {
+        ref.read(filterOptionPlates.notifier).state = newValue as int;
+        if(texto == "Todos"){
+          ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+        }else{
+          ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", texto);
+        }
+        print(texto);
+    });
   }
 }

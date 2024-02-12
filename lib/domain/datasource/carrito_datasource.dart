@@ -6,7 +6,7 @@ abstract class CarritoDatasource{
   Future<Carrito> getCarritoByIdCliente({required String idCliente});
   Future<Carrito> getCarritoById({required String idCarrito});
   Future<Carrito> updateDetallePedido({required Carrito carrito, required String idDetalle, required int cantidad});
-  Future<void> deleteDetallePedido({required String idCarrito, required String idDetalle});
+  Future<Carrito> deleteDetallePedido({required String idCarrito, required String idDetalle, required Carrito cart});
   Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
   Future<void> deleteCart({required String idCarrito, required Carrito cart});
 }

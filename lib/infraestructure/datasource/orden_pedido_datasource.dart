@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:la_carreta_express_cs/domain/datasource/orden_pedido_datasource.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/orden_pedido_mapper.dart';
@@ -6,12 +7,6 @@ import 'package:la_carreta_express_cs/infraestructure/models/orden_pedido_model.
 
 class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
   final firebase = FirebaseFirestore.instance;
-
-  @override
-  Future<void> cancelOrder({required OrdenPedido order}) {
-    // TODO: implement cancelOrder
-    throw UnimplementedError();
-  }
 
   @override
   Future<void> createOrder({required OrdenPedido order}) async{
@@ -52,8 +47,10 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
   Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) async{
     try {
       final CollectionReference collectionReference = firebase.collection("ordenPedido");
+      //Consultar las ordenes por fecha de forma ascendente
       final QuerySnapshot response = await collectionReference
         .where("cliente.id", isEqualTo: idCliente)
+        .orderBy("fecha", descending: true)
         .get();
 
       if(response.docs.isNotEmpty){
@@ -67,6 +64,33 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
 
       return [];
     } catch (e) {
+      debugPrint("Error al cargar las ordenes ..., ${e.toString()}");
+      throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            
+    }
+  }
+  
+  @override
+  Future<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) async{
+    try {
+      final CollectionReference collectionReference = firebase.collection("ordenPedido");
+      final QuerySnapshot response = await collectionReference
+        .where("cliente.id", isEqualTo: idCliente)
+        .where("estado", isEqualTo: state)
+        .orderBy("fecha", descending: true)
+        .get();
+
+      if(response.docs.isNotEmpty){
+        final ordersResponseList = response.docs.map((order) => OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>)).toList();        
+        final List<OrdenPedido> ordenes = ordersResponseList.map(
+          (order) => OrdenPedidoMapper.ordenPedidoToEntity(order),
+        ).toList();
+
+        return ordenes;
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint("Error al cargar las ordenes ..., ${e.toString()}");
       throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            
     }
   }

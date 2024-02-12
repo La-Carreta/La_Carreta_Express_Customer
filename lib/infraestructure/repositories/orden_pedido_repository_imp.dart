@@ -9,11 +9,6 @@ class OrdenPedidoRepositoryImp extends OrdenPedidoRepository{
   OrdenPedidoRepositoryImp(this.datasource);
 
   @override
-  Future<void> cancelOrder({required OrdenPedido order}) {
-    return datasource.cancelOrder(order: order);
-  }
-
-  @override
   Future<void> createOrder({required OrdenPedido order}) {
     return datasource.createOrder(order: order);
   }
@@ -26,6 +21,11 @@ class OrdenPedidoRepositoryImp extends OrdenPedidoRepository{
   @override
   Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) {
     return datasource.getOrdersByCustomer(idCliente: idCliente);
+  }
+  
+  @override
+  Future<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) {
+    return datasource.getOrdersByFilter(idCliente: idCliente, state: state);
   }
 
 }

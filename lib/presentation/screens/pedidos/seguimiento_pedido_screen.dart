@@ -106,7 +106,7 @@ class _SiguimientoPedidoView extends ConsumerWidget {
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
               backgroundColor: MaterialStateProperty.all(const Color(0xFFe9ecef))
             ),
-            onPressed: ()=> context.push("/detalle-pedido"), 
+            onPressed: ()=> context.push("/detalle-pedido/${pedido.id}"), 
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -118,7 +118,6 @@ class _SiguimientoPedidoView extends ConsumerWidget {
           const SizedBox(height: 10),
           const Text("NOTA:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
           const Text("El tiempo de estimación se calcula en base a los pedidos realizados en orden de llegada al sistema.", style: TextStyle(fontSize: 15), textAlign: TextAlign.justify,)
-
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/entities.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
@@ -96,7 +97,22 @@ class _DetallePedido extends ConsumerWidget{
               itemCount: carrito.detallesPedido.length,
               itemBuilder: (context, index) {
                 final item = carrito.detallesPedido[index];
-                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item, cart: carrito);
+                return Slidable(
+                  key: UniqueKey(),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) => ref.watch( cartProvider.notifier ).deleteDetallePedidoCart(idCarrito: carrito.id, idDetalle: item.id, cart: carrito),
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        label: "Eliminar",
+                      )
+                    ],
+                  ),
+                  child: _ItemCartPlato(maximiunWidth:maximiunWidth, item: item, cart: carrito)
+                );
               },
             )
           ),
@@ -218,7 +234,9 @@ class _ItemCartPlato extends ConsumerWidget {
                     IconButton(
                       onPressed: (){
                         final int cantidad = item.cantidadPlato - 1;
-                        ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
+                        if(cantidad > 0) {
+                          ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
+                        }
                       }, 
                       icon: const Icon(Icons.remove), 
                       color: Colors.white,

@@ -10,9 +10,28 @@ class CarritoDatasourceImp extends CarritoDatasource{
   final firebase = FirebaseFirestore.instance;
 
   @override
-  Future<void> deleteDetallePedido({required String idCarrito, required String idDetalle}) {
-    // TODO: implement deleteDetallePedido
-    throw UnimplementedError();
+  Future<Carrito> deleteDetallePedido({required String idCarrito, required String idDetalle, required Carrito cart}) async{
+    try {
+      final CollectionReference collectionReference = firebase.collection("cart");
+      final newDetailsCart = cart.detallesPedido.where((item) => item.id != idDetalle).toList();
+      newDetailsCart.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
+      double totalUpdated = 0.0;
+      for (DetallePedido item in newDetailsCart) { 
+        totalUpdated += item.valorTotal;
+      } 
+
+      //* Actualizar carrito  
+      await updateCart(collectionReference, cart, newDetailsCart, totalUpdated);
+
+      return Carrito.copyWith(
+        id: cart.id,
+        cliente: cart.cliente,
+        detallesPedido: newDetailsCart, 
+        total: totalUpdated,        
+      );
+    } catch (e) {
+      throw Exception("Error al eliminar item del carrito..., ${e.toString()}");                  
+    }
   }
 
   @override

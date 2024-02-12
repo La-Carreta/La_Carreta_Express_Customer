@@ -5,24 +5,29 @@ import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_
 final ordenPedidoProvider = StateNotifierProvider<OrdenPedidoNotifier, List<OrdenPedido>>((ref){
   final createOrder = ref.watch( ordenPedidoRepositoryProvider ).createOrder;
   final fetchOrder = ref.watch( ordenPedidoRepositoryProvider ).getOrdersByCustomer;
+  final fetchOrderByFilter = ref.watch( ordenPedidoRepositoryProvider ).getOrdersByFilter;
 
   return OrdenPedidoNotifier(
     createOrder: createOrder,
     fecthOrdersByCustomer: fetchOrder,
+    fecthOrdersByCustomerAndFilter: fetchOrderByFilter,
   );
 });
 
 typedef OrdenPedidoCallBackByCustomer = Future<List<OrdenPedido>> Function({required String idCliente});
+typedef OrdenPedidoCallBackByCustomerAndFilter = Future<List<OrdenPedido>> Function({required String idCliente, required String state});
 typedef OrderPedidoCallBackCreate = Future<void> Function({required OrdenPedido order});
 
 class OrdenPedidoNotifier extends StateNotifier<List<OrdenPedido>>{
   final OrderPedidoCallBackCreate createOrder;
   final OrdenPedidoCallBackByCustomer fecthOrdersByCustomer;
+  final OrdenPedidoCallBackByCustomerAndFilter fecthOrdersByCustomerAndFilter;
   bool isLoading = false;
 
   OrdenPedidoNotifier({
     required this.createOrder,
     required this.fecthOrdersByCustomer,
+    required this.fecthOrdersByCustomerAndFilter
   }):super([]);
 
   Future<void> createNewOrder(OrdenPedido order) async{
@@ -44,5 +49,16 @@ class OrdenPedidoNotifier extends StateNotifier<List<OrdenPedido>>{
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }
+
+  Future<void> getOrdersByFilter(String idCliente, String orderState) async{
+    if(isLoading) return;
+    isLoading = true;
+
+    state = await fecthOrdersByCustomerAndFilter(idCliente: idCliente, state: orderState);
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
+  }
+
 
 }

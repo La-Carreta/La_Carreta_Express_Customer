@@ -61,9 +61,12 @@ class AppRouter{
       ),
 
       GoRoute(
-        path: "/detalle-pedido",
+        path: "/detalle-pedido/:id",
         name: DetallePedidoScreen.name,
-        builder: (context, state) => const DetallePedidoScreen()
+        builder: (context, state){
+          final idPedido = state.pathParameters['id'] ?? "no-id";
+          return DetallePedidoScreen(idPedido: idPedido,);
+        }
       ),
 
       GoRoute(

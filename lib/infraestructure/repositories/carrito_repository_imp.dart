@@ -10,8 +10,8 @@ class CarritoRepositoryImpl extends CarritoRepository{
   CarritoRepositoryImpl(this.datasource);
  
   @override
-  Future<void> deleteDetallePedido({required String idCarrito, required String idDetalle}) {
-    return datasource.deleteDetallePedido(idCarrito: idCarrito, idDetalle: idDetalle);
+  Future<Carrito> deleteDetallePedido({required String idCarrito, required String idDetalle, required Carrito cart}) {
+    return datasource.deleteDetallePedido(idCarrito: idCarrito, idDetalle: idDetalle, cart: cart);
   }
 
   @override

@@ -9,12 +9,14 @@ final cartProvider = StateNotifierProvider<CartNotifier, Carrito>((ref){
   final addOrUpdateItemCart = ref.watch( cartRepositoryProvider ).createOrUpdateDetallePedido;
   final emptyCart = ref.watch( cartRepositoryProvider ).deleteCart;
   final updateCart = ref.watch( cartRepositoryProvider ).updateDetallePedido;
+  final deleteItemCart = ref.watch( cartRepositoryProvider ).deleteDetallePedido;
 
   return CartNotifier(
     getCarritoByCliente: fetchCarritoByIdCliente, 
     addOrUpdateItem: addOrUpdateItemCart, 
     emptyCart: emptyCart, 
-    updateCart: updateCart
+    updateCart: updateCart,
+    deleteItemCart: deleteItemCart
   );
 });
 
@@ -25,11 +27,14 @@ typedef DetalleCallBack = Future<void> Function({String? idCarrito, required Cli
 typedef EmptyCartCallBack = Future<void> Function({required String idCarrito, required Carrito cart});
 typedef CartCallBack = Future<Carrito> Function({required Carrito carrito, required String idDetalle, required int cantidad});
 
+typedef DeleteItemCartCallBack = Future<Carrito> Function({required String idCarrito, required String idDetalle, required Carrito cart});
+
 
 class CartNotifier extends StateNotifier<Carrito>{
   final CarritoCallBackByCustomer getCarritoByCliente;
   final DetalleCallBack addOrUpdateItem;
   final CartCallBack updateCart;
+  final DeleteItemCartCallBack deleteItemCart;
 
   final EmptyCartCallBack emptyCart;
   bool isLoading = false;
@@ -39,6 +44,7 @@ class CartNotifier extends StateNotifier<Carrito>{
     required this.addOrUpdateItem,
     required this.emptyCart,
     required this.updateCart,
+    required this.deleteItemCart
   }):super(Carrito.empty());
 
 
@@ -104,6 +110,23 @@ class CartNotifier extends StateNotifier<Carrito>{
     int tiempoTranscurrido = stopwatch.elapsedMilliseconds;
 
     print('El proceso tardó $tiempoTranscurrido milisegundos en ejecutarse.');
+  }
+
+  Future<void> deleteDetallePedidoCart({required String idCarrito, required String idDetalle, required Carrito cart}) async {
+    if(isLoading) return;
+    isLoading = true;
+
+    final cartUpdated = await deleteItemCart(idCarrito: idCarrito, idDetalle: idDetalle, cart: cart);
+
+    state = Carrito.copyWith(
+      id: cartUpdated.id,
+      cliente: cartUpdated.cliente,
+      detallesPedido: cartUpdated.detallesPedido,
+      total: cartUpdated.total
+    );
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    isLoading = false;
   }
 }
 
