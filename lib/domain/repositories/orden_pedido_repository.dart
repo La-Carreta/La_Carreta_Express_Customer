@@ -1,8 +1,8 @@
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 
 abstract class OrdenPedidoRepository{
-  Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente});  
+  Stream<List<OrdenPedido>> getOrdersByCustomer({required String idCliente});  
   Future<void> createOrder({required OrdenPedido order});  
-  Future<OrdenPedido> getOrderById({required String idOrdenPedido});  
-  Future<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state});
+  Stream<OrdenPedido> getOrderById({required String idOrdenPedido});  
+  Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state});
 }

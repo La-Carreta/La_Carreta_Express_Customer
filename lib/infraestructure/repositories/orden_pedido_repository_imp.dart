@@ -14,17 +14,17 @@ class OrdenPedidoRepositoryImp extends OrdenPedidoRepository{
   }
 
   @override
-  Future<OrdenPedido> getOrderById({required String idOrdenPedido}) {
+  Stream<OrdenPedido> getOrderById({required String idOrdenPedido}) {
     return datasource.getOrderById(idOrdenPedido: idOrdenPedido);
   }
 
   @override
-  Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) {
+  Stream<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) {
     return datasource.getOrdersByCustomer(idCliente: idCliente);
   }
   
   @override
-  Future<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) {
+  Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) {
     return datasource.getOrdersByFilter(idCliente: idCliente, state: state);
   }
 
