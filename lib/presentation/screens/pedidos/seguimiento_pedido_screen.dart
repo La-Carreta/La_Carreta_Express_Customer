@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/time_line_data.dart';
-import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_time_line_provider.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/order_time_line.dart';
 import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -18,14 +18,6 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;  
-    ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido);
-
-    final ordenPedidoList = ref.watch(ordenPedidoInfoProvider);
-    if(ordenPedidoList.isEmpty) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    if(!ordenPedidoList.containsKey(idPedido)) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-
-    final pedido = ordenPedidoList[idPedido];    
-
     return Scaffold(
       body: Stack(
         children: [
@@ -49,10 +41,19 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: _SiguimientoPedidoView(
-              maximiunHeight: size.height * 0.85, 
-              maximiunWidth: size.width,
-              pedido: pedido!
+            child: StreamBuilder<OrdenPedido>(
+              stream: ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting) return const CircularProgressIndicator();
+                if(!snapshot.hasData) return const Text("No se encontró el pedido");
+                final pedido = snapshot.data!;
+
+                return _SiguimientoPedidoView(
+                  maximiunHeight: size.height * 0.85, 
+                  maximiunWidth: size.width,
+                  pedido: pedido
+                );
+              }
             )
           ),
         ],
@@ -65,18 +66,16 @@ class _SiguimientoPedidoView extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
   final OrdenPedido pedido;
-
+  
   const _SiguimientoPedidoView({
     required this.maximiunHeight, 
     required this.maximiunWidth, 
-    required this.pedido,
+    required this.pedido
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(ordenPedidoInfoTimelineProvider.notifier).getTimelineData(statusOrder: pedido.estadoOrden, idOrder: pedido.id);  
-    final currentState = ref.watch(ordenPedidoInfoTimelineProvider)[pedido.id];
-    if(currentState == null) return const Center(child: CircularProgressIndicator());
+    final currentState = OrderTimelineData.getTimelineData(statusOrder: pedido.estadoOrden, idOrder: pedido.id);
     
     return Container(
       width: maximiunWidth,

@@ -14,8 +14,8 @@ final ordenPedidoProvider = StateNotifierProvider<OrdenPedidoNotifier, List<Orde
   );
 });
 
-typedef OrdenPedidoCallBackByCustomer = Future<List<OrdenPedido>> Function({required String idCliente});
-typedef OrdenPedidoCallBackByCustomerAndFilter = Future<List<OrdenPedido>> Function({required String idCliente, required String state});
+typedef OrdenPedidoCallBackByCustomer = Stream<List<OrdenPedido>> Function({required String idCliente});
+typedef OrdenPedidoCallBackByCustomerAndFilter = Stream<List<OrdenPedido>> Function({required String idCliente, required String state});
 typedef OrderPedidoCallBackCreate = Future<void> Function({required OrdenPedido order});
 
 class OrdenPedidoNotifier extends StateNotifier<List<OrdenPedido>>{
@@ -40,24 +40,16 @@ class OrdenPedidoNotifier extends StateNotifier<List<OrdenPedido>>{
     isLoading = false;
   }
 
-  Future<void> getOrders(String idCliente) async{
-    if(isLoading) return;
-    isLoading = true;
-
-    state = await fecthOrdersByCustomer(idCliente: idCliente);
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    isLoading = false;
+  Stream<List<OrdenPedido>> getOrders(String idCliente) {    
+    return fecthOrdersByCustomer(idCliente: idCliente);
   }
 
-  Future<void> getOrdersByFilter(String idCliente, String orderState) async{
-    if(isLoading) return;
-    isLoading = true;
+  Stream<List<OrdenPedido>> getOrdersByFilter(String idCliente, String orderState) {
+    return fecthOrdersByCustomerAndFilter(idCliente: idCliente, state: orderState);
+  }
 
-    state = await fecthOrdersByCustomerAndFilter(idCliente: idCliente, state: orderState);
-
-    await Future.delayed(const Duration(milliseconds: 300));
-    isLoading = false;
+  void setOrders(List<OrdenPedido> orders){
+    state = orders;
   }
 
 

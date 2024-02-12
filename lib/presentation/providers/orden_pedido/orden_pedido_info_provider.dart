@@ -10,18 +10,17 @@ final ordenPedidoInfoProvider = StateNotifierProvider<OrdenPedidoInfoNotifier, M
   );
 });
 
-typedef OrdenPedidoCallBackById = Future<OrdenPedido> Function({required String idOrdenPedido});
+typedef OrdenPedidoCallBackById = Stream<OrdenPedido> Function({required String idOrdenPedido});
 
 class OrdenPedidoInfoNotifier extends StateNotifier<Map<String, OrdenPedido>>{
   final OrdenPedidoCallBackById fetchtOrderById;
   OrdenPedidoInfoNotifier({required this.fetchtOrderById}):super({});
   
-  Future<void> getOrderById(String idOrden) async{
-    if( state[idOrden] != null) return;
- 
-    final orden = await fetchtOrderById(idOrdenPedido: idOrden);
-    state = {...state, idOrden: orden};
+  Stream<OrdenPedido> getOrderById(String idOrden){
+    return fetchtOrderById(idOrdenPedido: idOrden);
+  }
 
-    await Future.delayed(const Duration(milliseconds: 300));
+  void setOrder(OrdenPedido order){
+    state = {order.id: order};
   }
 }

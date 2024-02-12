@@ -14,14 +14,7 @@ class DetallePedidoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido);
-
-    final ordenPedidoList = ref.watch(ordenPedidoInfoProvider);
-    if(ordenPedidoList.isEmpty) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    if(!ordenPedidoList.containsKey(idPedido)) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-
-    final pedido = ordenPedidoList[idPedido];    
-
+    
     return Scaffold(
       body: Stack(
         children:[
@@ -45,7 +38,22 @@ class DetallePedidoScreen extends ConsumerWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: _DetallePedido(maximiunHeight: size.height * 0.80, maximiunWidth: size.width, ordenPedido: pedido!)
+            child: StreamBuilder<OrdenPedido>(
+              stream: ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if(!snapshot.hasData){
+                  return const Center(child: Text("No se encontró el pedido"));
+                }
+
+                final pedido = snapshot.data;                      
+
+                return _DetallePedido(maximiunHeight: size.height * 0.80, maximiunWidth: size.width, ordenPedido: pedido!);
+              }
+            )
           ),
         ]
       ),

@@ -22,21 +22,14 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
   }
 
   @override
-  Future<OrdenPedido> getOrderById({required String idOrdenPedido}) async{
+  Stream<OrdenPedido> getOrderById({required String idOrdenPedido}) {
     try {
       final CollectionReference collectionReference = firebase.collection("ordenPedido");
-      final response = await collectionReference
+
+      return collectionReference
         .doc(idOrdenPedido)
-        .get();
-
-      if(response.exists){
-        final OrdenPedidoModel ordenPedido = OrdenPedidoModel.fromJson(response.id, response.data() as Map<String, dynamic>);
-        final OrdenPedido orden = OrdenPedidoMapper.ordenPedidoToEntity(ordenPedido);
-
-        return orden;
-      }
-
-      return OrdenPedido.empty();
+        .snapshots()
+        .map((order) => OrdenPedidoMapper.ordenPedidoToEntity(OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>)));
     } catch (e) {
       throw Exception("Error al cargar carrito..., ${e.toString()}");            
     }
@@ -44,25 +37,14 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
  }
 
   @override
-  Future<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) async{
+  Stream<List<OrdenPedido>> getOrdersByCustomer({required String idCliente}) {
     try {
       final CollectionReference collectionReference = firebase.collection("ordenPedido");
-      //Consultar las ordenes por fecha de forma ascendente
-      final QuerySnapshot response = await collectionReference
+      return collectionReference
         .where("cliente.id", isEqualTo: idCliente)
         .orderBy("fecha", descending: true)
-        .get();
-
-      if(response.docs.isNotEmpty){
-        final ordersResponseList = response.docs.map((order) => OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>)).toList();        
-        final List<OrdenPedido> ordenes = ordersResponseList.map(
-          (order) => OrdenPedidoMapper.ordenPedidoToEntity(order),
-        ).toList();
-
-        return ordenes;
-      }
-
-      return [];
+        .snapshots()
+        .map((response) => response.docs.map((order) => OrdenPedidoMapper.ordenPedidoToEntity(OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>))).toList());      
     } catch (e) {
       debugPrint("Error al cargar las ordenes ..., ${e.toString()}");
       throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            
@@ -70,25 +52,18 @@ class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
   }
   
   @override
-  Future<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) async{
+  Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) {
     try {
       final CollectionReference collectionReference = firebase.collection("ordenPedido");
-      final QuerySnapshot response = await collectionReference
+
+      return collectionReference
         .where("cliente.id", isEqualTo: idCliente)
         .where("estado", isEqualTo: state)
         .orderBy("fecha", descending: true)
-        .get();
+        .snapshots()
+        .map((response) => response.docs.map((order) => OrdenPedidoMapper.ordenPedidoToEntity(OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>))).toList());
+      
 
-      if(response.docs.isNotEmpty){
-        final ordersResponseList = response.docs.map((order) => OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>)).toList();        
-        final List<OrdenPedido> ordenes = ordersResponseList.map(
-          (order) => OrdenPedidoMapper.ordenPedidoToEntity(order),
-        ).toList();
-
-        return ordenes;
-      }
-
-      return [];
     } catch (e) {
       debugPrint("Error al cargar las ordenes ..., ${e.toString()}");
       throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            

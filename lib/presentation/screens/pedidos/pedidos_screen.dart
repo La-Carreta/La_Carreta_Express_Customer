@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_filter.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/filter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/initial_loading_provider.dart';
@@ -16,14 +17,9 @@ class PedidosScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final optionFilterSelected = ref.watch( filterOptionPlates ); 
-    if(optionFilterSelected == 0){
-      ref.watch( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
-    }
 
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
-    final pedidoList = ref.watch( ordenPedidoProvider );
 
     return Scaffold(
       body: Stack(
@@ -60,7 +56,6 @@ class PedidosScreen extends ConsumerWidget {
             child: _Pedidos(
               maximiunHeight: size.height * 0.80, 
               maximiunWidth: size.width,
-              pedidoList: pedidoList
             )
           ),
         ],
@@ -73,16 +68,23 @@ class PedidosScreen extends ConsumerWidget {
 class _Pedidos extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
-  final List<OrdenPedido> pedidoList;
 
   const _Pedidos({
     required this.maximiunHeight, 
     required this.maximiunWidth,
-    required this.pedidoList
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filterOptionSelected = ref.watch(filterOptionPedidoProvider);
+
+    Stream<List<OrdenPedido>> getOrdersByFilterState(){
+      if(filterOptionSelected == "Todos"){
+        return ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+      }else{
+        return ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", filterOptionSelected);
+      }    
+    }
 
     return Container(
       width: maximiunWidth,
@@ -95,16 +97,33 @@ class _Pedidos extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
-          pedidoList.isEmpty
-          ? NoDataFound(maximiunWidth: maximiunWidth, maximiunHeight: maximiunHeight * 0.9, pathLottie: "assets/lottie/json/no-orders.json", text: "No hay pedidos")
-          : Expanded(
-            child: ListView.builder(  
-              physics: const BouncingScrollPhysics(),
-              itemCount: pedidoList.length,
-              itemBuilder: (context, index) {
-                final urlIcon = getUrlIconPlatos();
-                return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
-              },
+          Expanded(
+            child: StreamBuilder<List<OrdenPedido>>(              
+              stream: getOrdersByFilterState(),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                if(snapshot.hasError){
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
+                if(snapshot.data!.isEmpty){
+                  return NoDataFound(maximiunWidth: maximiunWidth, maximiunHeight: maximiunHeight * 0.9, pathLottie: "assets/lottie/json/no-orders.json", text: "No hay pedidos");
+                }
+
+                final pedidoList = snapshot.data!;
+
+                return ListView.builder(  
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: pedidoList.length,
+                  itemBuilder: (context, index) {
+                    final urlIcon = getUrlIconPlatos();
+                    return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
+                  },
+                );
+              }
             )
           ),
         ],
@@ -164,7 +183,7 @@ class _ItemPlato extends StatelessWidget {
             width: maximiunWidth * 0.15,
             child: Center(
               child: IconButton(
-                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}", extra: pedido.id), 
+                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}"), 
                 icon: const Icon(Icons.chevron_right)
               ),
             ),
@@ -337,10 +356,11 @@ class _OpcionFiltro extends ConsumerWidget {
         ref.read(filterOptionPlates.notifier).state = newValue as int;
         if(texto == "Todos"){
           ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+          ref.read( filterOptionPedidoProvider.notifier).state = "Todos";
         }else{
           ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", texto);
+          ref.read( filterOptionPedidoProvider.notifier).state = texto;
         }
-        print(texto);
     });
   }
 }
