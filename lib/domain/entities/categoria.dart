@@ -1,11 +1,16 @@
 class Categoria{
-  final int id;
+  final String id;
   final String nombre;
-  final String descripcion;
+  final String imgUrl;
 
   Categoria({
-    this.id = 0, 
+    this.id = "", 
     required this.nombre, 
-    this.descripcion = ''
+    required this.imgUrl
   });
+
+  Categoria.empty() :
+    id = "",
+    nombre = "",
+    imgUrl = "";
 }

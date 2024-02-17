@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/address_validator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
+import 'package:la_carreta_express_cs/presentation/providers/user/account_provider.dart';
 import 'package:la_carreta_express_cs/presentation/ui/input_decoration.dart';
 
 class AccountUserScreen extends StatelessWidget {
@@ -44,13 +45,30 @@ class AccountUserScreen extends StatelessWidget {
   }
 }
 
-class _UpdateDataForm extends StatelessWidget {
+class _UpdateDataForm extends ConsumerStatefulWidget {
    
   const _UpdateDataForm();
-  
+
+  @override
+  UpdateDataFormState createState() => UpdateDataFormState();
+}
+
+class UpdateDataFormState extends ConsumerState<_UpdateDataForm> {
+
+  bool _isEditingName = true;
+  bool _isEditingLastName = true;
+  bool _isEditingAddress = true;
+  bool _isEditingPhoneNumber = true;
+  bool _isEditingPassword = true;
+
   @override
   Widget build(BuildContext context) {
     final nombreController = TextEditingController();
+    final apellidoController = TextEditingController();
+    final direccionController = TextEditingController();
+    final celularController = TextEditingController();
+    final passwordController = TextEditingController();
+
     nombreController.text = "Alejandro Gonzalez";
     final colors = Theme.of(context).colorScheme;
 
@@ -60,17 +78,19 @@ class _UpdateDataForm extends StatelessWidget {
         children: [
           TextFormField(
             controller: nombreController,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Nombre", 
               labelText: "Nombre",
-              suffixIcon: Icons.edit,
+              suffixIcon: _isEditingName ? Icons.edit : Icons.save,
               onPressed: () {
-                
+                setState(() {
+                  _isEditingName = !_isEditingName;
+                });
               },
               prefixIcon: Icons.people,
               colors: colors
             ),
-            readOnly: true,
+            readOnly: _isEditingName,
             validator: (value){
               if (value!.isEmpty) {
                 return 'Por favor ingrese su nombre.';
@@ -83,18 +103,20 @@ class _UpdateDataForm extends StatelessWidget {
           const SizedBox(height: 15),
 
           TextFormField(
-            controller: nombreController,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            controller: apellidoController,
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Apellido", 
               labelText: "Apellido",
-              suffixIcon: Icons.edit,
+              suffixIcon: _isEditingLastName ? Icons.edit : Icons.save,
               onPressed: () {
-                
+                setState(() {
+                  _isEditingLastName = !_isEditingLastName;
+                });                                
               },
               prefixIcon: Icons.people,
               colors: colors
             ),
-            readOnly: true,
+            readOnly: _isEditingLastName,
             validator: (value){
               if (value!.isEmpty) {
                 return 'Por favor ingrese su apellido.';
@@ -107,18 +129,20 @@ class _UpdateDataForm extends StatelessWidget {
           const SizedBox(height: 15),
 
           TextFormField(
-            controller: nombreController,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            controller: direccionController,
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Dirección", 
               labelText: "Dirección",
-              suffixIcon: Icons.edit,
+              suffixIcon: _isEditingAddress ? Icons.edit : Icons.save,
               onPressed: () {
-                
+                setState(() {
+                  _isEditingAddress = !_isEditingAddress;
+                });                
               },
               prefixIcon: Icons.map,
               colors: colors
             ),
-            readOnly: true,
+            readOnly: _isEditingAddress,
             validator: (value) => validateAddress(value ?? ""),
           ),
 
@@ -126,18 +150,20 @@ class _UpdateDataForm extends StatelessWidget {
           const SizedBox(height: 15),
 
           TextFormField(
-            controller: nombreController,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            controller: celularController,
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Celular", 
               labelText: "Celular",
-              suffixIcon: Icons.edit,
+              suffixIcon: _isEditingPhoneNumber ? Icons.edit : Icons.save,
               onPressed: () {
-                
+                setState(() {
+                  _isEditingPhoneNumber = !_isEditingPhoneNumber;
+                });                
               },
               prefixIcon: Icons.phone,
               colors: colors
             ),
-            readOnly: true,
+            readOnly: _isEditingPhoneNumber,
             validator: (value) => validatePhoneNumber(value ?? ''), 
           ),
 
@@ -146,18 +172,20 @@ class _UpdateDataForm extends StatelessWidget {
 
           TextFormField(
             obscureText: true,
-            controller: nombreController,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            controller: passwordController,
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Password", 
               labelText: "Password",                  
-              suffixIcon: Icons.edit,
+              suffixIcon: _isEditingPassword ? Icons.edit : Icons.save,
               onPressed: () {
-                
+                setState(() {
+                  _isEditingPassword = !_isEditingPassword;
+                });
               },
               prefixIcon: Icons.lock,
               colors: colors
             ),
-            readOnly: true,
+            readOnly: _isEditingPassword,
             validator: (value) => validatePassword(value ?? ""),
           ),
 

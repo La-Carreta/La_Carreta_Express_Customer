@@ -28,7 +28,7 @@ class InputDecorations {
     );
   }
 
-  static InputDecoration authPasswordInputDecoration(
+  static InputDecoration userUpdateInputDecoration(
       {required String hintText,
       required String labelText,
       IconData? prefixIcon,

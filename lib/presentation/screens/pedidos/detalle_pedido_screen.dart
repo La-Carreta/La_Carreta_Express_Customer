@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/entities.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
+import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_info_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class DetallePedidoScreen extends StatelessWidget {
+class DetallePedidoScreen extends ConsumerWidget {
   static const String name = 'detalle_pedido_screen';
 
-  const DetallePedidoScreen({super.key});
+  const DetallePedidoScreen({super.key, required this.idPedido});
+  final String idPedido;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
+    
     return Scaffold(
       body: Stack(
         children:[
@@ -32,7 +38,22 @@ class DetallePedidoScreen extends StatelessWidget {
           Positioned(
             bottom: 0,
             left: 0,
-            child: _DetallePedido(maximiunHeight: size.height * 0.80, maximiunWidth: size.width,)
+            child: StreamBuilder<OrdenPedido>(
+              stream: ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if(!snapshot.hasData){
+                  return const Center(child: Text("No se encontró el pedido"));
+                }
+
+                final pedido = snapshot.data;                      
+
+                return _DetallePedido(maximiunHeight: size.height * 0.80, maximiunWidth: size.width, ordenPedido: pedido!);
+              }
+            )
           ),
         ]
       ),
@@ -43,9 +64,10 @@ class DetallePedidoScreen extends StatelessWidget {
 class _DetallePedido extends StatelessWidget {
   final double maximiunHeight;
   final double maximiunWidth;
+  final OrdenPedido ordenPedido;
 
   const _DetallePedido({
-    required this.maximiunHeight, required this.maximiunWidth,
+    required this.maximiunHeight, required this.maximiunWidth, required this.ordenPedido,
   });
 
   @override
@@ -62,37 +84,40 @@ class _DetallePedido extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
           //Title and cost
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("# de orden", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-              Text("#00161614", style: TextStyle(fontSize: 20)),
+              const Text("# de orden", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+              Text("#${ordenPedido.numOrden}", style: const TextStyle(fontSize: 20)),
             ],
           ),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Fecha", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-              Text("15 - Nov - 2023 17:15", style: TextStyle(fontSize: 20, color: Color(0xff9D9D9D))),
+              const Text("Fecha", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+              Text(formatDate(ordenPedido.fechaEmision), style: const TextStyle(fontSize: 20, color: Color(0xff9D9D9D))),
             ],
           ),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text("En Proceso"),
-              SizedBox(width: 10),
-              IndicadorEstado(state: "Pedido Realizado"),
+              Text(ordenPedido.estadoOrden),
+              const SizedBox(width: 10),
+              IndicadorEstado(state: ordenPedido.estadoOrden),
             ],
           ),
+
+          const SizedBox(height: 10),
 
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: 15,
+              itemCount: ordenPedido.detalles.length,
               itemBuilder: (context, index) {
-                return _ItemCartPlato(maximiunWidth:maximiunWidth);
+                final item = ordenPedido.detalles[index];
+                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item);
               },
             )
           ),
@@ -105,15 +130,16 @@ class _DetallePedido extends StatelessWidget {
             maxLines: 6,
             readOnly: true,
             keyboardType: TextInputType.multiline,
+            initialValue: ordenPedido.observaciones,
           ),
 
           const SizedBox(height: 10),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text("\$40.70", style: TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
+              const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text("\$${ordenPedido.costoTotalPedido}", style: const TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
             ],
           ),
         ],
@@ -124,8 +150,11 @@ class _DetallePedido extends StatelessWidget {
 
 class _ItemCartPlato extends StatelessWidget {
   final double maximiunWidth;
+  final DetallePedido item;
+  
   const _ItemCartPlato({
-    required this.maximiunWidth,
+    required this.maximiunWidth, 
+    required this.item,
   });
 
   @override
@@ -143,29 +172,31 @@ class _ItemCartPlato extends StatelessWidget {
       child: Row(
         children: [
           //Img del plato
-          Image.network("https://res.cloudinary.com/dwexseytn/image/upload/v1703556398/La_Carreta_Express/Menu/Hamburguer/Veggie-800x800-2_v6aq06.png", width: 80, fit: BoxFit.cover,), 
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(item.plato.platoUrl, width: 80, fit: BoxFit.cover,)
+          ), 
           const SizedBox(width: 10),
-          const Expanded(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Beef Burguer", overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-                Text("Cheese Mozarrella"),
-                SizedBox(height: 15),          
+                Text(item.plato.nombre, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),maxLines: 2),
+                const SizedBox(height: 15),          
               ],
             ),
           ),
 
           SizedBox(
             width: maximiunWidth * 0.30,
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SizedBox(height: 15),
-                Text('15', style: TextStyle(fontSize: 17),),
-                Text('\$6.79', style: TextStyle(fontSize: 17),),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
+                Text("${item.cantidadPlato}", style: const TextStyle(fontSize: 17),),
+                Text('\$${item.valorTotal.toStringAsFixed(2)}', style: const TextStyle(fontSize: 17),),
+                const SizedBox(height: 15),
               ],
             ),
           )

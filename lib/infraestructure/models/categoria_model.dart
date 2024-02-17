@@ -1,39 +1,25 @@
-import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
-import 'dart:convert';
-
 class CategoriaModel {
-  int idCat;
-  String nombreCat;
-  String descripcionCat;
+  //Firebase
+  final String id;
+  final String nombre;
+  final String imgUrl;
 
   CategoriaModel({
-    required this.idCat,
-    required this.nombreCat,
-    required this.descripcionCat,
+    required this.id,
+    required this.nombre,
+    required this.imgUrl
   });
 
-  factory CategoriaModel.fromRawJson(String str) => CategoriaModel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory CategoriaModel.fromJson(Map<String, dynamic> json) => CategoriaModel(
-    idCat: json["id_cat"],
-    nombreCat: json["nombre_cat"],
-    descripcionCat: json["descripcion_cat"],
+  factory CategoriaModel.fromJson(String id, Map<String, dynamic> json) => CategoriaModel(
+    id: id == "" ? json['id'] : id,
+    nombre: json["nombre"],
+    imgUrl: json['imgUrl']    
   );
 
   Map<String, dynamic> toJson() => {
-    "id_cat": idCat,
-    "nombre_cat": nombreCat,
-    "descripcion_cat": descripcionCat,
+    "id": id,
+    "imgUrl": imgUrl,
+    "nombre": nombre,
   };
-
-
-  Categoria toCategoriaEntity() => Categoria(
-    id: idCat,
-    nombre: nombreCat,
-    descripcion: descripcionCat
-  );
-
 }
 

@@ -8,7 +8,23 @@ class AppRouter{
       GoRoute(
         path: "/",
         name: HomeScreen.name,
-        builder: (context, state) => const HomeScreen()
+        builder: (context, state) => const HomeScreen(),
+        routes: const []
+      ),
+      
+      GoRoute(
+        path: "/info-plato/:id",
+        name: InfoPlatoScreen.name,
+        builder: (context, state){
+          final platoId = state.pathParameters['id'] ?? "no-id";
+          return InfoPlatoScreen(platoId: platoId);
+        }
+      ),
+
+      GoRoute(
+        path: "/cart",
+        name: CartScreen.name,
+        builder: (context, state) => const CartScreen()
       ),
 
       GoRoute(
@@ -30,33 +46,27 @@ class AppRouter{
       ),
 
       GoRoute(
-        path: "/info-plato",
-        name: InfoPlatoScreen.name,
-        builder: (context, state) => const InfoPlatoScreen()
-      ),
-
-      GoRoute(
-        path: "/cart",
-        name: CartScreen.name,
-        builder: (context, state) => const CartScreen()
-      ),
-
-      GoRoute(
         path: "/pedidos",
         name: PedidosScreen.name,
         builder: (context, state) => const PedidosScreen()
       ),
 
       GoRoute(
-        path: "/seguimiento-pedido",
+        path: "/seguimiento-pedido/:id",
         name: SeguimientoPedidoScreen.name,
-        builder: (context, state) => const SeguimientoPedidoScreen()
+        builder: (context, state){
+          final idPedido = state.pathParameters['id'] ?? "no-id";
+          return SeguimientoPedidoScreen(idPedido: idPedido);
+        }
       ),
 
       GoRoute(
-        path: "/detalle-pedido",
+        path: "/detalle-pedido/:id",
         name: DetallePedidoScreen.name,
-        builder: (context, state) => const DetallePedidoScreen()
+        builder: (context, state){
+          final idPedido = state.pathParameters['id'] ?? "no-id";
+          return DetallePedidoScreen(idPedido: idPedido,);
+        }
       ),
 
       GoRoute(

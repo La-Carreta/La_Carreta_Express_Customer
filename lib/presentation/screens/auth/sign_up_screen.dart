@@ -211,7 +211,7 @@ class _FormSignUp extends StatelessWidget {
           TextFormField(
             controller: passwordController,
             obscureText: true,
-            decoration: InputDecorations.authPasswordInputDecoration(
+            decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "********", 
               labelText: "Password",
               prefixIcon: Icons.password,

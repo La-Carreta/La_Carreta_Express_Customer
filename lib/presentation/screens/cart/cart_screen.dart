@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/domain/entities/entities.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
+import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
   static const String name = 'cart_screen';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    //** TODO: Envio del cliente
+    ref.watch( cartProvider.notifier ).loadCart("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
+ 
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if(initialLoading) return const FullScreenLoader();
+
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -40,7 +53,7 @@ class CartScreen extends StatelessWidget {
   }
 }
 
-class _DetallePedido extends StatelessWidget {
+class _DetallePedido extends ConsumerWidget{
   final double maximiunHeight;
   final double maximiunWidth;
 
@@ -49,12 +62,26 @@ class _DetallePedido extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final Carrito carrito = ref.watch( cartProvider );
+    final TextEditingController controller = TextEditingController();
+    final numMesa = ref.watch( numMesaProvider );
+
+    if(carrito.detallesPedido.isEmpty) {
+      return NoDataFound(
+        maximiunWidth: maximiunWidth, 
+        maximiunHeight: maximiunHeight, 
+        pathLottie: 'assets/lottie/json/empty_cart.json',
+        text: "El carrito esta vacio..."
+      );
+    }
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-        decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xffF5F5F5),
         borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(25)),
       ),
@@ -67,29 +94,62 @@ class _DetallePedido extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: 15,
+              itemCount: carrito.detallesPedido.length,
               itemBuilder: (context, index) {
-                return _ItemCartPlato(maximiunWidth:maximiunWidth);
+                final item = carrito.detallesPedido[index];
+                return Slidable(
+                  key: UniqueKey(),
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) => ref.watch( cartProvider.notifier ).deleteDetallePedidoCart(idCarrito: carrito.id, idDetalle: item.id, cart: carrito),
+                        icon: Icons.delete,
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        label: "Eliminar",
+                      )
+                    ],
+                  ),
+                  child: _ItemCartPlato(maximiunWidth:maximiunWidth, item: item, cart: carrito)
+                );
               },
             )
+          ),
+
+          const SizedBox(height: 15),        
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Num. de mesa: ", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+              SizedBox(
+                width: 60,
+                child: DropdownButtonFormField(
+                  value: numMesa,
+                  items: List.generate(15, (index) => DropdownMenuItem(value: index + 1, child: Text("${index + 1}"),)), 
+                  onChanged: (value) => ref.watch( numMesaProvider.notifier ).state = value ?? 1,
+                ),
+              )
+            ],
           ),
 
           const SizedBox(height: 15),
           const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
           
           TextFormField(
-            minLines: 3,
+            controller: controller,
+            minLines: 3,            
             maxLines: 6,
             keyboardType: TextInputType.multiline,
           ),
 
           const SizedBox(height: 10),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text("\$40.70", style: TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
+              const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text("\$${carrito.total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
             ],
           ),
 
@@ -99,7 +159,26 @@ class _DetallePedido extends StatelessWidget {
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
               backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
             ),
-            onPressed: (){}, 
+            onPressed: (){
+              final observaciones = controller.text;
+              final ordenPedido = OrdenPedido(
+                cliente: carrito.cliente,
+                fechaEmision: DateTime.now(), 
+                mesero: Mesero.empty(), 
+                costoTotalPedido: carrito.total,
+                numOrden: generateOrderNumber(), 
+                observaciones: observaciones, 
+                numMesa: numMesa, 
+                detalles: carrito.detallesPedido
+              );
+
+              ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
+              ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
+              showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
+
+              //TODO: Considerar redireccion a pantalla intermedia de ordenes
+              Future.delayed(const Duration(milliseconds: 500), () => context.go('/'));
+            }, 
             child: const Text("Realizar Pedido", style: TextStyle(fontWeight: FontWeight.bold),),                
           ),
         ],
@@ -108,14 +187,19 @@ class _DetallePedido extends StatelessWidget {
   }
 }
 
-class _ItemCartPlato extends StatelessWidget {
+class _ItemCartPlato extends ConsumerWidget {
+  final DetallePedido item;
+  final Carrito cart;
   final double maximiunWidth;
+
   const _ItemCartPlato({
-    required this.maximiunWidth,
+    required this.maximiunWidth, 
+    required this.item, 
+    required this.cart
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       height: 120,
@@ -129,18 +213,15 @@ class _ItemCartPlato extends StatelessWidget {
       child: Row(
         children: [
           //Img del plato
-          Image.network("https://res.cloudinary.com/dwexseytn/image/upload/v1703556398/La_Carreta_Express/Menu/Hamburguer/Veggie-800x800-2_v6aq06.png", width: 80, fit: BoxFit.cover,), 
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(item.plato.platoUrl, width: 80, fit: BoxFit.cover,)
+          ), 
           const SizedBox(width: 10),
-          const Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Beef Burguer", overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-                Text("Cheese Mozarrella"),
-                SizedBox(height: 15),          
-              ],
-            ),
+
+          SizedBox(
+            width: maximiunWidth * 0.35,
+            child: Text(item.plato.nombre, overflow: TextOverflow.ellipsis, maxLines: 2, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),)
           ),
 
           SizedBox(
@@ -151,16 +232,24 @@ class _ItemCartPlato extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: (){}, 
+                      onPressed: (){
+                        final int cantidad = item.cantidadPlato - 1;
+                        if(cantidad > 0) {
+                          ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
+                        }
+                      }, 
                       icon: const Icon(Icons.remove), 
                       color: Colors.white,
                       style: ButtonStyle(                        
                         backgroundColor: MaterialStateProperty.all(const Color.fromARGB(126, 88, 47, 14))
                       ),
                     ),
-                    const Text('15'),
+                    Text("${item.cantidadPlato}", style: const TextStyle(fontSize: 20),),
                     IconButton(
-                      onPressed: (){}, 
+                      onPressed: (){
+                        final int cantidad = item.cantidadPlato + 1;
+                        ref.watch( cartProvider.notifier ).updateDetallePedidoCart(cantidad: cantidad, carrito: cart, idDetalle: item.id);
+                      }, 
                       icon: const Icon(Icons.add), 
                       color: Colors.white,
                       style: ButtonStyle(                        
@@ -169,7 +258,7 @@ class _ItemCartPlato extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Text('\$6.79', style: TextStyle(fontSize: 17),),
+                Text('\$${item.valorTotal.toStringAsFixed(2)}', style: const TextStyle(fontSize: 17),),
               ],
             ),
           )
