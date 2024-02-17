@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1080398621265",
-    "project_id": "la-carreta-express",
-    "storage_bucket": "la-carreta-express.appspot.com"
+    "project_number": "1061548431521",
+    "project_id": "la-carreta-express-app",
+    "storage_bucket": "la-carreta-express-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1080398621265:android:00e8114a1e478db44e2670",
+        "mobilesdk_app_id": "1:1061548431521:android:efc121ce84cfb168ed78e0",
         "android_client_info": {
           "package_name": "com.ionsoftware.la_carreta_express_cs"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBeYEzjY_e7aceDKNm1FeRuCJ2I9oyU53w"
+          "current_key": "AIzaSyBh8PniGs01VqQ4qLBz1cxoXwbCiKjtFgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061548431521:android:5ee221d8dc3af3aded78e0",
+        "android_client_info": {
+          "package_name": "com.ionsoftware.la_carreta_express_ms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh8PniGs01VqQ4qLBz1cxoXwbCiKjtFgU"
         }
       ],
       "services": {

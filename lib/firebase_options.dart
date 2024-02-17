@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBeYEzjY_e7aceDKNm1FeRuCJ2I9oyU53w',
-    appId: '1:1080398621265:android:00e8114a1e478db44e2670',
-    messagingSenderId: '1080398621265',
-    projectId: 'la-carreta-express',
-    storageBucket: 'la-carreta-express.appspot.com',
+    apiKey: 'AIzaSyBh8PniGs01VqQ4qLBz1cxoXwbCiKjtFgU',
+    appId: '1:1061548431521:android:efc121ce84cfb168ed78e0',
+    messagingSenderId: '1061548431521',
+    projectId: 'la-carreta-express-app',
+    storageBucket: 'la-carreta-express-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBRRQSTOZw46YCIK4t56pUmrevQsDdQHGk',
-    appId: '1:1080398621265:ios:ff9e2d594b7363a94e2670',
-    messagingSenderId: '1080398621265',
-    projectId: 'la-carreta-express',
-    storageBucket: 'la-carreta-express.appspot.com',
+    apiKey: 'AIzaSyC7-Nvh4GkHFF5lFAq2D3U42jxL4rzm6mg',
+    appId: '1:1061548431521:ios:bda3a126bfbe3bd4ed78e0',
+    messagingSenderId: '1061548431521',
+    projectId: 'la-carreta-express-app',
+    storageBucket: 'la-carreta-express-app.appspot.com',
     iosBundleId: 'com.ionsoftware.laCarretaExpressCs',
   );
 }
