@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/user/account_provider.dart';
 import 'package:la_carreta_express_cs/presentation/ui/input_decoration.dart';
 
 class AccountUserScreen extends StatelessWidget {

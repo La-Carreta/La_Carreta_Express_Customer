@@ -9,3 +9,7 @@ export 'shared/full_screen_loader.dart';
 export 'shared/indicador_estado.dart';
 export 'shared/registered_trademark.dart';
 export 'shared/no_data_found.dart';
+export 'shared/side_menu.dart';
+export 'shared/custom_filled_button.dart';
+export 'shared/custom_text_form_field.dart';
+export 'shared/geometrical_background.dart';

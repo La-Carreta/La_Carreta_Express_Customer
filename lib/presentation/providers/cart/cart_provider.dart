@@ -86,8 +86,6 @@ class CartNotifier extends StateNotifier<Carrito>{
   }
 
   Future<void> updateDetallePedidoCart({required String idDetalle, required Carrito carrito, required int cantidad}) async {
-    // Inicia el cronómetro
-    Stopwatch stopwatch = Stopwatch()..start();
     if(isLoading) return;
     isLoading = true;
 
@@ -103,13 +101,6 @@ class CartNotifier extends StateNotifier<Carrito>{
     await Future.delayed(const Duration(milliseconds: 100));
     isLoading = false;
 
-    // Detiene el cronómetro
-    stopwatch.stop();
-
-    // Obtiene el tiempo transcurrido en milisegundos
-    int tiempoTranscurrido = stopwatch.elapsedMilliseconds;
-
-    print('El proceso tardó $tiempoTranscurrido milisegundos en ejecutarse.');
   }
 
   Future<void> deleteDetallePedidoCart({required String idCarrito, required String idDetalle, required Carrito cart}) async {
