@@ -10,6 +10,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final double? width;
 
   const CustomTextFormField({
     super.key, 
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onChanged, 
     this.validator, 
+    this.width = double.infinity
   });
 
   @override
@@ -35,7 +37,7 @@ class CustomTextFormField extends StatelessWidget {
     const borderRadius = Radius.circular(15);
 
     return Container(
-      // padding: const EdgeInsets.only(bottom: 0, top: 15),
+      width: width,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(topLeft: borderRadius, bottomLeft: borderRadius, bottomRight: borderRadius ),

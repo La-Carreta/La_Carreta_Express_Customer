@@ -4,8 +4,12 @@ String? validatePhoneNumber(String phoneNumber) {
     return "Por favor ingrese su número de celular.";
   }
 
-  if (phoneNumber.length != 10) {
+  if (phoneNumber.length < 10) {
     return "El número ingresado es inferior a 10 caracteres.";
+  }
+
+  if (phoneNumber.length > 10) {
+    return "El número ingresado es superior a 10 caracteres.";
   }
 
   final regex = RegExp("[09]{1}[0-9]{8}");

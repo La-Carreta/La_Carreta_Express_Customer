@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/auth/register_form_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 
@@ -45,7 +48,7 @@ class RegisterScreen extends StatelessWidget {
                 const SizedBox( height: 50 ),
     
                 Container(
-                  height: size.height - 260, // 80 los dos sizebox y 100 el ícono
+                  height: size.height - 180, // 80 los dos sizebox y 100 el ícono
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: scaffoldBackgroundColor,
@@ -62,62 +65,139 @@ class RegisterScreen extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatelessWidget {
+class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
 
     final textStyles = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+
+    void showSnackbar(BuildContext context, String message){
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        )
+      );
+    }
+
+    final registerForm = ref.watch(registerFormProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      
+      if( next.errorMessage.isEmpty ) return;
+      showSnackbar(context, next.errorMessage);
+
+    });
+
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
-          const Spacer(),
+          const SizedBox( height: 30 ),
           Text('Nueva cuenta', style: textStyles.titleMedium ),
-          const Spacer(),
-
-          const CustomTextFormField(
-            label: 'Nombre completo',
-            keyboardType: TextInputType.emailAddress,
+          const SizedBox( height: 30 ),
+      
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CustomTextFormField(
+                label: 'Nombre ',
+                width: size.width * 0.35,
+                onChanged: ref.read(registerFormProvider.notifier).onNameChanged,
+                errorMessage: registerForm.isFormPosted 
+                  ? registerForm.name.errorMessage
+                  : null,
+              ),
+              const Spacer(),
+      
+              CustomTextFormField(
+                label: 'Apellido',
+                width: size.width * 0.35,
+                onChanged: ref.read(registerFormProvider.notifier).onLastNameChanged,
+                errorMessage: registerForm.isFormPosted 
+                  ? registerForm.lastName.errorMessage
+                  : null,
+              ),
+            ],
           ),
           const SizedBox( height: 30 ),
-
-          const CustomTextFormField(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CustomTextFormField(
+                label: 'Dirección ',
+                width: size.width * 0.35,
+                onChanged: ref.read(registerFormProvider.notifier).onAddressChanged,
+                errorMessage: registerForm.isFormPosted 
+                  ? registerForm.address.errorMessage
+                  : null,
+              ),
+              const Spacer(),
+      
+              CustomTextFormField(
+                label: 'Celular',
+                keyboardType: TextInputType.phone,
+                width: size.width * 0.35,
+                onChanged: ref.read(registerFormProvider.notifier).onPhoneNumberChanged,
+                errorMessage: registerForm.isFormPosted 
+                  ? registerForm.phoneNumber.errorMessage
+                  : null,
+              ),
+            ],
+          ),
+          const SizedBox( height: 30 ),
+      
+      
+          CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            onChanged: ref.read(registerFormProvider.notifier).onEmailChanged,
+            errorMessage: registerForm.isFormPosted 
+              ? registerForm.email.errorMessage
+              : null,
           ),
           const SizedBox( height: 30 ),
-
-          const CustomTextFormField(
+      
+          CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
+            errorMessage: registerForm.isFormPosted 
+              ? registerForm.password.errorMessage 
+              : null,
           ),
-    
+          
           const SizedBox( height: 30 ),
-
-          const CustomTextFormField(
+      
+          CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
+            onChanged: ref.read(registerFormProvider.notifier).onConfirmPasswordChanged,
+            errorMessage: registerForm.isFormPosted 
+              ? registerForm.confirmPassword.errorMessage 
+              : null,
           ),
-    
+          
           const SizedBox( height: 30 ),
-
+      
           SizedBox(
             width: double.infinity,
             height: 60,
             child: CustomFilledButton(
               text: 'Crear',
               buttonColor: Colors.black,
-              onPressed: (){
-
-              },
+              onPressed: registerForm.isPosting 
+                ? null
+                : ref.read(registerFormProvider.notifier).onFormSubmit,
             )
           ),
-
-          const Spacer( flex: 2 ),
-
+      
+          // const Spacer( flex: 2 ),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -134,7 +214,7 @@ class _RegisterForm extends StatelessWidget {
               )
             ],
           ),
-
+      
           const Spacer( flex: 1),
         ],
       ),

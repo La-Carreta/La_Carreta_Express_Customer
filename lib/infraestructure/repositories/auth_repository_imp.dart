@@ -31,5 +31,15 @@ class AuthRepositoryImp extends AuthRepository{
   Future<bool> logout() {
     return datasource.logout();
   }
+  
+  @override
+  Future<void> resetAccount(String email) {
+    return datasource.resetAccount(email);
+  }
+  
+  @override
+  Future<User> updateProfile(String fullName, String imgUrl, String password){
+    return datasource.updateProfile(fullName, imgUrl, password);
+  }
 
 }

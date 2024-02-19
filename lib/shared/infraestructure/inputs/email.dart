@@ -17,7 +17,6 @@ class Email extends FormzInput<String, EmailError> {
   const Email.dirty( super.value ) : super.dirty();
 
 
-
   String? get errorMessage {
     if ( isValid || isPure ) return null;
 

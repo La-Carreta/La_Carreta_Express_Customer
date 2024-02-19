@@ -88,4 +88,28 @@ class AuthDataSourceImpl extends AuthDatasource{
       return false;
     }
   }
+  
+  @override
+  Future<void> resetAccount(String email) async{
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw CustomError(e.toString());
+    }
+  }
+  
+  @override
+  Future<User> updateProfile(String fullName, String imgUrl, String password) async{
+    try {
+      final user = _firebaseAuth.currentUser;
+      if(user == null) throw CustomError("Usuario no encontrado");
+      user.updateDisplayName(fullName);
+      user.updatePhotoURL(imgUrl);
+      user.updatePassword(password);
+      
+      return UserMapper.userToEntity(user);      
+    } catch (e) {
+      throw CustomError(e.toString());
+    }
+  }
 } 

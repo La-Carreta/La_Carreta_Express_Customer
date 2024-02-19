@@ -39,7 +39,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
     try {
       final CollectionReference collectionReference = firebase.collection("cart");
       final QuerySnapshot response = await collectionReference
-        .where("cliente.id", isEqualTo: idCliente)
+        .where("cliente.uuid", isEqualTo: idCliente)
         .get();
 
       if(response.docs.isNotEmpty){
@@ -114,7 +114,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
         detalles.add(detallePedido);
         detalles.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
 
-        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente, total: carritoFs.total));       
+        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente, total: detalles[0].valorTotal));       
         await collectionReference.add(carritoData.toJson());
       }
       //** Insertar o actualizar el detalle del carrito

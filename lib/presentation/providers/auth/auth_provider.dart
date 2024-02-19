@@ -48,6 +48,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(authStatus: AuthStatus.checking);
   }
 
+  Future<void> updateProfile(String fullName, String imgUrl, String password) async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      await authRepository.updateProfile(fullName, imgUrl, password);    
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error no controlado');
+    }
+  }
+
   Future<void> logout([String? errorMessage]) async{
     await authRepository.logout();
     
@@ -58,8 +69,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
-  Future<void> register(String email, String password, String fullName) async{
+  Future<String?> registerUser(String email, String password, String fullName) async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      final user = await authRepository.register(email, password, fullName);
+      _setLoggedUser(user);      
+      return user.id;
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error no controlado');
+    }
+
     state = state.copyWith(authStatus: AuthStatus.checking);
+    return null;
   }
 
   void _setLoggedUser(User user) async{
@@ -72,6 +95,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
       errorMessage: ''
     );
   }
+
+  Future<void> resetAccount(String email, [String? errorMessage]) async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    await authRepository.resetAccount(email);
+    state = state.copyWith(
+      authStatus: AuthStatus.notAuthenticated,
+      user: null,
+      errorMessage: errorMessage ?? ''
+    );
+  }
+
+
 }
 
 

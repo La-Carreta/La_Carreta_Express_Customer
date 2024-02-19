@@ -97,6 +97,7 @@ class _UserRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final customer = ref.watch(customerProvider);
+    final size = MediaQuery.of(context).size;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -115,13 +116,16 @@ class _UserRow extends ConsumerWidget {
         const SizedBox(width: 10),
     
         //Name User
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(formatName(customer), style: const TextStyle(fontSize: 17)),
-            Text(formatUsername(customer), style: TextStyle(fontSize: 15, color: Colors.grey[600]))
-          ],
+        SizedBox(
+          width: size.width * 0.4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(formatName(customer), style: const TextStyle(fontSize: 17)),
+              Text(formatUsername(customer), style: TextStyle(fontSize: 15, color: Colors.grey[600]))
+            ],
+          ),
         ),
 
         const Spacer(),

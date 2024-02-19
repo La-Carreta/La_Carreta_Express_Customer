@@ -17,5 +17,10 @@ class ClienteRepositoryImp implements ClienteRepository {
   Future<Cliente> updateCustomer({required Cliente cliente}) {
     return datasource.updateCustomer(cliente: cliente);
   }
+  
+  @override
+  Future<Cliente> createCustomer({required Cliente cliente, required String uuid}) {
+    return datasource.createCustomer(cliente: cliente, uuid: uuid);
+  }
 
 }
