@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/entities.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -13,9 +14,8 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    //** TODO: Envio del cliente
-    ref.watch( cartProvider.notifier ).loadCart("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
+    final customer = ref.watch(customerProvider);
+    ref.watch( cartProvider.notifier ).loadCart(customer.id);
  
     final initialLoading = ref.watch(initialLoadingProvider);
     if(initialLoading) return const FullScreenLoader();
@@ -176,8 +176,7 @@ class _DetallePedido extends ConsumerWidget{
               ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
               showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
 
-              //TODO: Considerar redireccion a pantalla intermedia de ordenes
-              Future.delayed(const Duration(milliseconds: 500), () => context.go('/'));
+              Future.delayed(const Duration(milliseconds: 500), () => context.go('/order-success'));
             }, 
             child: const Text("Realizar Pedido", style: TextStyle(fontWeight: FontWeight.bold),),                
           ),

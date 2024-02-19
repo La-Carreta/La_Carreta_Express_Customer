@@ -5,7 +5,7 @@ import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/orden_pedido_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/orden_pedido_model.dart';
 
-class OrdenPedidoDatasourceImp extends OrdenPedidoDatasource{
+class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource{
   final firebase = FirebaseFirestore.instance;
 
   @override

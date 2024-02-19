@@ -6,7 +6,7 @@ import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/carrito_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/carrito_model.dart';
 
-class CarritoDatasourceImp extends CarritoDatasource{
+class CarritoDatasourceImpl extends CarritoDatasource{
   final firebase = FirebaseFirestore.instance;
 
   @override
@@ -23,7 +23,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
       //* Actualizar carrito  
       await updateCart(collectionReference, cart, newDetailsCart, totalUpdated);
 
-      return Carrito.copyWith(
+      return Carrito(
         id: cart.id,
         cliente: cart.cliente,
         detallesPedido: newDetailsCart, 
@@ -87,7 +87,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
       //* Actualizar carrito  
       await updateCart(collectionReference, carrito, newDetailsCart, totalUpdated);
 
-      return Carrito.copyWith(
+      return Carrito(
         id: carrito.id,
         cliente: carrito.cliente,
         detallesPedido: newDetailsCart, 
@@ -166,7 +166,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
   @override
   Future<void> deleteCart({required String idCarrito, required Carrito cart}) async{
     try {
-      final emptyCart = Carrito.copyWith(
+      final emptyCart = Carrito(
         id: cart.id,
         cliente: cart.cliente,
         detallesPedido: [],
@@ -183,7 +183,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
 
   Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
-    Carrito cartUpdated = Carrito.copyWith(
+    Carrito cartUpdated = Carrito(
       id: carritoFs.id,
       cliente: carritoFs.cliente,
       detallesPedido: newDetailsCart,

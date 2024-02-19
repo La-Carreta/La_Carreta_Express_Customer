@@ -20,7 +20,7 @@ class Carrito{
     cliente = Cliente.empty(),
     total = 0.0;
 
-  static Carrito copyWith({
+  Carrito copyWith({
     String? id,
     List<DetallePedido>? detallesPedido,
     Cliente? cliente,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_filter.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/filter_plato_provider.dart';
@@ -77,12 +78,12 @@ class _Pedidos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filterOptionSelected = ref.watch(filterOptionPedidoProvider);
-
+    final customer = ref.watch(customerProvider);
     Stream<List<OrdenPedido>> getOrdersByFilterState(){
       if(filterOptionSelected == "Todos"){
-        return ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+        return ref.read( ordenPedidoProvider.notifier ).getOrders(customer.id);
       }else{
-        return ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", filterOptionSelected);
+        return ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter(customer.id, filterOptionSelected);
       }    
     }
 

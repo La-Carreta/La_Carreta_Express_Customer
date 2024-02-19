@@ -5,7 +5,7 @@ import 'package:la_carreta_express_cs/domain/entities/plato.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/plato_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/plato_model.dart';
 
-class PlatoDatasource extends PlatosDatasource{
+class PlatoDatasourceImpl extends PlatosDatasource{
   final firebase = FirebaseFirestore.instance;
 
   @override

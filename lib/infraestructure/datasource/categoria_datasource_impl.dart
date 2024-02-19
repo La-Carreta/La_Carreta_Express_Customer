@@ -5,7 +5,7 @@ import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/categoria_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/categoria_model.dart';
 
-class CategoriaDatasource extends CategoriasDatasource{
+class CategoriaDatasourceImpl extends CategoriasDatasource{
 
   final firebase = FirebaseFirestore.instance;
 

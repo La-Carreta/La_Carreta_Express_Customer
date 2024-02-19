@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/home/custom_drawer.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class HomeScreen extends StatelessWidget {   
+class HomeScreen extends ConsumerWidget {   
 
   static const String name = 'home_screen';
 
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xffF5F5F5),
-      body: _HomeView(),      
-      drawer: CustomDrawer(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider); 
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    ref.watch(customerProvider.notifier).getCustomerById(user.user?.id ?? "");
+
+    return Scaffold(
+      backgroundColor: const Color(0xffF5F5F5),
+      body: const _HomeView(),      
+      drawer: CustomDrawer(scaffoldKey: scaffoldKey),
     );
   }
 }

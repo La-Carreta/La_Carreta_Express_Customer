@@ -139,7 +139,7 @@ class _DetallePedido extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text("\$${ordenPedido.costoTotalPedido}", style: const TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
+              Text("\$${ordenPedido.costoTotalPedido.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18,  fontWeight: FontWeight.bold))
             ],
           ),
         ],

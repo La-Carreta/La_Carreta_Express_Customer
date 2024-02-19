@@ -92,6 +92,12 @@ final goRouterProvider = Provider((ref){
         name: AccountUserScreen.name,
         builder: (context, state) => const AccountUserScreen()
       ),
+
+      GoRoute(
+        path: "/order-success",
+        name: OrderSuccessScreen.name,
+        builder: (context, state) => const OrderSuccessScreen()
+      ),
     ],
 
     redirect: (context, state) {    

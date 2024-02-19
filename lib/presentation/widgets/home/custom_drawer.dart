@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/user_data_formater.dart';
 import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 
 class CustomDrawer extends ConsumerWidget {
-  
-  const CustomDrawer({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const CustomDrawer({super.key, required this.scaffoldKey});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,12 +17,10 @@ class CustomDrawer extends ConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              //TODO: Considerar los datos logueados
               const _UserRow(),
 
               const SizedBox(height: 60),
 
-              //TODO: Redireccionar a las pantallas y cambiar el fondo del boton seleccionado                     
               _MenuItem(icon: Icons.fastfood,title: "Menu", onTap: (){                
                 context.go("/");
                 Scaffold.of(context).closeDrawer();
@@ -91,20 +91,21 @@ class _MenuItem extends StatelessWidget {
   }
 }
 
-class _UserRow extends StatelessWidget {
+class _UserRow extends ConsumerWidget {
   const _UserRow();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customer = ref.watch(customerProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //Avatar User
         ClipRRect(
           borderRadius: BorderRadius.circular(100),
-          child: const FadeInImage(
-            placeholder: AssetImage("assets/loaders/loading.gif"), 
-            image: NetworkImage("https://m.media-amazon.com/images/M/MV5BMWZiM2MyNjYtNDBmNS00YzM1LWJiNzctMjY3MmI0MjgwMjliXkEyXkFqcGdeQVRoaXJkUGFydHlJbmdlc3Rpb25Xb3JrZmxvdw@@._V1_.jpg"),
+          child: FadeInImage(
+            placeholder: const AssetImage("assets/loaders/loading.gif"), 
+            image: NetworkImage(customer.imgUrl.isEmpty ? "https://res.cloudinary.com/dwexseytn/image/upload/v1708297546/La_Carreta_Express/Avatar_users/no-profile-photo_nsgx2g.png" : customer.imgUrl),
             width: 60,
             height: 60,
             fit: BoxFit.cover,
@@ -114,8 +115,15 @@ class _UserRow extends StatelessWidget {
         const SizedBox(width: 10),
     
         //Name User
-        const Text("Alejandro González", style: TextStyle(fontSize: 17)),
-    
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(formatName(customer), style: const TextStyle(fontSize: 17)),
+            Text(formatUsername(customer), style: TextStyle(fontSize: 15, color: Colors.grey[600]))
+          ],
+        ),
+
         const Spacer(),
         //Pencil edit
         IconButton(

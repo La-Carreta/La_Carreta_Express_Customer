@@ -54,7 +54,7 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     final Carrito carrito = await getCarritoByCliente(idCliente: idCliente);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: carrito.id,
       cliente: carrito.cliente,
       detallesPedido: carrito.detallesPedido,
@@ -91,7 +91,7 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     final cartUpdated = await updateCart(cantidad: cantidad, carrito: carrito, idDetalle: idDetalle);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: cartUpdated.id,
       cliente: cartUpdated.cliente,
       detallesPedido: cartUpdated.detallesPedido,
@@ -109,7 +109,7 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     final cartUpdated = await deleteItemCart(idCarrito: idCarrito, idDetalle: idDetalle, cart: cart);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: cartUpdated.id,
       cliente: cartUpdated.cliente,
       detallesPedido: cartUpdated.detallesPedido,

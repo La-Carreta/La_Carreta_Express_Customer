@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CheckAuthStatusScreen extends StatelessWidget {
    
-  const CheckAuthStatusScreen({Key? key}) : super(key: key);
+  const CheckAuthStatusScreen({super.key});
   
   @override
   Widget build(BuildContext context) {
