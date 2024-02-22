@@ -100,7 +100,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
   }
   
   @override
-  Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) async{
+  Future<Carrito> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) async{
     try {      
       //** 1. Consultar si el cliente tiene un carrito creado anteriormente. 
       final carritoFs = await getCarritoByIdCliente(idCliente: cliente.id);
@@ -114,8 +114,10 @@ class CarritoDatasourceImpl extends CarritoDatasource{
         detalles.add(detallePedido);
         detalles.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
 
-        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente, total: detalles[0].valorTotal));       
+        final newCart = Carrito(detallesPedido: detalles, cliente: cliente, total: detalles[0].valorTotal);
+        final CarritoModel carritoData = CarritoMapper.carritoToModel(newCart);       
         await collectionReference.add(carritoData.toJson());
+        return newCart;
       }
       //** Insertar o actualizar el detalle del carrito
       else{
@@ -142,7 +144,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
           } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);
+          return await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);
         }
         //* Se crea el detalle del pedido en la orden
         else{
@@ -155,7 +157,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
           } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);          
+          return await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);          
         }
       }
     } catch (e) {
@@ -182,7 +184,7 @@ class CarritoDatasourceImpl extends CarritoDatasource{
     }
   }
 
-  Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
+  Future<Carrito> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
     Carrito cartUpdated = Carrito(
       id: carritoFs.id,
       cliente: carritoFs.cliente,
@@ -194,6 +196,8 @@ class CarritoDatasourceImpl extends CarritoDatasource{
 
     //* Enviar detalle actualizados.
     await collectionReference.doc(carritoFs.id).update(carritoData.toJson());          
+
+    return cartUpdated;
   }
   
   @override

@@ -23,7 +23,7 @@ final cartProvider = StateNotifierProvider<CartNotifier, Carrito>((ref){
 typedef CarritoCallBackByCustomer = Future<Carrito> Function({required String idCliente});
 typedef CarritoCallBackById = Future<Carrito> Function({required String idCarrito});
 
-typedef DetalleCallBack = Future<void> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
+typedef DetalleCallBack = Future<Carrito> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
 typedef EmptyCartCallBack = Future<void> Function({required String idCarrito, required Carrito cart});
 typedef CartCallBack = Future<Carrito> Function({required Carrito carrito, required String idDetalle, required int cantidad});
 
@@ -69,7 +69,14 @@ class CartNotifier extends StateNotifier<Carrito>{
     if(isLoading) return;
     isLoading = true;
     //Buscar si el pedido se encuentra en la lista
-    await addOrUpdateItem(cliente: cliente, detallePedido: item);
+    final Carrito cartUpdated = await addOrUpdateItem(cliente: cliente, detallePedido: item);
+
+    state = state.copyWith(
+      id: cartUpdated.id,
+      cliente: cartUpdated.cliente,
+      detallesPedido: cartUpdated.detallesPedido,
+      total: cartUpdated.total
+    );
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
@@ -81,7 +88,12 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     await emptyCart(idCarrito: idCarrito, cart: cart);
 
-    //TODO: Actualizar carrito
+    state = state.copyWith(
+      id: cart.id,
+      cliente: cart.cliente,
+      detallesPedido: [],
+      total: 0.00
+    );
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
