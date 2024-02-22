@@ -27,5 +27,14 @@ class OrdenPedidoRepositoryImp extends OrdenPedidoRepository{
   Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state}) {
     return datasource.getOrdersByFilter(idCliente: idCliente, state: state);
   }
-
+  
+  @override
+  Future<void> cancelOrder({required String idOrdenPedido}) {
+    return datasource.cancelOrder(idOrdenPedido: idOrdenPedido);
+  }
+  
+  @override
+  Future<void> deleteOrder({required String idOrdenPedido}) {
+    return datasource.deleteOrder(idOrdenPedido: idOrdenPedido);
+  }
 }

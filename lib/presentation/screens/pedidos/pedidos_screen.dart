@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
 import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_filter.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
@@ -120,8 +121,31 @@ class _Pedidos extends ConsumerWidget {
                   physics: const BouncingScrollPhysics(),
                   itemCount: pedidoList.length,
                   itemBuilder: (context, index) {
-                    final urlIcon = getUrlIconPlatos();
-                    return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
+                    const urlIcon = "https://res.cloudinary.com/dwexseytn/image/upload/v1708610624/La_Carreta_Express/Various_icons/entrega-de-comida_vnwcbn.png";
+                    return pedidoList[index].estadoOrden == "Pedido realizado"
+                      ?                                        
+                      Slidable(
+                        key: UniqueKey(),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(), 
+                          children: [
+                            if(pedidoList[index].estadoOrden == "Pedido realizado")
+                              SlidableAction(
+                                onPressed: (context){
+                                  ref.watch( ordenPedidoProvider.notifier ).cancelOrderById(pedidoList[index].id);
+                                  //Mostrar un snackbar
+                                  showCustomSnackbar(context: context, title: "Orden #${pedidoList[index].numOrden} cancelada satisfactoriamente.");
+                                },
+                                icon: Icons.delete,
+                                backgroundColor: Colors.brown,
+                                foregroundColor: Colors.white,
+                                label: "Cancelar Orden",
+                              ),
+                          ]
+                        ),
+                        child: _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index])
+                      )
+                    : _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
                   },
                 );
               }

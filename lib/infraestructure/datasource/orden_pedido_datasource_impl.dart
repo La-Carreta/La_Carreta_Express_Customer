@@ -69,4 +69,25 @@ class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource{
       throw Exception("Error al cargar las ordenes ..., ${e.toString()}");            
     }
   }
+  
+  @override
+  Future<void> cancelOrder({required String idOrdenPedido}) async{
+    try {
+      final CollectionReference collectionReference = firebase.collection("ordenPedido");
+      await collectionReference.doc(idOrdenPedido).update({"estado": "Pedido cancelado"});
+    } catch (e) {
+      throw Exception("Error al cancelar la orden. ${e.toString()}");            
+    }
+  }
+  
+  @override
+  Future<void> deleteOrder({required String idOrdenPedido}) async{
+    try {
+      //TODO: Implementar la eliminación de la orden (Solo vista del usuario)
+      final CollectionReference collectionReference = firebase.collection("ordenPedido");
+      await collectionReference.doc(idOrdenPedido).update({"estado": "Pedido cancelado"});
+    } catch (e) {
+      throw Exception("Error al cancelar la orden. ${e.toString()}");            
+    }
+  }
 }

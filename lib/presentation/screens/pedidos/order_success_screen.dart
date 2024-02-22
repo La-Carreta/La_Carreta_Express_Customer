@@ -49,7 +49,7 @@ class _OrderSuccessView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Lottie.asset('assets/lottie/json/order-success.json', width: 200, height: 200),
-            const Text("Order Success", style: TextStyle(fontSize: 30),),
+            const Text("Pedido con éxito", style: TextStyle(fontSize: 30),),
             const Text("Tu pedido ha sido realizado con éxito. En breve, un mesero se acercará a confirmar tu orden.", textAlign: TextAlign.center, style: TextStyle(fontSize: 17)),
             const SizedBox(height: 20),
     

@@ -5,4 +5,6 @@ abstract class OrdenPedidoRepository{
   Future<void> createOrder({required OrdenPedido order});  
   Stream<OrdenPedido> getOrderById({required String idOrdenPedido});  
   Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state});
+  Future<void> cancelOrder({required String idOrdenPedido});
+  Future<void> deleteOrder({required String idOrdenPedido});
 }
