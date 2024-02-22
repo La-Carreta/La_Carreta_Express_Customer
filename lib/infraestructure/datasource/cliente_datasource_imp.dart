@@ -37,12 +37,11 @@ class ClienteDataSourceImpl extends ClienteDataSource{
   @override
   Future<Cliente> createCustomer({required Cliente cliente, required String uuid}) async{
     try {
-      final data = ClienteMapper.clienteToModel(cliente);      
-      await firebase.collection('clientes').doc(uuid).set(data.toJson());
+      final data = ClienteMapper.clienteToModelRegister(cliente);      
+      await firebase.collection('clientes').doc(uuid).set(data.toJsonNewUser());
       return cliente;
     } catch (e) {
       throw Exception("Error al crear el cliente: ${e.toString()}");
     }
-
   }
 }

@@ -3,13 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/entities.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/get_estimated_time.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
-import 'package:la_carreta_express_cs/presentation/providers/initial_loading/cart_initial_loading.dart';
-import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/time_orders/time_order_provider.dart';
-import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
+import 'package:la_carreta_express_cs/presentation/presentation.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -140,8 +134,6 @@ class _DetallePedido extends ConsumerWidget{
                 onPressed: (){
                   ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
                   ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
-                  showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
-
                   Future.delayed(const Duration(milliseconds: 500), () => context.go('/order-success'));
                 },
                 child: const Text("Si, continuar", style: TextStyle(fontWeight: FontWeight.bold),),

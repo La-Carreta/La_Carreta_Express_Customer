@@ -14,6 +14,16 @@ class ClienteMapper{
     uuid: cliente.uuid
   );
 
+  static ClienteModel clienteToModelRegister(Cliente cliente) => ClienteModel(
+    nombre: cliente.nombre, 
+    apellido: cliente.apellido, 
+    celular: cliente.celular, 
+    direccion: cliente.direccion, 
+    email: cliente.correo, 
+    imgUrl: cliente.imgUrl, 
+    uuid: cliente.uuid
+  );
+
   static Cliente clienteToEntity(ClienteModel cliente) => Cliente(
     id: cliente.id,
     nombre: cliente.nombre, 

@@ -26,7 +26,6 @@ class RegisterFormState{
   final bool isValid;
   final Email email;
   final Password password;
-  final Password confirmPassword;
   final Name name;
   final LastName lastName;
   final PhoneNumber phoneNumber;
@@ -38,7 +37,6 @@ class RegisterFormState{
     this.isValid = false, 
     this.email = const Email.pure(), 
     this.password = const Password.pure(),
-    this.confirmPassword = const Password.pure(),
     this.name = const Name.pure(),
     this.lastName = const LastName.pure(),
     this.phoneNumber = const PhoneNumber.pure(),
@@ -49,7 +47,7 @@ class RegisterFormState{
   @override
   String toString() { 
     return '''
-      LoginFormState(
+      RegisterFormState(
         isPosting: $isPosting, 
         isFormPosted: $isFormPosted, 
         isValid: $isValid, 
@@ -64,7 +62,6 @@ class RegisterFormState{
     bool? isValid,
     Email? email,
     Password? password,
-    Password? confirmPassword,
     Name? name,
     LastName? lastName,
     PhoneNumber? phoneNumber,
@@ -76,7 +73,6 @@ class RegisterFormState{
       isValid: isValid ?? this.isValid,
       email: email ?? this.email,
       password: password ?? this.password,
-      confirmPassword: confirmPassword ?? this.confirmPassword,
       name: name ?? this.name,
       lastName: lastName ?? this.lastName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -99,7 +95,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
       email: newEmail, 
-      isValid: Formz.validate([newEmail, state.password, state.confirmPassword, state.name, state.lastName, state.phoneNumber, state.address])
+      isValid: Formz.validate([
+        newEmail, 
+        state.password, 
+        state.name, 
+        state.lastName, 
+        state.phoneNumber, 
+        state.address
+      ])
     );
   }
 
@@ -107,15 +110,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newPassword = Password.dirty(value);
     state = state.copyWith(
       password: newPassword,
-      isValid: Formz.validate([state.email, newPassword, state.confirmPassword, state.name, state.lastName, state.phoneNumber, state.address])
-    );
-  }
-
-  onConfirmPasswordChanged(String value){
-    final newConfirmPassword = Password.dirty(value);
-    state = state.copyWith(
-      confirmPassword: newConfirmPassword,
-      isValid: Formz.validate([state.email, state.password, newConfirmPassword, state.name, state.lastName, state.phoneNumber, state.address])
+      isValid: Formz.validate([
+        state.email, 
+        newPassword, 
+        state.name, 
+        state.lastName, 
+        state.phoneNumber, 
+        state.address
+      ])
     );
   }
 
@@ -123,7 +125,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newName = Name.dirty(value);
     state = state.copyWith(
       name: newName,
-      isValid: Formz.validate([newName, state.lastName, state.phoneNumber, state.address, state.email, state.password, state.confirmPassword])
+      isValid: Formz.validate([
+        newName, 
+        state.lastName, 
+        state.phoneNumber, 
+        state.address, 
+        state.email, 
+        state.password
+      ])
     );
   }
 
@@ -131,7 +140,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newLastName = LastName.dirty(value);
     state = state.copyWith(
       lastName: newLastName,
-      isValid: Formz.validate([state.name, newLastName, state.phoneNumber, state.address, state.email, state.password, state.confirmPassword])
+      isValid: Formz.validate([
+        state.name, 
+        newLastName, 
+        state.phoneNumber, 
+        state.address, 
+        state.email, 
+        state.password
+      ])
     );
   }
 
@@ -139,7 +155,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newPhoneNumber = PhoneNumber.dirty(value);
     state = state.copyWith(
       phoneNumber: newPhoneNumber,
-      isValid: Formz.validate([state.name, state.lastName, newPhoneNumber, state.address, state.email, state.password, state.confirmPassword])
+      isValid: Formz.validate([
+        state.name, 
+        state.lastName, 
+        newPhoneNumber, 
+        state.address, 
+        state.email, 
+        state.password
+      ])
     );
   }
 
@@ -147,7 +170,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final newAddress = Address.dirty(value);
     state = state.copyWith(
       address: newAddress,
-      isValid: Formz.validate([state.name, state.lastName, state.phoneNumber, newAddress, state.email, state.password, state.confirmPassword])
+      isValid: Formz.validate([
+        state.name, 
+        state.lastName, 
+        state.phoneNumber, 
+        newAddress, 
+        state.email, 
+        state.password
+      ])
     );
   }
 
@@ -160,6 +190,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final fullName = '${state.name.value} ${state.lastName.value}';
 
     final String resp = await registerUserCallbackFirebase(state.email.value, state.password.value, fullName);
+    state = state.copyWith(isPosting: false);
     
     final Cliente cliente = Cliente(
       id: resp,
@@ -172,28 +203,30 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
       imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1708297546/La_Carreta_Express/Avatar_users/no-profile-photo_nsgx2g.png',
     );
 
-    await registerCustomerCallbackFirebase( cliente, resp);
+    await registerCustomerCallbackFirebase( cliente, resp );
 
-
-    state = state.copyWith(isPosting: false);
+  
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   _touchEveryField(){
     state = state.copyWith(
       email: Email.dirty(state.email.value),
       password: Password.dirty(state.password.value),
-      confirmPassword: Password.dirty(state.confirmPassword.value),
       name: Name.dirty(state.name.value),
       lastName: LastName.dirty(state.lastName.value),
       phoneNumber: PhoneNumber.dirty(state.phoneNumber.value),
       address: Address.dirty(state.address.value),      
       isFormPosted: true,
-      isValid: Formz.validate([state.email, state.password, state.confirmPassword, state.name, state.lastName, state.phoneNumber, state.address])
+      isValid: Formz.validate([
+        state.email, 
+        state.password, 
+        state.name, 
+        state.lastName, 
+        state.phoneNumber, 
+        state.address
+      ])
     );
-  }
-
-  onFormPosting(){
-    state = state.copyWith(isPosting: true);
   }
 
 } 

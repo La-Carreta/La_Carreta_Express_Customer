@@ -46,7 +46,6 @@ class ClienteModel {
     };
 
     Map<String, dynamic> toJsonNewUser() => {
-      "id": id,
       "nombre": nombre,
       "apellido": apellido,
       "celular": celular,

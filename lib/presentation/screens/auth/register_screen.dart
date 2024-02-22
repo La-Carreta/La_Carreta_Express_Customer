@@ -172,18 +172,7 @@ class _RegisterForm extends ConsumerWidget {
           ),
           
           const SizedBox( height: 30 ),
-      
-          CustomTextFormField(
-            label: 'Repita la contraseña',
-            obscureText: true,
-            onChanged: ref.read(registerFormProvider.notifier).onConfirmPasswordChanged,
-            errorMessage: registerForm.isFormPosted 
-              ? registerForm.confirmPassword.errorMessage 
-              : null,
-          ),
-          
-          const SizedBox( height: 30 ),
-      
+            
           SizedBox(
             width: double.infinity,
             height: 60,
@@ -196,7 +185,6 @@ class _RegisterForm extends ConsumerWidget {
             )
           ),
       
-          // const Spacer( flex: 2 ),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
