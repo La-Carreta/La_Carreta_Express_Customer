@@ -104,8 +104,10 @@ class _LoginForm extends ConsumerWidget {
               ? loginForm.password.errorMessage 
               : null,
           ),
+
+          const _ForgotPassword(),
     
-          const SizedBox( height: 30 ),
+          const SizedBox( height: 10 ),
 
           SizedBox(
             width: double.infinity,
@@ -135,6 +137,22 @@ class _LoginForm extends ConsumerWidget {
           const Spacer( flex: 1),
         ],
       ),
+    );
+  }
+}
+
+class _ForgotPassword extends StatelessWidget {
+  const _ForgotPassword();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () => context.go("/reset-password"),
+        child: const Text("Olvidaste tu contraseña?", style: TextStyle(fontSize: 15, color: Colors.black))
+      )
     );
   }
 }

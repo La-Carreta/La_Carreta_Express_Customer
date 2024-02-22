@@ -106,7 +106,7 @@ final goRouterProvider = Provider((ref){
 
       if(isGoingTo == '/checking' && authStatus == AuthStatus.checking) return null;
       if(authStatus == AuthStatus.notAuthenticated){
-        if( isGoingTo == '/login' || isGoingTo == '/register') return null;
+        if( isGoingTo == '/login' || isGoingTo == '/register' || isGoingTo == "/reset-password") return null;
 
         return '/login';
       }

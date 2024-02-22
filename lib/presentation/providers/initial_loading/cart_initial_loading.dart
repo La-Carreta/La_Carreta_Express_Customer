@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/time_orders/time_order_provider.dart';
 
 final cartInitialLoadingProvider = Provider<bool>((ref){
 
