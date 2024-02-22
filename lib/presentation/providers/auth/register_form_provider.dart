@@ -203,10 +203,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
       imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1708297546/La_Carreta_Express/Avatar_users/no-profile-photo_nsgx2g.png',
     );
 
-    await registerCustomerCallbackFirebase( cliente, resp );
-
-  
-    await Future.delayed(const Duration(milliseconds: 300));
+    await registerCustomerCallbackFirebase( cliente, resp );  
   }
 
   _touchEveryField(){
