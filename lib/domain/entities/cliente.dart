@@ -19,9 +19,8 @@ class Cliente{
     required this.uuid
   });
 
-  //TODO: Eliminar id
   Cliente.empty():
-    id = "DkkkqnIBV5OTH2s4eNJW",
+    id = "",
     nombre = "",
     apellido = "",
     celular = "",
@@ -29,4 +28,26 @@ class Cliente{
     direccion = "",
     imgUrl = '',
     uuid = "";
+
+  Cliente copyWith({
+    String? id,
+    String? nombre, 
+    String? apellido, 
+    String? celular, 
+    String? correo, 
+    String? direccion,
+    String? imgUrl,
+    String? uuid
+  }){
+    return Cliente(
+      id: id ?? this.id,
+      nombre: nombre ?? this.nombre, 
+      apellido: apellido ?? this.apellido, 
+      celular: celular ?? this.celular, 
+      correo: correo ?? this.correo, 
+      direccion: direccion ?? this.direccion, 
+      imgUrl: imgUrl ?? this.imgUrl, 
+      uuid: uuid ?? this.uuid
+    );
+  }
 }

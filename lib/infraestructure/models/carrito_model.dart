@@ -34,7 +34,7 @@ class CarritoModel {
 
   factory CarritoModel.fromJson(String id, Map<String, dynamic> json) => CarritoModel(
     id: id,
-    cliente: ClienteModel.fromJson(json["cliente"]["id"],json["cliente"]),
+    cliente: ClienteModel.fromJson(json["cliente"]["id"], json["cliente"]),
     detallesPedido: List<DetallePedidoModel>.from(json["detallesPedido"].map((x) => DetallePedidoModel.fromJson(x))),
     total: json['total']?.toDouble()
   );

@@ -188,7 +188,7 @@ class _TimeLinePedido extends StatelessWidget {
               ),
               endChild: _TimelineOption(
                 asset: 'assets/pedidos-icons/order_processed.png',
-                title: 'Pedido en proceso',
+                title: 'Pedido en preparación',
                 message: 'Estamos preparando tu pedido.',
                 index: 3,
                 disabled: !timelineData.colors[2].statePassed,

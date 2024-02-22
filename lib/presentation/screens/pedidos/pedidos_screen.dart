@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
+import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/format_dates.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_filter.dart';
 import 'package:la_carreta_express_cs/presentation/providers/orden_pedido/orden_pedido_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/filter_plato_provider.dart';
@@ -77,12 +79,12 @@ class _Pedidos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filterOptionSelected = ref.watch(filterOptionPedidoProvider);
-
+    final customer = ref.watch(customerProvider);
     Stream<List<OrdenPedido>> getOrdersByFilterState(){
       if(filterOptionSelected == "Todos"){
-        return ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+        return ref.read( ordenPedidoProvider.notifier ).getOrders(customer.id);
       }else{
-        return ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", filterOptionSelected);
+        return ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter(customer.id, filterOptionSelected);
       }    
     }
 
@@ -119,8 +121,31 @@ class _Pedidos extends ConsumerWidget {
                   physics: const BouncingScrollPhysics(),
                   itemCount: pedidoList.length,
                   itemBuilder: (context, index) {
-                    final urlIcon = getUrlIconPlatos();
-                    return _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
+                    const urlIcon = "https://res.cloudinary.com/dwexseytn/image/upload/v1708610624/La_Carreta_Express/Various_icons/entrega-de-comida_vnwcbn.png";
+                    return pedidoList[index].estadoOrden == "Pedido realizado"
+                      ?                                        
+                      Slidable(
+                        key: UniqueKey(),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(), 
+                          children: [
+                            if(pedidoList[index].estadoOrden == "Pedido realizado")
+                              SlidableAction(
+                                onPressed: (context){
+                                  ref.watch( ordenPedidoProvider.notifier ).cancelOrderById(pedidoList[index].id);
+                                  //Mostrar un snackbar
+                                  showCustomSnackbar(context: context, title: "Orden #${pedidoList[index].numOrden} cancelada satisfactoriamente.");
+                                },
+                                icon: Icons.delete,
+                                backgroundColor: Colors.brown,
+                                foregroundColor: Colors.white,
+                                label: "Cancelar Orden",
+                              ),
+                          ]
+                        ),
+                        child: _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index])
+                      )
+                    : _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
                   },
                 );
               }
@@ -270,7 +295,7 @@ void _showBottomSheet(context) {
                 ),
             
                 const _OpcionFiltro(
-                  texto: "Pedido en proceso",
+                  texto: "Pedido en preparación",
                   value: 3,
                   color: Color(0xff0ead69),
                 ),

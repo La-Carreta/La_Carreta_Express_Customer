@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/user/account_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/ui/input_decoration.dart';
 
-class AccountUserScreen extends StatelessWidget {
+class AccountUserScreen extends ConsumerWidget {
   
   static String name = 'account_user_screen';
   const AccountUserScreen({super.key});
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customer = ref.watch(customerProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Account"),
@@ -26,16 +30,21 @@ class AccountUserScreen extends StatelessWidget {
                 //Foto
                 Center(
                   child: CircleAvatar(
-                    backgroundColor: Colors.brown.shade500,
+                    backgroundColor: Colors.black54,
                     radius: 85,
-                    backgroundImage: const NetworkImage(            
-                      "https://media.ambito.com/p/96594bdd7f10a6e04e09b1083eb4995b/adjuntos/239/imagenes/038/792/0038792145/dogecoin-memejpg.jpg",                 
-                    ),
+                    backgroundImage: FadeInImage(
+                      placeholder: const AssetImage('assets/images/loading.gif'),
+                      image: Image.network(customer.imgUrl,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                            return const CircularProgressIndicator();
+                        },
+                      ).image,                        
+                    ).image,
                   ),
                 ),
-            
                 const SizedBox(height: 15),
-                const _UpdateDataForm()
+                _UpdateDataForm(customer: customer)
               ],
             ),
           ),
@@ -46,8 +55,10 @@ class AccountUserScreen extends StatelessWidget {
 }
 
 class _UpdateDataForm extends ConsumerStatefulWidget {
-   
-  const _UpdateDataForm();
+  final Cliente customer;
+  const _UpdateDataForm({
+    required this.customer,
+  });
 
   @override
   UpdateDataFormState createState() => UpdateDataFormState();
@@ -60,20 +71,28 @@ class UpdateDataFormState extends ConsumerState<_UpdateDataForm> {
   bool _isEditingAddress = true;
   bool _isEditingPhoneNumber = true;
   bool _isEditingPassword = true;
+  final nombreController = TextEditingController();
+  final apellidoController = TextEditingController();
+  final direccionController = TextEditingController();
+  final celularController = TextEditingController();
+  final passwordController = TextEditingController();
+  
+  @override
+  void initState() {
+    super.initState();
+    nombreController.text = widget.customer.nombre;
+    apellidoController.text = widget.customer.apellido;
+    direccionController.text = widget.customer.direccion;
+    celularController.text = widget.customer.celular;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final nombreController = TextEditingController();
-    final apellidoController = TextEditingController();
-    final direccionController = TextEditingController();
-    final celularController = TextEditingController();
-    final passwordController = TextEditingController();
-
-    nombreController.text = "Alejandro Gonzalez";
     final colors = Theme.of(context).colorScheme;
-
+    final globalKeyForm = GlobalKey<FormState>();
     return Form(
-      key: UniqueKey(),
+      key: globalKeyForm,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
           TextFormField(
@@ -151,6 +170,7 @@ class UpdateDataFormState extends ConsumerState<_UpdateDataForm> {
 
           TextFormField(
             controller: celularController,
+            keyboardType: TextInputType.phone,
             decoration: InputDecorations.userUpdateInputDecoration(
               hintText: "Celular", 
               labelText: "Celular",
@@ -196,9 +216,24 @@ class UpdateDataFormState extends ConsumerState<_UpdateDataForm> {
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(const Size(300, 40)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                backgroundColor: MaterialStateProperty.all(const Color(0xff023047)),
               ),
-              onPressed: () => debugPrint("Actualizar Datos"), 
+              onPressed: () {
+                final isValid = globalKeyForm.currentState!.validate();
+                if (!isValid) return;
+
+                final customerUpdated = widget.customer.copyWith(
+                  nombre: nombreController.text.trim(),
+                  apellido: apellidoController.text.trim(),
+                  direccion: direccionController.text.trim(),
+                  celular: celularController.text.trim(),
+                  imgUrl: widget.customer.imgUrl
+                );
+                final fullName = "${customerUpdated.nombre} ${customerUpdated.apellido}";
+                ref.read(customerProvider.notifier).updateCustomerData(customerUpdated);
+                ref.read(authProvider.notifier).updateProfile(fullName, customerUpdated.imgUrl, passwordController.text.trim());
+                showCustomSnackbar(context: context, title: "Datos actualizados correctamente");
+              }, 
               child: const Text("Actualizar Datos", style: TextStyle(fontSize: 17),)
             ),
           ),

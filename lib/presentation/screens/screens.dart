@@ -9,3 +9,7 @@ export 'package:la_carreta_express_cs/presentation/screens/pedidos/detalle_pedid
 export 'package:la_carreta_express_cs/presentation/screens/pedidos/pedidos_screen.dart';
 export 'package:la_carreta_express_cs/presentation/screens/pedidos/seguimiento_pedido_screen.dart';
 export 'package:la_carreta_express_cs/presentation/screens/platos/info_plato_screen.dart';
+export 'package:la_carreta_express_cs/presentation/screens/auth/check_auth_status_screen.dart';
+export 'package:la_carreta_express_cs/presentation/screens/auth/login_screen.dart';
+export 'package:la_carreta_express_cs/presentation/screens/auth/register_screen.dart';
+export 'package:la_carreta_express_cs/presentation/screens/pedidos/order_success_screen.dart';

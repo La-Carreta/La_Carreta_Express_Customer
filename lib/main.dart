@@ -4,11 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/config/router/app_router.dart';
 import 'package:la_carreta_express_cs/config/theme/app_theme.dart';
 import 'package:la_carreta_express_cs/firebase_options.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -19,14 +17,16 @@ Future<void> main() async{
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appRouter = ref.watch(goRouterProvider);
+
     return MaterialApp.router(
       title: 'La Carreta Express App',
-      routerConfig: AppRouter.appRouter,
+      routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       theme: AppTheme().getTheme(),
     );

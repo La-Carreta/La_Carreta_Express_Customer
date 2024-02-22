@@ -1,15 +1,45 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/config/router/app_router_notifier.dart';
+import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
 import 'package:la_carreta_express_cs/presentation/screens/screens.dart';
 
-class AppRouter{
-  static final appRouter = GoRouter(
-    initialLocation: '/',
+final goRouterProvider = Provider((ref){
+  final goRouterNotifier = ref.read(goRouterNotifierProvider);
+
+  return GoRouter(
+    initialLocation: '/checking',
+    refreshListenable: goRouterNotifier,
+
     routes: [
+
+      GoRoute(
+        path: '/checking',
+        builder: (context, state) => const CheckAuthStatusScreen(),
+      ),
+
+      GoRoute(
+        path: "/login",
+        name: LoginScreen.name,
+        builder: (context, state) => const LoginScreen()
+      ),
+
+      GoRoute(
+        path: "/register",
+        name: RegisterScreen.name,
+        builder: (context, state) => const RegisterScreen()
+      ),
+
+      GoRoute(
+        path: "/reset-password",
+        name: ResetPasswordScreen.name,
+        builder: (context, state) => const ResetPasswordScreen()
+      ),
+
       GoRoute(
         path: "/",
         name: HomeScreen.name,
         builder: (context, state) => const HomeScreen(),
-        routes: const []
       ),
       
       GoRoute(
@@ -25,24 +55,6 @@ class AppRouter{
         path: "/cart",
         name: CartScreen.name,
         builder: (context, state) => const CartScreen()
-      ),
-
-      GoRoute(
-        path: "/sign-in",
-        name: SignInScreen.name,
-        builder: (context, state) => const SignInScreen()
-      ),
-
-      GoRoute(
-        path: "/sign-up",
-        name: SignUpScreen.name,
-        builder: (context, state) => const SignUpScreen()
-      ),
-
-      GoRoute(
-        path: "/reset-password",
-        name: ResetPasswordScreen.name,
-        builder: (context, state) => const ResetPasswordScreen()
       ),
 
       GoRoute(
@@ -80,6 +92,34 @@ class AppRouter{
         name: AccountUserScreen.name,
         builder: (context, state) => const AccountUserScreen()
       ),
-    ]
+
+      GoRoute(
+        path: "/order-success",
+        name: OrderSuccessScreen.name,
+        builder: (context, state) => const OrderSuccessScreen()
+      ),
+    ],
+
+    redirect: (context, state) {    
+      final isGoingTo = state.fullPath; 
+      final authStatus = goRouterNotifier.authStatus;
+
+      if(isGoingTo == '/checking' && authStatus == AuthStatus.checking) return null;
+      if(authStatus == AuthStatus.notAuthenticated){
+        if( isGoingTo == '/login' || isGoingTo == '/register') return null;
+
+        return '/login';
+      }
+
+      if(authStatus == AuthStatus.authenticated){
+        if( isGoingTo == '/login' || isGoingTo == '/register' || isGoingTo == "/checking") {
+          return '/';
+        }
+      }
+
+      return null;
+    },    
   );
-}
+});
+
+

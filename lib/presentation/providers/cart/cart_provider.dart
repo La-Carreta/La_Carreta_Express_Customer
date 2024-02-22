@@ -23,7 +23,7 @@ final cartProvider = StateNotifierProvider<CartNotifier, Carrito>((ref){
 typedef CarritoCallBackByCustomer = Future<Carrito> Function({required String idCliente});
 typedef CarritoCallBackById = Future<Carrito> Function({required String idCarrito});
 
-typedef DetalleCallBack = Future<void> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
+typedef DetalleCallBack = Future<Carrito> Function({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});
 typedef EmptyCartCallBack = Future<void> Function({required String idCarrito, required Carrito cart});
 typedef CartCallBack = Future<Carrito> Function({required Carrito carrito, required String idDetalle, required int cantidad});
 
@@ -54,7 +54,7 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     final Carrito carrito = await getCarritoByCliente(idCliente: idCliente);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: carrito.id,
       cliente: carrito.cliente,
       detallesPedido: carrito.detallesPedido,
@@ -69,7 +69,14 @@ class CartNotifier extends StateNotifier<Carrito>{
     if(isLoading) return;
     isLoading = true;
     //Buscar si el pedido se encuentra en la lista
-    await addOrUpdateItem(cliente: cliente, detallePedido: item);
+    final Carrito cartUpdated = await addOrUpdateItem(cliente: cliente, detallePedido: item);
+
+    state = state.copyWith(
+      id: cartUpdated.id,
+      cliente: cartUpdated.cliente,
+      detallesPedido: cartUpdated.detallesPedido,
+      total: cartUpdated.total
+    );
 
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
@@ -81,19 +88,24 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     await emptyCart(idCarrito: idCarrito, cart: cart);
 
+    state = state.copyWith(
+      id: cart.id,
+      cliente: cart.cliente,
+      detallesPedido: [],
+      total: 0.00
+    );
+
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }
 
   Future<void> updateDetallePedidoCart({required String idDetalle, required Carrito carrito, required int cantidad}) async {
-    // Inicia el cronómetro
-    Stopwatch stopwatch = Stopwatch()..start();
     if(isLoading) return;
     isLoading = true;
 
     final cartUpdated = await updateCart(cantidad: cantidad, carrito: carrito, idDetalle: idDetalle);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: cartUpdated.id,
       cliente: cartUpdated.cliente,
       detallesPedido: cartUpdated.detallesPedido,
@@ -103,13 +115,6 @@ class CartNotifier extends StateNotifier<Carrito>{
     await Future.delayed(const Duration(milliseconds: 100));
     isLoading = false;
 
-    // Detiene el cronómetro
-    stopwatch.stop();
-
-    // Obtiene el tiempo transcurrido en milisegundos
-    int tiempoTranscurrido = stopwatch.elapsedMilliseconds;
-
-    print('El proceso tardó $tiempoTranscurrido milisegundos en ejecutarse.');
   }
 
   Future<void> deleteDetallePedidoCart({required String idCarrito, required String idDetalle, required Carrito cart}) async {
@@ -118,7 +123,7 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     final cartUpdated = await deleteItemCart(idCarrito: idCarrito, idDetalle: idDetalle, cart: cart);
 
-    state = Carrito.copyWith(
+    state = state.copyWith(
       id: cartUpdated.id,
       cliente: cartUpdated.cliente,
       detallesPedido: cartUpdated.detallesPedido,

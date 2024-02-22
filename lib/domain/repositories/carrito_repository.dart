@@ -7,6 +7,6 @@ abstract class CarritoRepository{
   Future<Carrito> getCarritoById({required String idCarrito});
   Future<Carrito> updateDetallePedido({required Carrito carrito, required String idDetalle, required int cantidad});
   Future<Carrito> deleteDetallePedido({required String idCarrito, required String idDetalle, required Carrito cart});
-  Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
+  Future<Carrito> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido});  
   Future<void> deleteCart({required String idCarrito, required Carrito cart});
 }

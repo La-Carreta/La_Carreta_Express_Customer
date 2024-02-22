@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/custom_snackbar.dart';
 import 'package:la_carreta_express_cs/presentation/providers/cart/cart_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/counter_plato_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/platos/plato_info_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
@@ -80,7 +80,7 @@ class _InfoPlatoView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int counterPlato = ref.watch( counterPlatoProvider )[plato.id] ?? 1;
-    
+    final customer = ref.watch(customerProvider);
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -164,9 +164,9 @@ class _InfoPlatoView extends ConsumerWidget {
                 onPressed: (){
                   final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
 
-                  //TODO: Considerar el envio de id's
-                  //TODO: Cambiar los id's
-                  ref.watch( cartProvider.notifier ).addOrUpdateItemCart(cliente: Cliente.empty(), item: newItem);
+                  //Actualizar carrito
+                  ref.read( cartProvider.notifier ).addOrUpdateItemCart(cliente: customer, item: newItem);
+
                   showCustomSnackbar(context: context, title: "Item agregado satisfactoriamente.");
                 }, 
                 child: const Text("Agregar al carrito"),                

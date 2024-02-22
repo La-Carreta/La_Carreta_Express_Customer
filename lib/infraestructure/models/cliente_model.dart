@@ -44,4 +44,14 @@ class ClienteModel {
         "imgUrl": imgUrl,
         "uuid": uuid,
     };
+
+    Map<String, dynamic> toJsonNewUser() => {
+      "nombre": nombre,
+      "apellido": apellido,
+      "celular": celular,
+      "direccion": direccion,
+      "email": email,
+      "imgUrl": imgUrl,
+      "uuid": uuid,
+  };
 }

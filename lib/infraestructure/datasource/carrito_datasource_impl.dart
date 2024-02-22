@@ -6,7 +6,7 @@ import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/carrito_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/carrito_model.dart';
 
-class CarritoDatasourceImp extends CarritoDatasource{
+class CarritoDatasourceImpl extends CarritoDatasource{
   final firebase = FirebaseFirestore.instance;
 
   @override
@@ -23,7 +23,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
       //* Actualizar carrito  
       await updateCart(collectionReference, cart, newDetailsCart, totalUpdated);
 
-      return Carrito.copyWith(
+      return Carrito(
         id: cart.id,
         cliente: cart.cliente,
         detallesPedido: newDetailsCart, 
@@ -39,7 +39,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
     try {
       final CollectionReference collectionReference = firebase.collection("cart");
       final QuerySnapshot response = await collectionReference
-        .where("cliente.id", isEqualTo: idCliente)
+        .where("cliente.uuid", isEqualTo: idCliente)
         .get();
 
       if(response.docs.isNotEmpty){
@@ -87,7 +87,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
       //* Actualizar carrito  
       await updateCart(collectionReference, carrito, newDetailsCart, totalUpdated);
 
-      return Carrito.copyWith(
+      return Carrito(
         id: carrito.id,
         cliente: carrito.cliente,
         detallesPedido: newDetailsCart, 
@@ -100,7 +100,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
   }
   
   @override
-  Future<void> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) async{
+  Future<Carrito> createOrUpdateDetallePedido({String? idCarrito, required Cliente cliente, required DetallePedido detallePedido}) async{
     try {      
       //** 1. Consultar si el cliente tiene un carrito creado anteriormente. 
       final carritoFs = await getCarritoByIdCliente(idCliente: cliente.id);
@@ -114,8 +114,10 @@ class CarritoDatasourceImp extends CarritoDatasource{
         detalles.add(detallePedido);
         detalles.sort((a, b) => a.plato.nombre.compareTo(b.plato.nombre));
 
-        final CarritoModel carritoData = CarritoMapper.carritoToModel(Carrito(detallesPedido: detalles, cliente: cliente, total: carritoFs.total));       
+        final newCart = Carrito(detallesPedido: detalles, cliente: cliente, total: detalles[0].valorTotal);
+        final CarritoModel carritoData = CarritoMapper.carritoToModel(newCart);       
         await collectionReference.add(carritoData.toJson());
+        return newCart;
       }
       //** Insertar o actualizar el detalle del carrito
       else{
@@ -142,7 +144,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
           } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);
+          return await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);
         }
         //* Se crea el detalle del pedido en la orden
         else{
@@ -155,7 +157,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
           } 
 
           //* Actualizar carrito
-          await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);          
+          return await updateCart(collectionReference, carritoFs, newDetailsCart, totalUpdated);          
         }
       }
     } catch (e) {
@@ -166,7 +168,7 @@ class CarritoDatasourceImp extends CarritoDatasource{
   @override
   Future<void> deleteCart({required String idCarrito, required Carrito cart}) async{
     try {
-      final emptyCart = Carrito.copyWith(
+      final emptyCart = Carrito(
         id: cart.id,
         cliente: cart.cliente,
         detallesPedido: [],
@@ -182,8 +184,8 @@ class CarritoDatasourceImp extends CarritoDatasource{
     }
   }
 
-  Future<void> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
-    Carrito cartUpdated = Carrito.copyWith(
+  Future<Carrito> updateCart(CollectionReference collectionReference, Carrito carritoFs, List<DetallePedido> newDetailsCart, double totalUpdated) async{
+    Carrito cartUpdated = Carrito(
       id: carritoFs.id,
       cliente: carritoFs.cliente,
       detallesPedido: newDetailsCart,
@@ -194,6 +196,8 @@ class CarritoDatasourceImp extends CarritoDatasource{
 
     //* Enviar detalle actualizados.
     await collectionReference.doc(carritoFs.id).update(carritoData.toJson());          
+
+    return cartUpdated;
   }
   
   @override

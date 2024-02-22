@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/domain/entities/entities.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
-import 'package:la_carreta_express_cs/presentation/providers/providers.dart';
-import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
+import 'package:la_carreta_express_cs/presentation/presentation.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -13,12 +11,13 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final customer = ref.watch(customerProvider);
 
-    //** TODO: Envio del cliente
-    ref.watch( cartProvider.notifier ).loadCart("DkkkqnIBV5OTH2s4eNJW"); //deleteCart -> set once time
+    ref.watch(timeOrderProvider.notifier).getEstimatedTime();
+    ref.watch( cartProvider.notifier ).loadCart(customer.id);
  
-    final initialLoading = ref.watch(initialLoadingProvider);
-    if(initialLoading) return const FullScreenLoader();
+    final initialLoading = ref.watch(cartInitialLoadingProvider);
+    if(initialLoading) return const Scaffold(body: FullScreenLoader());
 
     final size = MediaQuery.of(context).size;
 
@@ -65,7 +64,7 @@ class _DetallePedido extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref) {
 
     final Carrito carrito = ref.watch( cartProvider );
-    final TextEditingController controller = TextEditingController();
+    final TextEditingController observacionesController = TextEditingController();
     final numMesa = ref.watch( numMesaProvider );
 
     if(carrito.detallesPedido.isEmpty) {
@@ -76,6 +75,75 @@ class _DetallePedido extends ConsumerWidget{
         text: "El carrito esta vacio..."
       );
     }
+
+    final estimatedTime = ref.watch(timeOrderProvider);
+
+    void showConfirmDialog(OrdenPedido ordenPedido) async{
+      return showDialog(
+        context: context, 
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog.adaptive(
+            title: const Text("Confirmar Pedido"),
+            content: SizedBox(
+              height: 100,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("NOTA: ", style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold)),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "Tiempo de espera:",
+                          style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+
+                        TextSpan(
+                          text: ordenPedido.tiempoEstimado,
+                          style: const TextStyle(color: Colors.black, fontSize: 17),
+                        )
+                      ]
+                    ),
+                  ),  
+                  const SizedBox(height: 10),
+                  const Text("¿Desea continuar con el pedido?", style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold)),                  
+                ],
+              ),
+            ),
+            actions: [
+              FilledButton(
+                style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(const Size(100, 40)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: MaterialStateProperty.all(const Color(0xffe63946))
+                ),
+                onPressed: (){
+                  context.pop();
+                },
+                child: const Text("Cancelar", style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
+
+              FilledButton(
+                style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(const Size(120, 40)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: MaterialStateProperty.all(const Color(0xff023047))
+                ),
+                onPressed: (){
+                  ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
+                  ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
+                  Future.delayed(const Duration(milliseconds: 500), () => context.go('/order-success'));
+                },
+                child: const Text("Si, continuar", style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
 
     return Container(
       width: maximiunWidth,
@@ -137,7 +205,7 @@ class _DetallePedido extends ConsumerWidget{
           const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
           
           TextFormField(
-            controller: controller,
+            controller: observacionesController,
             minLines: 3,            
             maxLines: 6,
             keyboardType: TextInputType.multiline,
@@ -160,7 +228,9 @@ class _DetallePedido extends ConsumerWidget{
               backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
             ),
             onPressed: (){
-              final observaciones = controller.text;
+              final observaciones = observacionesController.text;
+              final tiempoEstimado = calculateEstimatedTime(estimatedTime);
+
               final ordenPedido = OrdenPedido(
                 cliente: carrito.cliente,
                 fechaEmision: DateTime.now(), 
@@ -169,15 +239,11 @@ class _DetallePedido extends ConsumerWidget{
                 numOrden: generateOrderNumber(), 
                 observaciones: observaciones, 
                 numMesa: numMesa, 
-                detalles: carrito.detallesPedido
+                detalles: carrito.detallesPedido,
+                tiempoEstimado: tiempoEstimado
               );
 
-              ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
-              ref.watch( cartProvider.notifier ).deleteCart(carrito.id, carrito);
-              showCustomSnackbar(context: context, title: "La orden se ha creado satisfactoriamente");
-
-              //TODO: Considerar redireccion a pantalla intermedia de ordenes
-              Future.delayed(const Duration(milliseconds: 500), () => context.go('/'));
+              showConfirmDialog(ordenPedido);
             }, 
             child: const Text("Realizar Pedido", style: TextStyle(fontWeight: FontWeight.bold),),                
           ),
