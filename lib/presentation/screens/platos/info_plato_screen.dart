@@ -164,7 +164,9 @@ class _InfoPlatoView extends ConsumerWidget {
                 onPressed: (){
                   final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
 
-                  ref.watch( cartProvider.notifier ).addOrUpdateItemCart(cliente: customer, item: newItem);
+                  //Actualizar carrito
+                  ref.read( cartProvider.notifier ).addOrUpdateItemCart(cliente: customer, item: newItem);
+
                   showCustomSnackbar(context: context, title: "Item agregado satisfactoriamente.");
                 }, 
                 child: const Text("Agregar al carrito"),                

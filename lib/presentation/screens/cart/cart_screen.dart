@@ -65,7 +65,7 @@ class _DetallePedido extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref) {
 
     final Carrito carrito = ref.watch( cartProvider );
-    final TextEditingController controller = TextEditingController();
+    final TextEditingController observacionesController = TextEditingController();
     final numMesa = ref.watch( numMesaProvider );
 
     if(carrito.detallesPedido.isEmpty) {
@@ -137,7 +137,7 @@ class _DetallePedido extends ConsumerWidget{
           const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
           
           TextFormField(
-            controller: controller,
+            controller: observacionesController,
             minLines: 3,            
             maxLines: 6,
             keyboardType: TextInputType.multiline,
@@ -160,7 +160,7 @@ class _DetallePedido extends ConsumerWidget{
               backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
             ),
             onPressed: (){
-              final observaciones = controller.text;
+              final observaciones = observacionesController.text;
               final ordenPedido = OrdenPedido(
                 cliente: carrito.cliente,
                 fechaEmision: DateTime.now(), 
