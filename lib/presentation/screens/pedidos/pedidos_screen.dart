@@ -295,7 +295,7 @@ void _showBottomSheet(context) {
                 ),
             
                 const _OpcionFiltro(
-                  texto: "Pedido en proceso",
+                  texto: "Pedido en preparación",
                   value: 3,
                   color: Color(0xff0ead69),
                 ),

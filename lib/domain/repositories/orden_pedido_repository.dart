@@ -1,3 +1,4 @@
+import 'package:la_carreta_express_cs/domain/entities/estimated_time.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 
 abstract class OrdenPedidoRepository{
@@ -7,4 +8,5 @@ abstract class OrdenPedidoRepository{
   Stream<List<OrdenPedido>> getOrdersByFilter({required String idCliente, required String state});
   Future<void> cancelOrder({required String idOrdenPedido});
   Future<void> deleteOrder({required String idOrdenPedido});
+  Future<EstimatedTime> getEstimatedTime();
 }

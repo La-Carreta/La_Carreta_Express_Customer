@@ -1,7 +1,7 @@
 final List<String> statusList = [
   'Pedido realizado',
   'Pedido confirmado',
-  'Pedido en proceso',
+  'Pedido en preparación',
   'Pedido listo',
 ];
 
@@ -11,7 +11,7 @@ int getCurrentStatusIndex(String status) {
       return 1;
     case 'Pedido confirmado':
       return 2;
-    case 'Pedido en proceso':
+    case 'Pedido en preparación':
       return 3;
     case 'Pedido listo':
       return 4;

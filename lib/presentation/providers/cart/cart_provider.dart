@@ -81,6 +81,8 @@ class CartNotifier extends StateNotifier<Carrito>{
 
     await emptyCart(idCarrito: idCarrito, cart: cart);
 
+    //TODO: Actualizar carrito
+
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:la_carreta_express_cs/domain/datasource/orden_pedido_datasource.dart';
+import 'package:la_carreta_express_cs/domain/entities/estimated_time.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/infraestructure/mappers/orden_pedido_mapper.dart';
 import 'package:la_carreta_express_cs/infraestructure/models/orden_pedido_model.dart';
@@ -89,5 +90,47 @@ class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource{
     } catch (e) {
       throw Exception("Error al cancelar la orden. ${e.toString()}");            
     }
+  }
+  
+  @override
+  Future<EstimatedTime> getEstimatedTime() async {
+    //Consultar todos las ordenes en estado "En preparación"
+    try {
+      final CollectionReference collectionReference = firebase.collection("ordenPedido");
+      final QuerySnapshot response = await collectionReference
+        .where("estado", isEqualTo: "Pedido en preparación")
+        .orderBy("fecha", descending: true)
+        .get();
+      
+      final List<OrdenPedidoModel> ordenes = response.docs.map((order) => OrdenPedidoModel.fromJson(order.id, order.data() as Map<String, dynamic>)).toList();
+      //Listado con los tiempos de preparación de cada orden
+      final List<String> tiempos = ordenes.map((order) => order.tiempoEstimado.trim()).toList();
+    
+      if(tiempos.isEmpty) return EstimatedTime(numHoras: 0, numMinutos: 0, tiempoEstimado: "No hay pedidos en preparación.");
+
+      //final int minutosEnEspera = tiempos.fold(0, (previousValue, element) => previousValue + int.parse(element.split("minutos")[0].trim()));
+      final int minutosEnEspera = tiempos.fold(0, (previousValue, element) {
+        final List<String> estimatedTime = element.split(" ");
+        int tiempo = 0;
+        if (estimatedTime.length == 2) {
+          tiempo = int.parse(estimatedTime[0]);
+        } else if (estimatedTime.length == 4) {
+          tiempo = int.parse(estimatedTime[0]) * 60 + int.parse(estimatedTime[2]);
+        }
+        return previousValue + tiempo;
+      });
+
+      final int horas = minutosEnEspera ~/ 60;
+      final int minutos = minutosEnEspera % 60;
+
+      return EstimatedTime(
+        numHoras: horas,
+        numMinutos: minutos,
+        tiempoEstimado: "$horas horas con $minutos minutos"
+      );
+    } catch (e) {
+      throw Exception("Error al calcular el tiempo estimado. ${e.toString()}");
+    }
+
   }
 }

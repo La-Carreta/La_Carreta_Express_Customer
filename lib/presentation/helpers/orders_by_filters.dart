@@ -5,7 +5,7 @@ class OrdersByFilters {
     0: 'Todos',
     1: 'Pedido realizado',
     2: 'Pedido confirmado',
-    3: 'Pedido en proceso',
+    3: 'Pedido en preparación',
     4: 'Pedido en cola',
     5: 'Pedido listo',
     6: 'Pedido entregado',
