@@ -1,5 +1,6 @@
 name: la_carreta_express_cs
-description: "La Carreta Express is an app to manage orders and deliveries for a restaurant."
+description: "La Carreta Express is an app to manage orders and deliveries for a
+  restaurant."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -32,9 +33,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.15.3
   firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.16
   flutter:
     sdk: flutter
-  flutter_dotenv: ^5.1.0
+  flutter_local_notifications: ^16.3.2
   flutter_riverpod: ^2.4.9
   flutter_slidable: ^3.0.0
   formz: ^0.6.1
@@ -71,8 +73,6 @@ flutter:
     - assets/pedidos-icons/
     - assets/lottie/json/
     - google_fonts/montserrat_alternates/
-
-
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
