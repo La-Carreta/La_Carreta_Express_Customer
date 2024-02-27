@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
+//import 'package:la_carreta_express_cs/presentation/providers/notifications/notifications_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/home/custom_drawer.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -16,6 +17,8 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(authProvider); 
     final scaffoldKey = GlobalKey<ScaffoldState>();
     ref.watch(customerProvider.notifier).getCustomerById(user.user?.id ?? "");
+    //ref.watch(notificationsProvider.notifier).requestPermission();
+
 
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),

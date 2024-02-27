@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:la_carreta_express_cs/presentation/helpers/get_link_icon.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:la_carreta_express_cs/domain/entities/push_message.dart';
+import 'package:la_carreta_express_cs/presentation/providers/notifications/notifications_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class NotificacionesScreen extends StatelessWidget {
@@ -42,7 +45,7 @@ class NotificacionesScreen extends StatelessWidget {
   }
 }
 
-class _NotificacionesView extends StatelessWidget {
+class _NotificacionesView extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
 
@@ -51,7 +54,10 @@ class _NotificacionesView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notificationsState = ref.watch(notificationsProvider);
+    final notifications = notificationsState.notifications;
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
@@ -60,12 +66,14 @@ class _NotificacionesView extends StatelessWidget {
         color: Color(0xffF5F5F5),
         borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(25)),
       ),
-      child: ListView.builder(
+      child: notifications.isEmpty
+        ? const Center(child: Text("No tienes notificaciones", style: TextStyle(fontSize: 20, color: Colors.black),))
+        : ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: 15,
+        itemCount: notifications.length,
         itemBuilder: (context, index) {
-          final imgUrl = getUrlIconNotificaciones();
-          return _Notification(maximiunWidth:maximiunWidth, imgUrl: imgUrl,);
+          final notification = notifications[index];
+          return _Notification(maximiunWidth:maximiunWidth, notification: notification,);
         },
       ),
     );
@@ -74,11 +82,11 @@ class _NotificacionesView extends StatelessWidget {
 
 class _Notification extends StatelessWidget {
   final double maximiunWidth;
-  final String imgUrl;
+  final PushMessage notification;
 
   const _Notification({
     required this.maximiunWidth, 
-    required this.imgUrl,
+    required this.notification,
   });
 
   @override
@@ -97,18 +105,29 @@ class _Notification extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(60),
-            child: Image.network(imgUrl, width: 60, fit: BoxFit.cover)
+            child: Image.network(
+              notification.imageUrl != null 
+                ?notification.imageUrl! 
+                : "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_1_mzglvm.png", 
+              width: 60, fit: BoxFit.cover)
           ),
           
           const SizedBox(width: 10),
 
-          const Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Hey Alejandro..", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              Text("Tu orden #0316196 esta lista.")
+              Text(notification.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Text(notification.body)
             ],
+          ),
+
+          const Spacer(),
+
+          IconButton(
+            onPressed: () => context.push("/seguimiento-pedido/${notification.data?['ordenId'] ?? "no-id"}"), 
+            icon: const Icon(Icons.chevron_right_outlined, color: Colors.black,)
           )
         ],
       ),

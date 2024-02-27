@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/helpers.dart';
 import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
 import 'package:la_carreta_express_cs/presentation/ui/input_decoration.dart';
-import 'package:la_carreta_express_cs/presentation/widgets/shared/registered_trademark.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:lottie/lottie.dart';
 
