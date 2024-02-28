@@ -16,6 +16,7 @@ class OrdenPedidoModel {
   final double total;
   final String observaciones;
   final String tiempoEstimado;
+  final bool statusPago;
 
   OrdenPedidoModel({
     required this.id,
@@ -28,6 +29,7 @@ class OrdenPedidoModel {
     required this.numOrden,
     required this.total,
     required this.tiempoEstimado,
+    required this.statusPago,
     required this.observaciones
   });
 
@@ -44,6 +46,7 @@ class OrdenPedidoModel {
     numOrden: json["numOrden"],
     tiempoEstimado: json["tiempoEstimado"],   
     total: json["total"]?.toDouble(),
+    statusPago: json["statusPago"],
     observaciones: json['observaciones']
   );
 
@@ -57,6 +60,7 @@ class OrdenPedidoModel {
       "numOrden": numOrden,
       "tiempoEstimado": tiempoEstimado,
       "total": total,
+      "statusPago": statusPago,
       "observaciones": observaciones
     };
 }

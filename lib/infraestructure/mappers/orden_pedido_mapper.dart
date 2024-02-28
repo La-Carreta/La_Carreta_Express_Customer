@@ -17,6 +17,7 @@ class OrdenPedidoMapper{
     numMesa: order.numMesa,
     numOrden: order.numOrden,
     tiempoEstimado: order.tiempoEstimado,
+    statusPago: order.statusPago,
     observaciones: order.observaciones
   );
 
@@ -31,6 +32,7 @@ class OrdenPedidoMapper{
     tiempoEstimado: order.tiempoEstimado,
     fechaEmision: order.fecha,
     observaciones: order.observaciones, 
+    statusPago: order.statusPago,
     estadoOrden: order.estado
   );
 }

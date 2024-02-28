@@ -14,6 +14,7 @@ class OrdenPedido{
   final int numMesa;
   final List<DetallePedido> detalles;
   final String tiempoEstimado;
+  final bool statusPago;
 
   OrdenPedido({
     this.id = "", 
@@ -26,7 +27,8 @@ class OrdenPedido{
     required this.numOrden, 
     required this.observaciones, 
     required this.numMesa,
-    required this.detalles
+    required this.detalles,
+    this.statusPago = false
   });
 
   OrdenPedido copyWith({
@@ -41,6 +43,7 @@ class OrdenPedido{
     int? numMesa,
     List<DetallePedido>? detalles,
     String? tiempoEstimado,
+    bool? statusPago
   }) {
     return OrdenPedido(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class OrdenPedido{
       numMesa: numMesa ?? this.numMesa,
       detalles: detalles ?? this.detalles,
       tiempoEstimado: tiempoEstimado ?? this.tiempoEstimado,
+      statusPago: statusPago ?? this.statusPago
     );
   }
 
@@ -68,6 +72,7 @@ class OrdenPedido{
     numOrden = "", 
     observaciones = "", 
     numMesa = 0,
-    detalles = <DetallePedido>[];
+    detalles = <DetallePedido>[],
+    statusPago = false;
 
 }
