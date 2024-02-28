@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -30,25 +31,34 @@ class PedidosScreen extends ConsumerWidget {
           const ImageBackground(imgUrl: "assets/background/main.png"),
 
           //Back button
-          const Positioned(
+          Positioned(
             top: 50,
             left: 20,
-            child: CustomBackButton()
+            child: FadeInLeft(
+              from: 50,
+              child: const CustomBackButton(),
+            ),
           ),
 
           //Title
           Positioned(
             top: 55,
             left: size.width * 0.37,//150
-            child: const Text("Pedidos", style: TextStyle(fontSize: 30, color: Colors.white),)
+            child: FadeInLeft(
+              from: 50,
+              child: const Text("Pedidos", style: TextStyle(fontSize: 30, color: Colors.white),)
+            )
           ),
 
           //Filter button
           Positioned(
             top: 50,
             right: 20,
-            child: CustomFilterButton(
-              onPressed: ()=> _showBottomSheet(context),
+            child: FadeInLeft(
+              from: 50,
+              child: CustomFilterButton(
+                onPressed: ()=> _showBottomSheet(context),
+              ),
             )
           ),
 
@@ -143,9 +153,9 @@ class _Pedidos extends ConsumerWidget {
                               ),
                           ]
                         ),
-                        child: _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index])
+                        child: FadeInUp(child: _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]))
                       )
-                    : _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]);
+                    : FadeInUp(child: _ItemPlato(maximiunWidth:maximiunWidth, urlIcon: urlIcon, pedido: pedidoList[index]));
                   },
                 );
               }
@@ -370,6 +380,7 @@ class _OpcionFiltro extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final optionFilterSelected = ref.watch( filterOptionPlates ); 
+    final customerData = ref.read(customerProvider);
     return RadioListTile(
       title: Text(texto),
       activeColor: color,
@@ -380,10 +391,10 @@ class _OpcionFiltro extends ConsumerWidget {
       onChanged: (newValue) {
         ref.read(filterOptionPlates.notifier).state = newValue as int;
         if(texto == "Todos"){
-          ref.read( ordenPedidoProvider.notifier ).getOrders("DkkkqnIBV5OTH2s4eNJW");
+          ref.read( ordenPedidoProvider.notifier ).getOrders(customerData.id);
           ref.read( filterOptionPedidoProvider.notifier).state = "Todos";
         }else{
-          ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter("DkkkqnIBV5OTH2s4eNJW", texto);
+          ref.read( ordenPedidoProvider.notifier ).getOrdersByFilter(customerData.id, texto);
           ref.read( filterOptionPedidoProvider.notifier).state = texto;
         }
     });

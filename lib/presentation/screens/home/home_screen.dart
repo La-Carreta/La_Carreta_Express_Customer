@@ -1,8 +1,9 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
 import 'package:la_carreta_express_cs/presentation/providers/customer/customer_provider.dart';
-//import 'package:la_carreta_express_cs/presentation/providers/notifications/notifications_provider.dart';
+import 'package:la_carreta_express_cs/presentation/providers/notifications/notifications_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/home/custom_drawer.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
@@ -17,7 +18,7 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(authProvider); 
     final scaffoldKey = GlobalKey<ScaffoldState>();
     ref.watch(customerProvider.notifier).getCustomerById(user.user?.id ?? "");
-    //ref.watch(notificationsProvider.notifier).requestPermission();
+    ref.watch(notificationsProvider.notifier).requestPermission();
 
 
     return Scaffold(
@@ -33,47 +34,57 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //*Drawer and Cart Button
-          DrawerCartSection(),
-
-          SizedBox(height: 20),
-
-          //* Badge Card
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: CardPresentationHome(imgUrl: "assets/home/badge.png", personUrl: "assets/home/Chef-Badge.png"),
+          FadeInRight(
+            from: 50,
+            child: const DrawerCartSection()
           ),
 
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
+
+          //* Badge Card
+          FadeInDown(
+            from: 50,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: CardPresentationHome(imgUrl: "assets/home/badge.png", personUrl: "assets/home/Chef-Badge.png"),
+            ),
+          ),
+
+          const SizedBox(height: 20),
 
           //* Categorias
-          Padding(
-            padding: EdgeInsets.only(left: 10, bottom: 10),
-            child: Text("Categorias", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+          FadeInLeft(
+            child: const Padding(
+              padding: EdgeInsets.only(left: 10, bottom: 10),
+              child: Text("Categorias", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+            ),
           ),          
 
           //* Lista de Categorias
-          ListCategorias(),
-          SizedBox(height: 10),
+          FadeInRight(child: const ListCategorias()),
+          const SizedBox(height: 10),
 
           //* Mas populares
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Text("Más populares", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+          FadeInLeft(
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text("Más populares", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+            ),
           ),  
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           //* Listado de platos
-          ListPlatos(),
+          FadeInRight(child: const ListPlatos()),
 
           //* Marca registrada
-          Spacer(),
-          RegisteredTradeMark()          
+          const Spacer(),
+          const RegisteredTradeMark()          
         ],
       ),
     );

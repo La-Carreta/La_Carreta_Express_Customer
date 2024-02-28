@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,10 +25,13 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
           const ImageBackground(imgUrl: "assets/background/main.png"),
 
           //Back button
-          const Positioned(
+          Positioned(
             top: 50,
             left: 20,
-            child: CustomBackButton()
+            child: FadeInLeft(
+              from: 50,
+              child: const CustomBackButton()
+            )
           ),
 
           
@@ -35,7 +39,10 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
           Positioned(
             top: 55,
             left: size.width * 0.25,//150
-            child: const Text("Seguimiento del Pedido", style: TextStyle(fontSize: 27, color: Colors.white),)
+            child: FadeInDown(
+              from: 50,
+              child: const Text("Seguimiento del Pedido", style: TextStyle(fontSize: 27, color: Colors.white),)
+            )
           ),
 
           Positioned(
@@ -89,12 +96,12 @@ class _SiguimientoPedidoView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
           //Time Box
-          _EstimatedTimeBox(estimatedTime: pedido.tiempoEstimado, numOrder: pedido.numOrden),
+          FadeInRight(child: _EstimatedTimeBox(estimatedTime: pedido.tiempoEstimado, numOrder: pedido.numOrden)),
 
           const SizedBox(height: 10),
 
           //Linea de tiempo
-          _TimeLinePedido(currentState),
+          FadeInLeft(child: _TimeLinePedido(currentState)),
 
           const SizedBox(height: 10),
 

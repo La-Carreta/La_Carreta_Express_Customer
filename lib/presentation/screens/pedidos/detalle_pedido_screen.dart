@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/entities.dart';
@@ -84,29 +85,35 @@ class _DetallePedido extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [          
           //Title and cost
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("# de orden", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-              Text("#${ordenPedido.numOrden}", style: const TextStyle(fontSize: 20)),
-            ],
+          FadeInLeft(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("# de orden", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+                Text("#${ordenPedido.numOrden}", style: const TextStyle(fontSize: 20)),
+              ],
+            ),
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("Fecha", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-              Text(formatDate(ordenPedido.fechaEmision), style: const TextStyle(fontSize: 20, color: Color(0xff9D9D9D))),
-            ],
+          FadeInLeft(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Fecha", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+                Text(formatDate(ordenPedido.fechaEmision), style: const TextStyle(fontSize: 20, color: Color(0xff9D9D9D))),
+              ],
+            ),
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(ordenPedido.estadoOrden),
-              const SizedBox(width: 10),
-              IndicadorEstado(state: ordenPedido.estadoOrden),
-            ],
+          FadeInRight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(ordenPedido.estadoOrden),
+                const SizedBox(width: 10),
+                IndicadorEstado(state: ordenPedido.estadoOrden),
+              ],
+            ),
           ),
 
           const SizedBox(height: 10),
@@ -117,7 +124,10 @@ class _DetallePedido extends StatelessWidget {
               itemCount: ordenPedido.detalles.length,
               itemBuilder: (context, index) {
                 final item = ordenPedido.detalles[index];
-                return _ItemCartPlato(maximiunWidth:maximiunWidth, item: item);
+                return FadeInDown(
+                  from: 30,
+                  child: _ItemCartPlato(maximiunWidth:maximiunWidth, item: item)
+                );
               },
             )
           ),

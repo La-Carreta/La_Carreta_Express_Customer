@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
@@ -33,10 +34,13 @@ class InfoPlatoScreen extends ConsumerWidget {
           const ImageBackground(imgUrl: "assets/background/main.png"),
 
           //Back button
-          const Positioned(
+          Positioned(
             top: 50,
             left: 20,
-            child: CustomBackButton()
+            child: FadeInLeft(
+              from: 50,
+              child: const CustomBackButton()
+            )
           ),
 
           Positioned(
@@ -49,14 +53,17 @@ class InfoPlatoScreen extends ConsumerWidget {
           Positioned(
             top: 100,
             left: size.width * 0.15,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: FadeInImage(
-                placeholder: const AssetImage("assets/loaders/loading.gif"), 
-                image: NetworkImage(plato.platoUrl),
-                width: size.width * 0.70,
-                height: 225,                
-                fit: BoxFit.cover,
+            child: FadeInDown(
+              from: 70,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: FadeInImage(
+                  placeholder: const AssetImage("assets/loaders/loading.gif"), 
+                  image: NetworkImage(plato.platoUrl),
+                  width: size.width * 0.70,
+                  height: 225,                
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -95,83 +102,90 @@ class _InfoPlatoView extends ConsumerWidget {
           const SizedBox(height: 100),
 
           //Title and cost
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: maximiunWidth * 0.6,
-                child: Text(plato.nombre, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 25), maxLines: 2, overflow: TextOverflow.ellipsis)
-              ),
-
-              RichText(
-                text: TextSpan(
-                  children: [
-                    const TextSpan(text: "\$ ", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xffFF0000))),
-                    TextSpan(text: plato.precio.toStringAsFixed(2), style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Color(0xff000000)))
-                  ]
-                )
-              ),              
-            ],
+          FadeInLeft(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: maximiunWidth * 0.6,
+                  child: Text(plato.nombre, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 25), maxLines: 2, overflow: TextOverflow.ellipsis)
+                ),
+            
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(text: "\$ ", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xffFF0000))),
+                      TextSpan(text: plato.precio.toStringAsFixed(2), style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Color(0xff000000)))
+                    ]
+                  )
+                ),              
+              ],
+            ),
           ),
 
-          Text(plato.descripcionCorta),
+          FadeInLeft(child: Text(plato.descripcionCorta)),
           const SizedBox(height: 15),          
           //Informacion del plato (tiempo - energia calorica - puntuacion)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712712/La_Carreta_Express/Various_icons/favorito_hvexto.png', data: '4.5'),
-              _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712714/La_Carreta_Express/Various_icons/fuego_jwrmab.png', data: "${plato.numCalorias} cal",),
-              _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712712/La_Carreta_Express/Various_icons/despertador_dgttcz.png', data: plato.tiempoPreparacion,),
-            ],
+          FadeInLeft(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712712/La_Carreta_Express/Various_icons/favorito_hvexto.png', data: '4.5'),
+                _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712714/La_Carreta_Express/Various_icons/fuego_jwrmab.png', data: "${plato.numCalorias} cal",),
+                _ItemDescriptionPlato(maximiunWidth: maximiunWidth, imgUrl: 'https://res.cloudinary.com/dwexseytn/image/upload/v1703712712/La_Carreta_Express/Various_icons/despertador_dgttcz.png', data: plato.tiempoPreparacion,),
+              ],
+            ),
           ),
           
           const SizedBox(height: 15),
           //Descripcion larga del plato
-          Text(plato.descripcion, style: const TextStyle(fontSize: 16),textAlign: TextAlign.justify),
+          FadeInLeft(child: Text(plato.descripcion, style: const TextStyle(fontSize: 16),textAlign: TextAlign.justify)),
           const Spacer(),
           //Botones          
-          Row(
-            children: [
-              FilledButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+          FadeInUp(
+            from: 50,
+            child: Row(
+              children: [
+                FilledButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                  ),
+                  onPressed: () => ref.watch( counterPlatoProvider.notifier ).decreaseQuantityPlato(plato.id, 1),
+                  child: const Icon(Icons.remove),                
                 ),
-                onPressed: () => ref.watch( counterPlatoProvider.notifier ).decreaseQuantityPlato(plato.id, 1),
-                child: const Icon(Icons.remove),                
-              ),
-              const SizedBox(width: 5,),
-              Text("$counterPlato", style: const TextStyle(fontSize: 25),),
-              const SizedBox(width: 5,),
-
-              FilledButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                const SizedBox(width: 5,),
+                Text("$counterPlato", style: const TextStyle(fontSize: 25),),
+                const SizedBox(width: 5,),
+            
+                FilledButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                  ),
+                  onPressed: () => ref.watch( counterPlatoProvider.notifier ).increaseQuantityPlato(plato.id, 1), 
+                  child: const Icon(Icons.add),                
                 ),
-                onPressed: () => ref.watch( counterPlatoProvider.notifier ).increaseQuantityPlato(plato.id, 1), 
-                child: const Icon(Icons.add),                
-              ),
-
-              const Spacer(),
-
-              FilledButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+            
+                const Spacer(),
+            
+                FilledButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                  ),
+                  onPressed: (){
+                    final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
+            
+                    //Actualizar carrito
+                    ref.read( cartProvider.notifier ).addOrUpdateItemCart(cliente: customer, item: newItem);
+            
+                    showCustomSnackbar(context: context, title: "Item agregado satisfactoriamente.");
+                  }, 
+                  child: const Text("Agregar al carrito"),                
                 ),
-                onPressed: (){
-                  final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);
-
-                  //Actualizar carrito
-                  ref.read( cartProvider.notifier ).addOrUpdateItemCart(cliente: customer, item: newItem);
-
-                  showCustomSnackbar(context: context, title: "Item agregado satisfactoriamente.");
-                }, 
-                child: const Text("Agregar al carrito"),                
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 15),
         ],
