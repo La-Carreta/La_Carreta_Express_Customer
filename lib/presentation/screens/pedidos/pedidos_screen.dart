@@ -178,52 +178,85 @@ class _ItemPlato extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 120,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xffe9ecef))
-      ),
-      child: Row(
-        children: [
-          //Img del plato
-          Image.network(urlIcon, width: 80, fit: BoxFit.cover,), 
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Order: #${pedido.numOrden}", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-                Text("Mesa-${pedido.numMesa}"),
-                Text( formatDate(pedido.fechaEmision) ),//15-Nov-2023 17h15
-               
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IndicadorEstado(state: pedido.estadoOrden),
-                    const SizedBox(width: 10),
-                    Text(pedido.estadoOrden, maxLines: 2, overflow: TextOverflow.ellipsis,)
-                  ],
-                )
-              ],
-            ),
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 120,
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xffe9ecef))
           ),
-
-          SizedBox(
-            width: maximiunWidth * 0.15,
-            child: Center(
-              child: IconButton(
-                onPressed: () => context.push("/seguimiento-pedido/${pedido.id}"), 
-                icon: const Icon(Icons.chevron_right)
+          child: Row(
+            children: [
+              //Img del plato
+              Image.network(urlIcon, width: 80, fit: BoxFit.cover,), 
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Order: #${pedido.numOrden}", style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+                    Text("Mesa-${pedido.numMesa}"),
+                    Text( formatDate(pedido.fechaEmision) ),//15-Nov-2023 17h15
+                   
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IndicadorEstado(state: pedido.estadoOrden),
+                        const SizedBox(width: 10),
+                        Text(pedido.estadoOrden, maxLines: 2, overflow: TextOverflow.ellipsis,)
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+        
+              SizedBox(
+                width: maximiunWidth * 0.15,
+                child: Center(
+                  child: IconButton(
+                    onPressed: () => context.push("/seguimiento-pedido/${pedido.id}"), 
+                    icon: const Icon(Icons.chevron_right)
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+
+        if(pedido.statusPago)
+          const _BadgePayment(),
+      ],
+    );
+  }
+}
+
+class _BadgePayment extends StatelessWidget {
+  const _BadgePayment();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: 5,
+      top: 0,
+      child: Container(
+        width: 50,
+        height: 30,
+        decoration: const BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            bottomRight: Radius.circular(20)
+          ),
+        ),
+        child: const Center(
+          child: Text("Pagado", style: TextStyle(color: Colors.white, fontSize: 10),),
+        )
       ),
     );
   }
