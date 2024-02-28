@@ -242,7 +242,7 @@ class _BadgePayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      right: 5,
+      right: 0,
       top: 0,
       child: Container(
         width: 50,
@@ -251,7 +251,6 @@ class _BadgePayment extends StatelessWidget {
           color: Colors.red,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(20),
-            bottomRight: Radius.circular(20)
           ),
         ),
         child: const Center(
