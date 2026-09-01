@@ -15,25 +15,27 @@ class ListPlatos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final initialLoading = ref.watch(initialLoadingProvider);
-    if(initialLoading) return const FullScreenLoader();
+    if (initialLoading) return const FullScreenLoader();
 
     final categoria = ref.watch(categoriaProvider);
 
     //* Solucion al bug: de carga multiple de datos.
     final countInitialState = ref.watch(counterInitialLoadingPlates);
-    if(countInitialState == 1){
-      //* Este proceso solo se debe realizar una vez, al iniciar la app, para controlar el problema de carga.  
-      ref.watch( platosByCategoriaProvider.notifier ).loadPlatosByCategoria(categoria);
-      Future.delayed(const Duration(milliseconds: 300), (){
-        ref.watch(counterInitialLoadingPlates.notifier).state ++;
+    if (countInitialState == 1) {
+      //* Este proceso solo se debe realizar una vez, al iniciar la app, para controlar el problema de carga.
+      ref
+          .watch(platosByCategoriaProvider.notifier)
+          .loadPlatosByCategoria(categoria);
+      Future.delayed(const Duration(milliseconds: 300), () {
+        ref.watch(counterInitialLoadingPlates.notifier).state++;
       });
     }
 
     final initialLoadingPlatos = ref.watch(initialLoadingPlatosProvider);
-    if(initialLoadingPlatos) return const FullScreenLoader();
+    if (initialLoadingPlatos) return const FullScreenLoader();
 
-    final platos = ref.watch(platosByCategoriaProvider);  
-    if(platos.isEmpty) return const Center(child: _NoData());
+    final platos = ref.watch(platosByCategoriaProvider);
+    if (platos.isEmpty) return const Center(child: _NoData());
     return SizedBox(
       width: double.infinity,
       height: 320,
@@ -43,38 +45,37 @@ class ListPlatos extends ConsumerWidget {
         itemBuilder: (context, index) {
           final plato = platos[index];
           return _CardPlato(
-            onTap: () => context.push('/info-plato/${plato.id}', extra: index),
-            plato: plato
-          );
+              onTap: () =>
+                  context.push('/info-plato/${plato.id}', extra: index),
+              plato: plato);
         },
       ),
     );
   }
 }
 
-class _CardPlato extends StatelessWidget {  
+class _CardPlato extends StatelessWidget {
   final VoidCallback? onTap;
   final Plato plato;
-  
+
   const _CardPlato({
-    this.onTap, 
+    this.onTap,
     required this.plato,
   });
 
   @override
   Widget build(BuildContext context) {
     final boxDecoration = BoxDecoration(
-      color: const Color(0XFFFFFFFF),
-      borderRadius: BorderRadius.circular(20),
-      boxShadow:const [
-        BoxShadow(
-          color: Color(0xFFadb5bd),
-          offset: Offset(0, 2),
-          blurRadius: 5,
-          spreadRadius: 1,
-        ),      
-      ]
-    );
+        color: const Color(0XFFFFFFFF),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFFadb5bd),
+            offset: Offset(0, 2),
+            blurRadius: 5,
+            spreadRadius: 1,
+          ),
+        ]);
 
     return GestureDetector(
       onTap: onTap,
@@ -87,13 +88,15 @@ class _CardPlato extends StatelessWidget {
         child: Center(
           child: Stack(
             children: [
-              if(plato.popular)...[
+              if (plato.popular) ...[
                 Positioned(
-                  right: 0,
-                  top: 10,
-                  child: Image.asset("assets/menu/fuego.png", width: 20,)
-                )
-              ],          
+                    right: 0,
+                    top: 10,
+                    child: Image.asset(
+                      "assets/menu/fuego.png",
+                      width: 20,
+                    ))
+              ],
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,36 +105,50 @@ class _CardPlato extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: FadeInImage(
-                        placeholder: const AssetImage("assets/loaders/loading.gif"), 
+                        placeholder:
+                            const AssetImage("assets/loaders/loading.gif"),
                         image: NetworkImage(plato.platoUrl),
                         width: 150,
                         height: 150,
                         fit: BoxFit.cover,
                       ),
                     ),
-                  ), 
-              
+                  ),
+
                   //Title
-                  Text(plato.nombre, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18,overflow: TextOverflow.ellipsis), maxLines: 2),
+                  Text(plato.nombre,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          overflow: TextOverflow.ellipsis),
+                      maxLines: 2),
                   //Litte description
                   Text(plato.descripcionCorta, textAlign: TextAlign.justify),
-                  const SizedBox(height: 15,),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   //Costo
                   Center(
                     child: RichText(
-                      text: TextSpan(
-                        children: [
-                          const TextSpan(text: '\$', style: TextStyle(fontSize: 12, color: Color(0xffFF0000), fontWeight: FontWeight.bold)),
-                          TextSpan(text: plato.precio.toString(), style: const TextStyle(fontSize: 16, color: Colors.black)),
-                        ]
-                      ),            
+                      text: TextSpan(children: [
+                        const TextSpan(
+                            text: '\$',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xffFF0000),
+                                fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: plato.precio.toString(),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black)),
+                      ]),
                     ),
-                  )          
+                  )
                 ],
               ),
             ],
           ),
-        ),      
+        ),
       ),
     );
   }
@@ -139,7 +156,7 @@ class _CardPlato extends StatelessWidget {
 
 class _NoData extends StatelessWidget {
   const _NoData();
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -152,7 +169,7 @@ class _NoData extends StatelessWidget {
         children: [
           Lottie.asset("assets/lottie/json/Not-Found.json"),
           const Text(
-            "Platos no disponibles, \n vuelva a intentarlo más tarde.", 
+            "Platos no disponibles, \n vuelva a intentarlo más tarde.",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
           )

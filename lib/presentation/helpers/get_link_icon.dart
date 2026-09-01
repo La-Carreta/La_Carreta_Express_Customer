@@ -31,13 +31,13 @@ final urlIconsNotificaciones = [
   "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_2_v6vn2g.png"
 ];
 
-String getUrlIconPlatos(){
+String getUrlIconPlatos() {
   Random random = Random();
   int numAleatorio = random.nextInt(urlIcons.length);
   return urlIcons[numAleatorio];
 }
 
-String getUrlIconNotificaciones(){
+String getUrlIconNotificaciones() {
   Random random = Random();
   int numAleatorio = random.nextInt(urlIconsNotificaciones.length);
   return urlIconsNotificaciones[numAleatorio];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-void showCustomSnackbar( {required BuildContext context, required String title }) {
-
+void showCustomSnackbar(
+    {required BuildContext context, required String title}) {
   ScaffoldMessenger.of(context).clearSnackBars();
 
   final snakback = SnackBar(

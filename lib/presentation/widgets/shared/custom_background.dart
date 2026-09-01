@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ImageBackground extends StatelessWidget {
-
-  final String imgUrl;   
+  final String imgUrl;
   const ImageBackground({super.key, required this.imgUrl});
-  
+
   @override
   Widget build(BuildContext context) {
     bool isUrlValid = Uri.parse(imgUrl).isAbsolute;
@@ -14,11 +13,10 @@ class ImageBackground extends StatelessWidget {
       height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: isUrlValid
-          ? NetworkImage(imgUrl) as ImageProvider<Object>
-          : AssetImage(imgUrl),
-          fit: BoxFit.cover
-        ),   
+            image: isUrlValid
+                ? NetworkImage(imgUrl) as ImageProvider<Object>
+                : AssetImage(imgUrl),
+            fit: BoxFit.cover),
       ),
     );
   }

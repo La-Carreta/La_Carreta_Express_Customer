@@ -1,7 +1,7 @@
 import 'package:la_carreta_express_cs/domain/datasource/platos_datasource.dart';
 import 'package:la_carreta_express_cs/domain/entities/categoria.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
-import 'package:la_carreta_express_cs/infraestructure/http/api_client.dart';
+import 'package:la_carreta_express_cs/infraestructure/http/authenticated_api_client.dart';
 
 class PlatoDatasourceImpl extends PlatosDatasource {
   final ApiClient _api = ApiClient.instance;
@@ -63,7 +63,7 @@ class PlatoDatasourceImpl extends PlatosDatasource {
 
   void _assertRestaurantContext() {
     if (ApiClient.tenantId.isEmpty || ApiClient.branchId.isEmpty) {
-      throw ApiException('TENANT_ID y BRANCH_ID son obligatorios');
+      throw const ApiException('TENANT_ID y BRANCH_ID son obligatorios');
     }
   }
 }

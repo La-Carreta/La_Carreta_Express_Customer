@@ -6,42 +6,40 @@ import 'package:la_carreta_express_cs/presentation/providers/notifications/notif
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
 class NotificacionesScreen extends StatelessWidget {
-  
   static String name = 'notificaciones_screen';
 
   const NotificacionesScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(      
-      body: Stack(
-        children: [
-          //Background
-          const ImageBackground(imgUrl: "assets/background/main.png"),
+    return Scaffold(
+        body: Stack(
+      children: [
+        //Background
+        const ImageBackground(imgUrl: "assets/background/main.png"),
 
-          //Back button
-          const Positioned(
-            top: 50,
-            left: 20,
-            child: CustomBackButton()
-          ),
+        //Back button
+        const Positioned(top: 50, left: 20, child: CustomBackButton()),
 
-          //Title
-          Positioned(
+        //Title
+        Positioned(
             top: 55,
-            left: size.width * 0.30,//150
-            child: const Text("Notificaciones", style: TextStyle(fontSize: 30, color: Colors.white),)
-          ),
+            left: size.width * 0.30, //150
+            child: const Text(
+              "Notificaciones",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            )),
 
-          Positioned(
+        Positioned(
             bottom: 0,
             left: 0,
-            child: _NotificacionesView(maximiunHeight: size.height * 0.85, maximiunWidth: size.width,)
-          ),
-        ],
-      )
-    );
+            child: _NotificacionesView(
+              maximiunHeight: size.height * 0.85,
+              maximiunWidth: size.width,
+            )),
+      ],
+    ));
   }
 }
 
@@ -50,7 +48,8 @@ class _NotificacionesView extends ConsumerWidget {
   final double maximiunWidth;
 
   const _NotificacionesView({
-    required this.maximiunHeight, required this.maximiunWidth,
+    required this.maximiunHeight,
+    required this.maximiunWidth,
   });
 
   @override
@@ -62,20 +61,28 @@ class _NotificacionesView extends ConsumerWidget {
       width: maximiunWidth,
       height: maximiunHeight,
       padding: const EdgeInsets.symmetric(horizontal: 15),
-        decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xffF5F5F5),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15), topRight: Radius.circular(25)),
       ),
       child: notifications.isEmpty
-        ? const Center(child: Text("No tienes notificaciones", style: TextStyle(fontSize: 20, color: Colors.black),))
-        : ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          final notification = notifications[index];
-          return _Notification(maximiunWidth:maximiunWidth, notification: notification,);
-        },
-      ),
+          ? const Center(
+              child: Text(
+              "No tienes notificaciones",
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ))
+          : ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                final notification = notifications[index];
+                return _Notification(
+                  maximiunWidth: maximiunWidth,
+                  notification: notification,
+                );
+              },
+            ),
     );
   }
 }
@@ -85,7 +92,7 @@ class _Notification extends StatelessWidget {
   final PushMessage notification;
 
   const _Notification({
-    required this.maximiunWidth, 
+    required this.maximiunWidth,
     required this.notification,
   });
 
@@ -97,38 +104,38 @@ class _Notification extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xffe9ecef))
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xffe9ecef))),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(60),
-            child: Image.network(
-              notification.imageUrl != null 
-                ?notification.imageUrl! 
-                : "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_1_mzglvm.png", 
-              width: 60, fit: BoxFit.cover)
-          ),
-          
+              borderRadius: BorderRadius.circular(60),
+              child: Image.network(
+                  notification.imageUrl != null
+                      ? notification.imageUrl!
+                      : "https://res.cloudinary.com/dwexseytn/image/upload/v1703805014/La_Carreta_Express/Various_icons/order_1_mzglvm.png",
+                  width: 60,
+                  fit: BoxFit.cover)),
           const SizedBox(width: 10),
-
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(notification.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Text(notification.title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20)),
               Text(notification.body)
             ],
           ),
-
           const Spacer(),
-
           IconButton(
-            onPressed: () => context.push("/seguimiento-pedido/${notification.data?['ordenId'] ?? "no-id"}"), 
-            icon: const Icon(Icons.chevron_right_outlined, color: Colors.black,)
-          )
+              onPressed: () => context.push(
+                  "/seguimiento-pedido/${notification.data?['ordenId'] ?? "no-id"}"),
+              icon: const Icon(
+                Icons.chevron_right_outlined,
+                color: Colors.black,
+              ))
         ],
       ),
     );

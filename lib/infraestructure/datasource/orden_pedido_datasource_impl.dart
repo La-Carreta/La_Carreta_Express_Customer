@@ -6,7 +6,7 @@ import 'package:la_carreta_express_cs/domain/entities/estimated_time.dart';
 import 'package:la_carreta_express_cs/domain/entities/mesero.dart';
 import 'package:la_carreta_express_cs/domain/entities/orden_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/plato.dart';
-import 'package:la_carreta_express_cs/infraestructure/http/api_client.dart';
+import 'package:la_carreta_express_cs/infraestructure/http/authenticated_api_client.dart';
 import 'package:uuid/uuid.dart';
 
 class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource {
@@ -83,7 +83,7 @@ class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource {
   Future<void> cancelOrder({required String idOrdenPedido}) async {
     final version = _versions[idOrdenPedido];
     if (version == null) {
-      throw ApiException('Recargue el pedido para cancelarlo');
+      throw const ApiException('Recargue el pedido para cancelarlo');
     }
     final response = await _api.request(
       'POST',
@@ -153,7 +153,9 @@ class OrdenPedidoDatasourceImpl extends OrdenPedidoDatasource {
     if (ApiClient.tenantId.isEmpty ||
         ApiClient.branchId.isEmpty ||
         ApiClient.tableId.isEmpty) {
-      throw ApiException('TENANT_ID, BRANCH_ID y TABLE_ID son obligatorios');
+      throw const ApiException(
+        'TENANT_ID, BRANCH_ID y TABLE_ID son obligatorios',
+      );
     }
   }
 

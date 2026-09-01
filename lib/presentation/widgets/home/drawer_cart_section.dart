@@ -14,18 +14,21 @@ class DrawerCartSection extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: () => Scaffold.of(context).openDrawer(),
-          icon: const Icon(Icons.menu, size: 30,)
-        ),
-          
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(
+              Icons.menu,
+              size: 30,
+            )),
         Stack(
           children: [
             IconButton(
               onPressed: () => context.push("/cart"),
-              icon: const Icon(Icons.shopping_cart_outlined, size: 30,),
+              icon: const Icon(
+                Icons.shopping_cart_outlined,
+                size: 30,
+              ),
             ),
-
-            if(cart.detallesPedido.isNotEmpty)
+            if (cart.detallesPedido.isNotEmpty)
               //Indicator
               Positioned(
                 right: 5,
@@ -33,10 +36,11 @@ class DrawerCartSection extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red
+                      shape: BoxShape.circle, color: Colors.red),
+                  child: const Text(
+                    "*",
+                    style: TextStyle(color: Colors.white),
                   ),
-                  child: const Text("*", style: TextStyle(color: Colors.white),),
                 ),
               ),
           ],

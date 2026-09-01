@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 enum NameError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
-class Name extends FormzInput<String, NameError>{
+class Name extends FormzInput<String, NameError> {
   // Call super.pure to represent an unmodified form input.
   const Name.pure() : super.pure('');
 

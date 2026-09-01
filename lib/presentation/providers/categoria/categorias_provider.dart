@@ -4,14 +4,15 @@ import 'package:la_carreta_express_cs/presentation/providers/categoria/categoria
 
 final categoriaSeleccionadaProvider = StateProvider((ref) => 0);
 
-final categoriaProvider = Provider((ref){
-  final fetchCategorias = ref.watch( categoriasProvider );
-  if(fetchCategorias.isEmpty) return "";
-  return fetchCategorias[0].nombre; 
+final categoriaProvider = Provider((ref) {
+  final fetchCategorias = ref.watch(categoriasProvider);
+  if (fetchCategorias.isEmpty) return "";
+  return fetchCategorias[0].nombre;
 });
 
-final categoriasProvider = StateNotifierProvider<CategoriasNotifier, List<Categoria>>((ref){
-  final fetchCategorias = ref.watch( categoriaRepositoryProvider ).getCategorias;
+final categoriasProvider =
+    StateNotifierProvider<CategoriasNotifier, List<Categoria>>((ref) {
+  final fetchCategorias = ref.watch(categoriaRepositoryProvider).getCategorias;
 
   return CategoriasNotifier(fetchCategorias: fetchCategorias);
 });
@@ -21,16 +22,12 @@ typedef CategoriaCallBack = Future<List<Categoria>> Function();
 class CategoriasNotifier extends StateNotifier<List<Categoria>> {
   CategoriaCallBack fetchCategorias;
 
-  CategoriasNotifier({
-    required this.fetchCategorias
-  }):super([]){
+  CategoriasNotifier({required this.fetchCategorias}) : super([]) {
     loadCategorias();
   }
 
-  Future<void> loadCategorias() async{
+  Future<void> loadCategorias() async {
     final List<Categoria> categorias = await fetchCategorias();
     state = [...categorias];
   }
-
 }
-

@@ -31,36 +31,38 @@ class PlatoModel {
 
   String toRawJson() => json.encode(toJson());
 
-  factory PlatoModel.fromJson(String id, Map<String, dynamic> json) => PlatoModel(
-    id: id,
-    categoria: CategoriaModel.fromJson(json["categoria"]["id"],json["categoria"]),
-    descripcion: json["descripcion"],
-    descripcionCorta: json["descripcionCorta"],
-    disponibilidad: json["disponibilidad"],
-    imgUrl: json["imgUrl"],
-    nombre: json["nombre"],
-    numCalorias: json["numCalorias"],
-    popular: json["popular"],
-    precio: json["precio"]?.toDouble(),
-    tiempoPreparacion: json["tiempoPreparacion"],
-  );
+  factory PlatoModel.fromJson(String id, Map<String, dynamic> json) =>
+      PlatoModel(
+        id: id,
+        categoria:
+            CategoriaModel.fromJson(json["categoria"]["id"], json["categoria"]),
+        descripcion: json["descripcion"],
+        descripcionCorta: json["descripcionCorta"],
+        disponibilidad: json["disponibilidad"],
+        imgUrl: json["imgUrl"],
+        nombre: json["nombre"],
+        numCalorias: json["numCalorias"],
+        popular: json["popular"],
+        precio: json["precio"]?.toDouble(),
+        tiempoPreparacion: json["tiempoPreparacion"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "categoria": categoria.toJson(),
-    "descripcion": descripcion,
-    "descripcionCorta": descripcionCorta,
-    "disponibilidad": disponibilidad,
-    "imgUrl": imgUrl,
-    "nombre": nombre,
-    "numCalorias": numCalorias,
-    "popular": popular,
-    "precio": precio,
-    "tiempoPreparacion": tiempoPreparacion,
-  };
+        "id": id,
+        "categoria": categoria.toJson(),
+        "descripcion": descripcion,
+        "descripcionCorta": descripcionCorta,
+        "disponibilidad": disponibilidad,
+        "imgUrl": imgUrl,
+        "nombre": nombre,
+        "numCalorias": numCalorias,
+        "popular": popular,
+        "precio": precio,
+        "tiempoPreparacion": tiempoPreparacion,
+      };
 
   @override
-  String toString(){
+  String toString() {
     return 'idPlato: $id, categoria: $categoria, descripcion: $descripcion, descripcionCorta: $descripcionCorta, disponibilidad: $disponibilidad, imgUrl: $imgUrl, nombre: $nombre, numCalorias: $numCalorias, popular: $popular, precio: $precio, tiempoPreparacion: $tiempoPreparacion';
   }
 }

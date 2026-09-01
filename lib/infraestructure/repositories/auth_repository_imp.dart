@@ -1,16 +1,13 @@
-
 import 'package:la_carreta_express_cs/domain/datasource/auth_datasource.dart';
 import 'package:la_carreta_express_cs/domain/entities/user.dart';
 import 'package:la_carreta_express_cs/domain/repositories/auth_repository.dart';
 import 'package:la_carreta_express_cs/infraestructure/datasource/auth_datasource_impl.dart';
 
-class AuthRepositoryImp extends AuthRepository{
-
+class AuthRepositoryImp extends AuthRepository {
   final AuthDatasource datasource;
 
-  AuthRepositoryImp(
-    [AuthDatasource? datasource]
-  ): datasource = datasource ?? AuthDataSourceImpl();
+  AuthRepositoryImp([AuthDatasource? datasource])
+      : datasource = datasource ?? AuthDataSourceImpl();
 
   @override
   Future<User> checkAuthStatus() {
@@ -26,20 +23,19 @@ class AuthRepositoryImp extends AuthRepository{
   Future<User> register(String email, String password, String fullName) {
     return datasource.register(email, password, fullName);
   }
-  
+
   @override
   Future<bool> logout() {
     return datasource.logout();
   }
-  
+
   @override
   Future<void> resetAccount(String email) {
     return datasource.resetAccount(email);
   }
-  
+
   @override
-  Future<User> updateProfile(String fullName, String imgUrl, String password){
+  Future<User> updateProfile(String fullName, String imgUrl, String password) {
     return datasource.updateProfile(fullName, imgUrl, password);
   }
-
 }

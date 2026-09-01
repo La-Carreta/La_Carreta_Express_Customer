@@ -8,11 +8,10 @@ import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 import 'package:lottie/lottie.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-
   static const String name = 'reset_password_screen';
 
   const ResetPasswordScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -21,35 +20,34 @@ class ResetPasswordScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        body: GeometricalBackground( 
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,            
-              children: [
-                const SizedBox( height: 80 ),
-                // Icon Banner
-                const Icon( 
-                  Icons.people_rounded, 
-                  color: Colors.white,
-                  size: 100,
-                ),
-                const SizedBox( height: 80 ),
-                
-                Container(
-                  height: size.height - 260, // 80 los dos sizebox y 100 el ícono   
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(100)),
-                  ),
-                  child: const _ResetPasswordView(),
-                ),
-              ],
+          body: GeometricalBackground(
+              child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 80),
+            // Icon Banner
+            const Icon(
+              Icons.people_rounded,
+              color: Colors.white,
+              size: 100,
             ),
-          )
-        )
-      ),
+            const SizedBox(height: 80),
+
+            Container(
+              height: size.height - 260, // 80 los dos sizebox y 100 el ícono
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: scaffoldBackgroundColor,
+                borderRadius:
+                    const BorderRadius.only(topLeft: Radius.circular(100)),
+              ),
+              child: const _ResetPasswordView(),
+            ),
+          ],
+        ),
+      ))),
     );
   }
 }
@@ -61,32 +59,39 @@ class _ResetPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [     
-
+      children: [
         const Padding(
           padding: EdgeInsets.only(top: 100),
-          child: Center(child: Text("¿Has olvidado tu contraseña?", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),)),
+          child: Center(
+              child: Text(
+            "¿Has olvidado tu contraseña?",
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+          )),
         ),
-    
+
         const SizedBox(height: 30),
-    
+
         //Form
         const _FormResetPassword(),
-    
+
         const SizedBox(height: 20),
-        
+
         //No tienes una cuenta
         Center(
           child: TextButton(
-            onPressed: () => context.go("/login"), 
+            onPressed: () => context.go("/login"),
             child: RichText(
-              text: const TextSpan(
-                children: [
-                  TextSpan(text: "O ", style: TextStyle(fontSize: 15, color: Colors.black)),
-                  TextSpan(text: "Inicia Sesión", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.black))
-                ]
-              )
-            ),
+                text: const TextSpan(children: [
+              TextSpan(
+                  text: "O ",
+                  style: TextStyle(fontSize: 15, color: Colors.black)),
+              TextSpan(
+                  text: "Inicia Sesión",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: Colors.black))
+            ])),
           ),
         ),
         const Spacer(),
@@ -105,9 +110,9 @@ class _FormResetPassword extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final formKey = GlobalKey<FormState>();
 
-    void showEmailSentDialog() async{
+    void showEmailSentDialog() async {
       return showDialog(
-        context: context, 
+        context: context,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog.adaptive(
@@ -118,24 +123,37 @@ class _FormResetPassword extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(child: Lottie.asset("assets/lottie/json/email-sent.json", height: 150, width: 150)),
-                  const Text("NOTA: ", style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold)),
-                  Text("Hemos enviado un correo a ${emailController.text} con las instrucciones para restablecer tu contraseña", style: const TextStyle(color: Colors.black, fontSize: 17)),
+                  Center(
+                      child: Lottie.asset("assets/lottie/json/email-sent.json",
+                          height: 150, width: 150)),
+                  const Text("NOTA: ",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold)),
+                  Text(
+                      "Hemos enviado un correo a ${emailController.text} con las instrucciones para restablecer tu contraseña",
+                      style:
+                          const TextStyle(color: Colors.black, fontSize: 17)),
                 ],
               ),
             ),
             actions: [
               FilledButton(
                 style: ButtonStyle(
-                  minimumSize: WidgetStateProperty.all(const Size(100, 40)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: WidgetStateProperty.all(const Color(0xffe63946))
-                ),
-                onPressed: (){
+                    minimumSize: WidgetStateProperty.all(const Size(100, 40)),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor:
+                        WidgetStateProperty.all(const Color(0xffe63946))),
+                onPressed: () {
                   context.pop();
                   context.go("/login");
                 },
-                child: const Text("Volver al login", style: TextStyle(fontWeight: FontWeight.bold),),
+                child: const Text(
+                  "Volver al login",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           );
@@ -143,51 +161,53 @@ class _FormResetPassword extends ConsumerWidget {
       );
     }
 
-
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
-        key: UniqueKey(),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Column(      
-          children: [
-            Form(
-              key: formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                decoration: InputDecorations.authInputDecoration(
-                  hintText: "Email", 
-                  labelText: "Email",
-                  prefixIcon: Icons.alternate_email,
-                  colors: colors
+          key: UniqueKey(),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              Form(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  decoration: InputDecorations.authInputDecoration(
+                      hintText: "Email",
+                      labelText: "Email",
+                      prefixIcon: Icons.alternate_email,
+                      colors: colors),
+                  validator: (value) => validateEmail(value ?? ''),
                 ),
-                validator: (value) => validateEmail(value ?? ''),            
               ),
-            ),
-      
-            const SizedBox(height: 30),
-            //Reset button
-            Center(
-              child: FilledButton(
-                style: ButtonStyle(
-                  minimumSize: WidgetStateProperty.all(const Size(300, 40)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: WidgetStateProperty.all(Colors.black)
-                ),
-                onPressed: (){
-                  if(!formKey.currentState!.validate()) return;
-                  debugPrint("Restablecer Contraseña");
-                  ref.read(authProvider.notifier).resetAccount(emailController.text, "Error al restablecer contraseña");
-                  showEmailSentDialog();
-                }, 
-                child: const Text("Restablecer Contraseña", style: TextStyle(fontSize: 17),)
+
+              const SizedBox(height: 30),
+              //Reset button
+              Center(
+                child: FilledButton(
+                    style: ButtonStyle(
+                        minimumSize:
+                            WidgetStateProperty.all(const Size(300, 40)),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                        backgroundColor: WidgetStateProperty.all(Colors.black)),
+                    onPressed: () {
+                      if (!formKey.currentState!.validate()) return;
+                      debugPrint("Restablecer Contraseña");
+                      ref.read(authProvider.notifier).resetAccount(
+                          emailController.text,
+                          "Error al restablecer contraseña");
+                      showEmailSentDialog();
+                    },
+                    child: const Text(
+                      "Restablecer Contraseña",
+                      style: TextStyle(fontSize: 17),
+                    )),
               ),
-            ),
-         ],        
-        )
-      ),
+            ],
+          )),
     );
   }
 }

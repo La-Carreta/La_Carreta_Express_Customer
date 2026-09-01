@@ -15,30 +15,29 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 
 //! 2 - Como implementamos un notifier
 class AuthNotifier extends StateNotifier<AuthState> {
-
   final AuthRepository authRepository;
 
   AuthNotifier({
     required this.authRepository,
-  }): super(AuthState()){
+  }) : super(AuthState()) {
     checkAuthStatus();
   }
-  
-  void checkAuthStatus() async{
+
+  void checkAuthStatus() async {
     try {
-      final user = await authRepository.checkAuthStatus();      
-      _setLoggedUser(user);    
+      final user = await authRepository.checkAuthStatus();
+      _setLoggedUser(user);
     } catch (e) {
       logout();
     }
   }
 
-  Future<void> loginUser(String email, String password) async{
+  Future<void> loginUser(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     try {
       final user = await authRepository.login(email, password);
-      _setLoggedUser( user );      
+      _setLoggedUser(user);
     } on CustomError catch (e) {
       logout(e.message);
     } catch (e) {
@@ -48,10 +47,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(authStatus: AuthStatus.checking);
   }
 
-  Future<void> updateProfile(String fullName, String imgUrl, String password) async{
+  Future<void> updateProfile(
+      String fullName, String imgUrl, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
     try {
-      await authRepository.updateProfile(fullName, imgUrl, password);    
+      await authRepository.updateProfile(fullName, imgUrl, password);
     } on CustomError catch (e) {
       logout(e.message);
     } catch (e) {
@@ -59,21 +59,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> logout([String? errorMessage]) async{
+  Future<void> logout([String? errorMessage]) async {
     await authRepository.logout();
-    
+
     state = state.copyWith(
-      authStatus: AuthStatus.notAuthenticated,
-      user: null,
-      errorMessage: errorMessage ?? ''
-    );
+        authStatus: AuthStatus.notAuthenticated,
+        user: null,
+        errorMessage: errorMessage ?? '');
   }
 
-  Future<String?> registerUser(String email, String password, String fullName) async{
+  Future<String?> registerUser(
+      String email, String password, String fullName) async {
     await Future.delayed(const Duration(milliseconds: 500));
     try {
       final user = await authRepository.register(email, password, fullName);
-      _setLoggedUser(user);      
+      _setLoggedUser(user);
       return user.id;
     } on CustomError catch (e) {
       logout(e.message);
@@ -85,58 +85,45 @@ class AuthNotifier extends StateNotifier<AuthState> {
     return null;
   }
 
-  void _setLoggedUser(User user) async{
-
+  void _setLoggedUser(User user) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     state = state.copyWith(
-      user: user,
-      authStatus: AuthStatus.authenticated,
-      errorMessage: ''
-    );
+        user: user, authStatus: AuthStatus.authenticated, errorMessage: '');
   }
 
-  Future<void> resetAccount(String email, [String? errorMessage]) async{
+  Future<void> resetAccount(String email, [String? errorMessage]) async {
     await Future.delayed(const Duration(milliseconds: 500));
     await authRepository.resetAccount(email);
     state = state.copyWith(
-      authStatus: AuthStatus.notAuthenticated,
-      user: null,
-      errorMessage: errorMessage ?? ''
-    );
+        authStatus: AuthStatus.notAuthenticated,
+        user: null,
+        errorMessage: errorMessage ?? '');
   }
-
-
 }
 
-
-enum AuthStatus{
+enum AuthStatus {
   checking,
   authenticated,
   notAuthenticated,
 }
+
 //! 1 - State de este provider
-class AuthState{
+class AuthState {
   final AuthStatus authStatus;
   final User? user;
   final String errorMessage;
 
-  AuthState({
-    this.authStatus = AuthStatus.checking,
-    this.user,
-    this.errorMessage = ''
-  }); 
+  AuthState(
+      {this.authStatus = AuthStatus.checking,
+      this.user,
+      this.errorMessage = ''});
 
-  AuthState copyWith({
-    AuthStatus? authStatus,
-    User? user,
-    String? errorMessage
-  }){
+  AuthState copyWith(
+      {AuthStatus? authStatus, User? user, String? errorMessage}) {
     return AuthState(
-      authStatus: authStatus ?? this.authStatus,
-      user: user ?? this.user,
-      errorMessage: errorMessage ?? this.errorMessage
-    );
+        authStatus: authStatus ?? this.authStatus,
+        user: user ?? this.user,
+        errorMessage: errorMessage ?? this.errorMessage);
   }
-
 }

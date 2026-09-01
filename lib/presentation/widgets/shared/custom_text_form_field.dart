@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-
 class CustomTextFormField extends StatelessWidget {
-
   final String? label;
   final String? hint;
   final String? errorMessage;
@@ -12,55 +10,56 @@ class CustomTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final double? width;
 
-  const CustomTextFormField({
-    super.key, 
-    this.label, 
-    this.hint, 
-    this.errorMessage, 
-    this.obscureText = false,
-    this.keyboardType = TextInputType.text,
-    this.onChanged, 
-    this.validator, 
-    this.width = double.infinity
-  });
+  const CustomTextFormField(
+      {super.key,
+      this.label,
+      this.hint,
+      this.errorMessage,
+      this.obscureText = false,
+      this.keyboardType = TextInputType.text,
+      this.onChanged,
+      this.validator,
+      this.width = double.infinity});
 
   @override
   Widget build(BuildContext context) {
-
     final colors = Theme.of(context).colorScheme;
 
     final border = OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.transparent),
-      borderRadius: BorderRadius.circular(40)
-    );
+        borderSide: const BorderSide(color: Colors.transparent),
+        borderRadius: BorderRadius.circular(40));
 
     const borderRadius = Radius.circular(15);
 
     return Container(
       width: width,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(topLeft: borderRadius, bottomLeft: borderRadius, bottomRight: borderRadius ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0,5)
-          )
-        ]
-      ),
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+              topLeft: borderRadius,
+              bottomLeft: borderRadius,
+              bottomRight: borderRadius),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 5))
+          ]),
       child: TextFormField(
         onChanged: onChanged,
         validator: validator,
         obscureText: obscureText,
         keyboardType: keyboardType,
-        style: const TextStyle( fontSize: 20, color: Colors.black54 ),
+        style: const TextStyle(fontSize: 20, color: Colors.black54),
         decoration: InputDecoration(
-          floatingLabelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          floatingLabelStyle: const TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           enabledBorder: border,
           focusedBorder: border,
-          errorBorder: border.copyWith( borderSide: BorderSide( color: Colors.red.shade800 )),
-          focusedErrorBorder: border.copyWith( borderSide: BorderSide( color: Colors.red.shade800 )),
+          errorBorder: border.copyWith(
+              borderSide: BorderSide(color: Colors.red.shade800)),
+          focusedErrorBorder: border.copyWith(
+              borderSide: BorderSide(color: Colors.red.shade800)),
           isDense: true,
           label: label != null ? Text(label!) : null,
           hintText: hint,

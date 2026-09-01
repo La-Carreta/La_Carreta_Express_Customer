@@ -3,37 +3,31 @@ import 'package:formz/formz.dart';
 import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.dart';
 import 'package:la_carreta_express_cs/shared/infraestructure/inputs/inputs.dart';
 
-
 //! 3 - StateNotifierProvider - consume afuera
-final loginFormProvider = StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref){
-
+final loginFormProvider =
+    StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
   final loginUserCallback = ref.watch(authProvider.notifier).loginUser;
 
   return LoginFormNotifier(loginUserCallback: loginUserCallback);
 });
 
-
-
 //! 1 - State de este provider
-class LoginFormState{
-
+class LoginFormState {
   final bool isPosting;
   final bool isFormPosted;
   final bool isValid;
   final Email email;
   final Password password;
 
-  LoginFormState({
-    this.isPosting = false, 
-    this.isFormPosted = false, 
-    this.isValid = false, 
-    this.email = const Email.pure(), 
-    this.password = const Password.pure()
-  });
-
+  LoginFormState(
+      {this.isPosting = false,
+      this.isFormPosted = false,
+      this.isValid = false,
+      this.email = const Email.pure(),
+      this.password = const Password.pure()});
 
   @override
-  String toString() { 
+  String toString() {
     return '''
       LoginFormState(
         isPosting: $isPosting, 
@@ -44,20 +38,18 @@ class LoginFormState{
     ''';
   }
 
-  LoginFormState copyWith({
-    bool? isPosting,
-    bool? isFormPosted,
-    bool? isValid,
-    Email? email,
-    Password? password
-  }){
+  LoginFormState copyWith(
+      {bool? isPosting,
+      bool? isFormPosted,
+      bool? isValid,
+      Email? email,
+      Password? password}) {
     return LoginFormState(
-      isPosting: isPosting ?? this.isPosting,
-      isFormPosted: isFormPosted ?? this.isFormPosted,
-      isValid: isValid ?? this.isValid,
-      email: email ?? this.email,
-      password: password ?? this.password
-    );
+        isPosting: isPosting ?? this.isPosting,
+        isFormPosted: isFormPosted ?? this.isFormPosted,
+        isValid: isValid ?? this.isValid,
+        email: email ?? this.email,
+        password: password ?? this.password);
   }
 }
 
@@ -65,31 +57,26 @@ class LoginFormState{
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
   final Function(String, String) loginUserCallback;
 
-  LoginFormNotifier({
-    required this.loginUserCallback
-  }): super( LoginFormState());
-  
-  onEmailChanged(String value){
+  LoginFormNotifier({required this.loginUserCallback})
+      : super(LoginFormState());
+
+  onEmailChanged(String value) {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
-      email: newEmail, 
-      isValid: Formz.validate([newEmail, state.password])
-    );
+        email: newEmail, isValid: Formz.validate([newEmail, state.password]));
   }
 
-  onPasswordChanged(String value){
+  onPasswordChanged(String value) {
     final newPassword = Password.dirty(value);
     state = state.copyWith(
-      password: newPassword,
-      isValid: Formz.validate([state.email, newPassword])
-    );
+        password: newPassword,
+        isValid: Formz.validate([state.email, newPassword]));
   }
 
-
-  onFormSubmit() async{
+  onFormSubmit() async {
     _touchEveryField();
 
-    if(!state.isValid) return;
+    if (!state.isValid) return;
 
     state = state.copyWith(isPosting: true);
 
@@ -98,19 +85,15 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     state = state.copyWith(isPosting: false);
   }
 
-  _touchEveryField(){
+  _touchEveryField() {
     state = state.copyWith(
-      email: Email.dirty(state.email.value),
-      password: Password.dirty(state.password.value),
-      isFormPosted: true,
-      isValid: Formz.validate([state.email, state.password])
-    );
+        email: Email.dirty(state.email.value),
+        password: Password.dirty(state.password.value),
+        isFormPosted: true,
+        isValid: Formz.validate([state.email, state.password]));
   }
 
-  onFormPosting(){
+  onFormPosting() {
     state = state.copyWith(isPosting: true);
   }
-
-} 
-
-
+}

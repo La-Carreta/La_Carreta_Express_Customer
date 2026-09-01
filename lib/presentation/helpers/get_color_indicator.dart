@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-Color getColorByState(String state){
-  switch(state){
+Color getColorByState(String state) {
+  switch (state) {
     case "Pedido realizado":
       return Colors.amber;
     case "Pedido confirmado":

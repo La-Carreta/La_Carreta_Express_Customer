@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:la_carreta_express_cs/presentation/helpers/get_color_indicator.dart';
 
-class IndicadorEstado extends StatelessWidget {  
+class IndicadorEstado extends StatelessWidget {
   final String state;
   const IndicadorEstado({super.key, required this.state});
 

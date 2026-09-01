@@ -7,23 +7,21 @@ import 'package:la_carreta_express_cs/presentation/providers/notifications/notif
 import 'package:la_carreta_express_cs/presentation/widgets/home/custom_drawer.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-class HomeScreen extends ConsumerWidget {   
-
+class HomeScreen extends ConsumerWidget {
   static const String name = 'home_screen';
 
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider); 
+    final user = ref.watch(authProvider);
     final scaffoldKey = GlobalKey<ScaffoldState>();
     ref.watch(customerProvider.notifier).getCustomerById(user.user?.id ?? "");
     ref.watch(notificationsProvider.notifier).requestPermission();
 
-
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),
-      body: const _HomeView(),      
+      body: const _HomeView(),
       drawer: CustomDrawer(scaffoldKey: scaffoldKey),
     );
   }
@@ -39,10 +37,7 @@ class _HomeView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //*Drawer and Cart Button
-          FadeInRight(
-            from: 50,
-            child: const DrawerCartSection()
-          ),
+          FadeInRight(from: 50, child: const DrawerCartSection()),
 
           const SizedBox(height: 20),
 
@@ -51,7 +46,9 @@ class _HomeView extends StatelessWidget {
             from: 50,
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: CardPresentationHome(imgUrl: "assets/home/badge.png", personUrl: "assets/home/Chef-Badge.png"),
+              child: CardPresentationHome(
+                  imgUrl: "assets/home/badge.png",
+                  personUrl: "assets/home/Chef-Badge.png"),
             ),
           ),
 
@@ -61,9 +58,12 @@ class _HomeView extends StatelessWidget {
           FadeInLeft(
             child: const Padding(
               padding: EdgeInsets.only(left: 10, bottom: 10),
-              child: Text("Categorias", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+              child: Text(
+                "Categorias",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
+              ),
             ),
-          ),          
+          ),
 
           //* Lista de Categorias
           FadeInRight(child: const ListCategorias()),
@@ -73,9 +73,12 @@ class _HomeView extends StatelessWidget {
           FadeInLeft(
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text("Más populares", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),),
+              child: Text(
+                "Más populares",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
+              ),
             ),
-          ),  
+          ),
 
           const SizedBox(height: 10),
 
@@ -84,10 +87,9 @@ class _HomeView extends StatelessWidget {
 
           //* Marca registrada
           const Spacer(),
-          const RegisteredTradeMark()          
+          const RegisteredTradeMark()
         ],
       ),
     );
   }
 }
-

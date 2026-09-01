@@ -18,7 +18,7 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.of(context).size;  
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
@@ -26,43 +26,42 @@ class SeguimientoPedidoScreen extends ConsumerWidget {
 
           //Back button
           Positioned(
-            top: 50,
-            left: 20,
-            child: FadeInLeft(
-              from: 50,
-              child: const CustomBackButton()
-            )
-          ),
+              top: 50,
+              left: 20,
+              child: FadeInLeft(from: 50, child: const CustomBackButton())),
 
-          
           //Title
           Positioned(
-            top: 55,
-            left: size.width * 0.25,//150
-            child: FadeInDown(
-              from: 50,
-              child: const Text("Seguimiento del Pedido", style: TextStyle(fontSize: 27, color: Colors.white),)
-            )
-          ),
+              top: 55,
+              left: size.width * 0.25, //150
+              child: FadeInDown(
+                  from: 50,
+                  child: const Text(
+                    "Seguimiento del Pedido",
+                    style: TextStyle(fontSize: 27, color: Colors.white),
+                  ))),
 
           Positioned(
-            bottom: 0,
-            left: 0,
-            child: StreamBuilder<OrdenPedido>(
-              stream: ref.watch(ordenPedidoInfoProvider.notifier).getOrderById(idPedido),
-              builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting) return const CircularProgressIndicator();
-                if(!snapshot.hasData) return const Text("No se encontró el pedido");
-                final pedido = snapshot.data!;
+              bottom: 0,
+              left: 0,
+              child: StreamBuilder<OrdenPedido>(
+                  stream: ref
+                      .watch(ordenPedidoInfoProvider.notifier)
+                      .getOrderById(idPedido),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (!snapshot.hasData) {
+                      return const Text("No se encontró el pedido");
+                    }
+                    final pedido = snapshot.data!;
 
-                return _SiguimientoPedidoView(
-                  maximiunHeight: size.height * 0.85, 
-                  maximiunWidth: size.width,
-                  pedido: pedido
-                );
-              }
-            )
-          ),
+                    return _SiguimientoPedidoView(
+                        maximiunHeight: size.height * 0.85,
+                        maximiunWidth: size.width,
+                        pedido: pedido);
+                  })),
         ],
       ),
     );
@@ -73,30 +72,34 @@ class _SiguimientoPedidoView extends ConsumerWidget {
   final double maximiunHeight;
   final double maximiunWidth;
   final OrdenPedido pedido;
-  
-  const _SiguimientoPedidoView({
-    required this.maximiunHeight, 
-    required this.maximiunWidth, 
-    required this.pedido
-  });
+
+  const _SiguimientoPedidoView(
+      {required this.maximiunHeight,
+      required this.maximiunWidth,
+      required this.pedido});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentState = OrderTimelineData.getTimelineData(statusOrder: pedido.estadoOrden, idOrder: pedido.id);
-    
+    final currentState = OrderTimelineData.getTimelineData(
+        statusOrder: pedido.estadoOrden, idOrder: pedido.id);
+
     return Container(
       width: maximiunWidth,
       height: maximiunHeight,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-        decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xffF5F5F5),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15), topRight: Radius.circular(25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [          
+        children: [
           //Time Box
-          FadeInRight(child: _EstimatedTimeBox(estimatedTime: pedido.tiempoEstimado, numOrder: pedido.numOrden)),
+          FadeInRight(
+              child: _EstimatedTimeBox(
+                  estimatedTime: pedido.tiempoEstimado,
+                  numOrder: pedido.numOrden)),
 
           const SizedBox(height: 10),
 
@@ -107,28 +110,40 @@ class _SiguimientoPedidoView extends ConsumerWidget {
 
           //Boton de detalles de pedido
           FilledButton(
-            style: ButtonStyle(
-              minimumSize: WidgetStateProperty.all(const Size(300, 40)),
-              shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-              backgroundColor: WidgetStateProperty.all(const Color(0xFFe9ecef))
-            ),
-            onPressed: ()=> context.push("/detalle-pedido/${pedido.id}"), 
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Detalles del pedido", style: TextStyle(color: Colors.black, fontSize: 15),),   
-                Icon(Icons.chevron_right, color: Colors.black,)         
-              ],
-            )
-          ),
+              style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(const Size(300, 40)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor:
+                      WidgetStateProperty.all(const Color(0xFFe9ecef))),
+              onPressed: () => context.push("/detalle-pedido/${pedido.id}"),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Detalles del pedido",
+                    style: TextStyle(color: Colors.black, fontSize: 15),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    color: Colors.black,
+                  )
+                ],
+              )),
           const SizedBox(height: 10),
-          const Text("NOTA:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
-          const Text("El tiempo de estimación se calcula en base a los pedidos realizados en orden de llegada al sistema.", style: TextStyle(fontSize: 15), textAlign: TextAlign.justify,)
+          const Text(
+            "NOTA:",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
+          const Text(
+            "El tiempo de estimación se calcula en base a los pedidos realizados en orden de llegada al sistema.",
+            style: TextStyle(fontSize: 15),
+            textAlign: TextAlign.justify,
+          )
         ],
       ),
     );
   }
-
 }
 
 class _TimeLinePedido extends StatelessWidget {
@@ -150,7 +165,7 @@ class _TimeLinePedido extends StatelessWidget {
               alignment: TimelineAlign.start,
               indicatorStyle: IndicatorStyle(
                 width: 20,
-                color: timelineData.colors[0].indicatorColor, 
+                color: timelineData.colors[0].indicatorColor,
                 padding: const EdgeInsets.all(6),
               ),
               endChild: _TimelineOption(
@@ -163,8 +178,7 @@ class _TimeLinePedido extends StatelessWidget {
               beforeLineStyle: LineStyle(
                 color: timelineData.colors[0].beforeLineColor,
               ),
-            ), 
-      
+            ),
             TimelineTile(
               alignment: TimelineAlign.start,
               lineXY: 0.1,
@@ -182,9 +196,8 @@ class _TimeLinePedido extends StatelessWidget {
               ),
               beforeLineStyle: LineStyle(
                 color: timelineData.colors[1].beforeLineColor,
-              ),//0xFFDADADA
-            ),        
-      
+              ), //0xFFDADADA
+            ),
             TimelineTile(
               alignment: TimelineAlign.start,
               lineXY: 0.1,
@@ -205,10 +218,9 @@ class _TimeLinePedido extends StatelessWidget {
               ),
               afterLineStyle: LineStyle(
                 color: timelineData.colors[2].afterLineColor,
-              //  color: Color(0xFFDADADA),
+                //  color: Color(0xFFDADADA),
               ),
             ),
-      
             TimelineTile(
               alignment: TimelineAlign.start,
               lineXY: 0.1,
@@ -219,11 +231,11 @@ class _TimeLinePedido extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
               ),
               endChild: _TimelineOption(
-                disabled: !timelineData.colors[3].statePassed,                
+                disabled: !timelineData.colors[3].statePassed,
                 asset: 'assets/pedidos-icons/ready_to_pickup.png',
                 title: 'Pedido listo',
                 message: 'Tu pedido esta listo.',
-                index: 4,                                
+                index: 4,
               ),
               beforeLineStyle: LineStyle(
                 color: timelineData.colors[3].beforeLineColor,
@@ -240,10 +252,8 @@ class _EstimatedTimeBox extends StatelessWidget {
   final String estimatedTime;
   final String numOrder;
 
-  const _EstimatedTimeBox({
-    required this.estimatedTime,
-    required this.numOrder
-  });
+  const _EstimatedTimeBox(
+      {required this.estimatedTime, required this.numOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -258,19 +268,19 @@ class _EstimatedTimeBox extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("TIEMPO ESTIMADO", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text("TIEMPO ESTIMADO",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               Text(estimatedTime.isEmpty ? "10 min" : estimatedTime)
             ],
           ),
-
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("NUMERO DE ORDEN", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text("NUMERO DE ORDEN",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               Text("#$numOrder")
             ],
           ),
-
         ],
       ),
     );
@@ -278,20 +288,18 @@ class _EstimatedTimeBox extends StatelessWidget {
 }
 
 class _TimelineOption extends StatelessWidget {
-
   final String asset;
   final String title;
   final String message;
   final bool disabled;
   final int index;
 
-  const _TimelineOption({
-    required this.asset, 
-    required this.title, 
-    required this.message, 
-    this.disabled = false, 
-    required this.index
-  });
+  const _TimelineOption(
+      {required this.asset,
+      required this.title,
+      required this.message,
+      this.disabled = false,
+      required this.index});
 
   @override
   Widget build(BuildContext context) {

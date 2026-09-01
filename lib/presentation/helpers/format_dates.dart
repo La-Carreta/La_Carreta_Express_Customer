@@ -7,7 +7,18 @@ String formatDate(DateTime date) {
   int minute = date.minute;
 
   final months = [
-    "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic"
   ];
 
   String dayStr = day.toString();
@@ -30,5 +41,4 @@ String formatDate(DateTime date) {
   }
 
   return "$dayStr-${months[month - 1]}-$year ${hourStr}h$minuteStr";
-
 }

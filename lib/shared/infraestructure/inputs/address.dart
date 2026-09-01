@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 enum AddressError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
-class Address extends FormzInput<String, AddressError>{
+class Address extends FormzInput<String, AddressError> {
   // Call super.pure to represent an unmodified form input.
   const Address.pure() : super.pure('');
 
@@ -15,7 +15,9 @@ class Address extends FormzInput<String, AddressError>{
     if (isValid || isPure) return null;
 
     if (displayError == AddressError.empty) return 'El campo es requerido';
-    if (displayError == AddressError.format) return 'No tiene formato de dirección';
+    if (displayError == AddressError.format) {
+      return 'No tiene formato de dirección';
+    }
 
     return null;
   }

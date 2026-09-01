@@ -1,7 +1,7 @@
 import 'package:la_carreta_express_cs/domain/datasource/auth_datasource.dart';
 import 'package:la_carreta_express_cs/domain/entities/user.dart';
 import 'package:la_carreta_express_cs/infraestructure/errors/auth_errors.dart';
-import 'package:la_carreta_express_cs/infraestructure/http/api_client.dart';
+import 'package:la_carreta_express_cs/infraestructure/http/authenticated_api_client.dart';
 
 class AuthDataSourceImpl extends AuthDatasource {
   final ApiClient _api = ApiClient.instance;

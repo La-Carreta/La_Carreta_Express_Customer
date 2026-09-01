@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/push_message.dart';
-import 'package:la_carreta_express_cs/infraestructure/http/api_client.dart';
+import 'package:la_carreta_express_cs/infraestructure/http/authenticated_api_client.dart';
 
 enum AuthorizationStatus { notDetermined, authorized }
 

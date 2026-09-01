@@ -2,7 +2,7 @@ import 'package:la_carreta_express_cs/domain/entities/cliente.dart';
 import 'package:la_carreta_express_cs/domain/entities/detalle_pedido.dart';
 import 'package:la_carreta_express_cs/domain/entities/mesero.dart';
 
-class OrdenPedido{
+class OrdenPedido {
   final String id;
   final Cliente cliente;
   final DateTime fechaEmision;
@@ -16,63 +16,59 @@ class OrdenPedido{
   final String tiempoEstimado;
   final bool statusPago;
 
-  OrdenPedido({
-    this.id = "", 
-    required this.cliente, 
-    required this.fechaEmision, 
-    this.estadoOrden = "Pedido realizado", 
-    this.tiempoEstimado = "",
-    required this.mesero, 
-    required this.costoTotalPedido, 
-    required this.numOrden, 
-    required this.observaciones, 
-    required this.numMesa,
-    required this.detalles,
-    this.statusPago = false
-  });
+  OrdenPedido(
+      {this.id = "",
+      required this.cliente,
+      required this.fechaEmision,
+      this.estadoOrden = "Pedido realizado",
+      this.tiempoEstimado = "",
+      required this.mesero,
+      required this.costoTotalPedido,
+      required this.numOrden,
+      required this.observaciones,
+      required this.numMesa,
+      required this.detalles,
+      this.statusPago = false});
 
-  OrdenPedido copyWith({
-    String? id,
-    Cliente? cliente,
-    DateTime? fechaEmision,
-    String? estadoOrden,
-    Mesero? mesero,
-    double? costoTotalPedido,
-    String? numOrden,
-    String? observaciones,
-    int? numMesa,
-    List<DetallePedido>? detalles,
-    String? tiempoEstimado,
-    bool? statusPago
-  }) {
+  OrdenPedido copyWith(
+      {String? id,
+      Cliente? cliente,
+      DateTime? fechaEmision,
+      String? estadoOrden,
+      Mesero? mesero,
+      double? costoTotalPedido,
+      String? numOrden,
+      String? observaciones,
+      int? numMesa,
+      List<DetallePedido>? detalles,
+      String? tiempoEstimado,
+      bool? statusPago}) {
     return OrdenPedido(
-      id: id ?? this.id,
-      cliente: cliente ?? this.cliente,
-      fechaEmision: fechaEmision ?? this.fechaEmision,
-      estadoOrden: estadoOrden ?? this.estadoOrden,
-      mesero: mesero ?? this.mesero,
-      costoTotalPedido: costoTotalPedido ?? this.costoTotalPedido,
-      numOrden: numOrden ?? this.numOrden,
-      observaciones: observaciones ?? this.observaciones,
-      numMesa: numMesa ?? this.numMesa,
-      detalles: detalles ?? this.detalles,
-      tiempoEstimado: tiempoEstimado ?? this.tiempoEstimado,
-      statusPago: statusPago ?? this.statusPago
-    );
+        id: id ?? this.id,
+        cliente: cliente ?? this.cliente,
+        fechaEmision: fechaEmision ?? this.fechaEmision,
+        estadoOrden: estadoOrden ?? this.estadoOrden,
+        mesero: mesero ?? this.mesero,
+        costoTotalPedido: costoTotalPedido ?? this.costoTotalPedido,
+        numOrden: numOrden ?? this.numOrden,
+        observaciones: observaciones ?? this.observaciones,
+        numMesa: numMesa ?? this.numMesa,
+        detalles: detalles ?? this.detalles,
+        tiempoEstimado: tiempoEstimado ?? this.tiempoEstimado,
+        statusPago: statusPago ?? this.statusPago);
   }
 
-  OrdenPedido.empty():
-    id = "", 
-    cliente = Cliente.empty(), 
-    fechaEmision = DateTime.now(), 
-    estadoOrden = "Pedido realizado", 
-    tiempoEstimado = "",
-    mesero = Mesero.empty(), 
-    costoTotalPedido = 0, 
-    numOrden = "", 
-    observaciones = "", 
-    numMesa = 0,
-    detalles = <DetallePedido>[],
-    statusPago = false;
-
+  OrdenPedido.empty()
+      : id = "",
+        cliente = Cliente.empty(),
+        fechaEmision = DateTime.now(),
+        estadoOrden = "Pedido realizado",
+        tiempoEstimado = "",
+        mesero = Mesero.empty(),
+        costoTotalPedido = 0,
+        numOrden = "",
+        observaciones = "",
+        numMesa = 0,
+        detalles = <DetallePedido>[],
+        statusPago = false;
 }

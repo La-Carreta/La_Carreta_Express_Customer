@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 enum LastNameError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
-class LastName extends FormzInput<String, LastNameError>{
+class LastName extends FormzInput<String, LastNameError> {
   // Call super.pure to represent an unmodified form input.
   const LastName.pure() : super.pure('');
 
@@ -15,7 +15,9 @@ class LastName extends FormzInput<String, LastNameError>{
     if (isValid || isPure) return null;
 
     if (displayError == LastNameError.empty) return 'El campo es requerido';
-    if (displayError == LastNameError.format) return 'No tiene formato de apellido';
+    if (displayError == LastNameError.format) {
+      return 'No tiene formato de apellido';
+    }
 
     return null;
   }

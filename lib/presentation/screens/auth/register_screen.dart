@@ -5,7 +5,6 @@ import 'package:la_carreta_express_cs/presentation/providers/auth/auth_provider.
 import 'package:la_carreta_express_cs/presentation/providers/auth/register_form_provider.dart';
 import 'package:la_carreta_express_cs/presentation/widgets/widgets.dart';
 
-
 class RegisterScreen extends StatelessWidget {
   static const String name = '/register';
 
@@ -13,7 +12,6 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
     final textStyles = Theme.of(context).textTheme;
@@ -21,46 +19,47 @@ class RegisterScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        body: GeometricalBackground( 
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Column(
+          body: GeometricalBackground(
+              child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 80),
+            // Icon Banner
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox( height: 80 ),
-                // Icon Banner
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: (){
-                        if ( !context.canPop() ) return;
-                        context.pop();
-                      }, 
-                      icon: const Icon( Icons.arrow_back_rounded, size: 40, color: Colors.white )
-                    ),
-                    const Spacer(flex: 1),
-                    Text('Crear cuenta', style: textStyles.titleLarge?.copyWith(color: Colors.white )),
-                    const Spacer(flex: 2),
-                  ],
-                ),
-
-                const SizedBox( height: 50 ),
-    
-                Container(
-                  height: size.height - 180, // 80 los dos sizebox y 100 el ícono
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(100)),
-                  ),
-                  child: const _RegisterForm(),
-                )
+                IconButton(
+                    onPressed: () {
+                      if (!context.canPop()) return;
+                      context.pop();
+                    },
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        size: 40, color: Colors.white)),
+                const Spacer(flex: 1),
+                Text('Crear cuenta',
+                    style:
+                        textStyles.titleLarge?.copyWith(color: Colors.white)),
+                const Spacer(flex: 2),
               ],
             ),
-          )
-        )
-      ),
+
+            const SizedBox(height: 50),
+
+            Container(
+              height: size.height - 180, // 80 los dos sizebox y 100 el ícono
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: scaffoldBackgroundColor,
+                borderRadius:
+                    const BorderRadius.only(topLeft: Radius.circular(100)),
+              ),
+              child: const _RegisterForm(),
+            )
+          ],
+        ),
+      ))),
     );
   }
 }
@@ -70,140 +69,127 @@ class _RegisterForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final textStyles = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
 
-    void showSnackbar(BuildContext context, String message){
+    void showSnackbar(BuildContext context, String message) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-        )
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+      ));
     }
 
     final registerForm = ref.watch(registerFormProvider);
 
     ref.listen(authProvider, (previous, next) {
-      
-      if( next.errorMessage.isEmpty ) return;
+      if (next.errorMessage.isEmpty) return;
       showSnackbar(context, next.errorMessage);
-
     });
-
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
-          const SizedBox( height: 30 ),
-          Text('Nueva cuenta', style: textStyles.titleMedium ),
-          const SizedBox( height: 30 ),
-      
+          const SizedBox(height: 30),
+          Text('Nueva cuenta', style: textStyles.titleMedium),
+          const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               CustomTextFormField(
                 label: 'Nombre ',
                 width: size.width * 0.35,
-                onChanged: ref.read(registerFormProvider.notifier).onNameChanged,
-                errorMessage: registerForm.isFormPosted 
-                  ? registerForm.name.errorMessage
-                  : null,
+                onChanged:
+                    ref.read(registerFormProvider.notifier).onNameChanged,
+                errorMessage: registerForm.isFormPosted
+                    ? registerForm.name.errorMessage
+                    : null,
               ),
               const Spacer(),
-      
               CustomTextFormField(
                 label: 'Apellido',
                 width: size.width * 0.35,
-                onChanged: ref.read(registerFormProvider.notifier).onLastNameChanged,
-                errorMessage: registerForm.isFormPosted 
-                  ? registerForm.lastName.errorMessage
-                  : null,
+                onChanged:
+                    ref.read(registerFormProvider.notifier).onLastNameChanged,
+                errorMessage: registerForm.isFormPosted
+                    ? registerForm.lastName.errorMessage
+                    : null,
               ),
             ],
           ),
-          const SizedBox( height: 30 ),
+          const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               CustomTextFormField(
                 label: 'Dirección ',
                 width: size.width * 0.35,
-                onChanged: ref.read(registerFormProvider.notifier).onAddressChanged,
-                errorMessage: registerForm.isFormPosted 
-                  ? registerForm.address.errorMessage
-                  : null,
+                onChanged:
+                    ref.read(registerFormProvider.notifier).onAddressChanged,
+                errorMessage: registerForm.isFormPosted
+                    ? registerForm.address.errorMessage
+                    : null,
               ),
               const Spacer(),
-      
               CustomTextFormField(
                 label: 'Celular',
                 keyboardType: TextInputType.phone,
                 width: size.width * 0.35,
-                onChanged: ref.read(registerFormProvider.notifier).onPhoneNumberChanged,
-                errorMessage: registerForm.isFormPosted 
-                  ? registerForm.phoneNumber.errorMessage
-                  : null,
+                onChanged: ref
+                    .read(registerFormProvider.notifier)
+                    .onPhoneNumberChanged,
+                errorMessage: registerForm.isFormPosted
+                    ? registerForm.phoneNumber.errorMessage
+                    : null,
               ),
             ],
           ),
-          const SizedBox( height: 30 ),
-      
-      
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
             onChanged: ref.read(registerFormProvider.notifier).onEmailChanged,
-            errorMessage: registerForm.isFormPosted 
-              ? registerForm.email.errorMessage
-              : null,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.email.errorMessage
+                : null,
           ),
-          const SizedBox( height: 30 ),
-      
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
-            onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
-            errorMessage: registerForm.isFormPosted 
-              ? registerForm.password.errorMessage 
-              : null,
+            onChanged:
+                ref.read(registerFormProvider.notifier).onPasswordChanged,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.password.errorMessage
+                : null,
           ),
-          
-          const SizedBox( height: 30 ),
-            
+          const SizedBox(height: 30),
           SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: CustomFilledButton(
-              text: 'Crear',
-              buttonColor: Colors.black,
-              onPressed: registerForm.isPosting 
-                ? null
-                : ref.read(registerFormProvider.notifier).onFormSubmit,
-            )
-          ),
-      
+              width: double.infinity,
+              height: 60,
+              child: CustomFilledButton(
+                text: 'Crear',
+                buttonColor: Colors.black,
+                onPressed: registerForm.isPosting
+                    ? null
+                    : ref.read(registerFormProvider.notifier).onFormSubmit,
+              )),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('¿Ya tienes cuenta?'),
               TextButton(
-                onPressed: (){
-                  if ( context.canPop()){
-                    return context.pop();
-                  }
-                  context.go('/login');
-                  
-                }, 
-                child: const Text('Ingresa aquí')
-              )
+                  onPressed: () {
+                    if (context.canPop()) {
+                      return context.pop();
+                    }
+                    context.go('/login');
+                  },
+                  child: const Text('Ingresa aquí'))
             ],
           ),
-      
-          const Spacer( flex: 1),
+          const Spacer(flex: 1),
         ],
       ),
     );
