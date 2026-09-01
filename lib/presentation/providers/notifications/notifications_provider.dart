@@ -1,81 +1,67 @@
-import 'dart:io';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:la_carreta_express_cs/domain/entities/push_message.dart';
-import 'package:la_carreta_express_cs/firebase_options.dart';
+import 'package:la_carreta_express_cs/infraestructure/http/api_client.dart';
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+enum AuthorizationStatus { notDetermined, authorized }
 
-final notificationsProvider = StateNotifierProvider<NotificationsProvider, NotificationsState>((ref) {
-  final provider = NotificationsProvider();
-  provider._onForegroundMessage();
-  provider._initialStatusCheck();
-  return provider;
+final notificationsProvider =
+    StateNotifierProvider<NotificationsProvider, NotificationsState>((ref) {
+  return NotificationsProvider();
 });
 
-
 class NotificationsProvider extends StateNotifier<NotificationsState> {
-  NotificationsProvider() : super(const NotificationsState());
-
-  static Future<void> initializeFCM() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  NotificationsProvider() : super(const NotificationsState()) {
+    _refresh();
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) => _refresh());
   }
 
-  void handleRemoteMessage(RemoteMessage message) {
-    if (message.notification == null) return;
+  Timer? _timer;
 
-    final notification = PushMessage(
-      messageId: message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
-      title: message.notification!.title ?? '',
-      body: message.notification!.body ?? '',
-      sentDate: message.sentTime ?? DateTime.now(),
-      data: message.data,
-      imageUrl: Platform.isAndroid
-        ? message.notification!.android?.imageUrl
-        : message.notification!.apple?.imageUrl,
-    );
-
-    state = state.copyWith(notifications: [notification, ...state.notifications]);
+  void requestPermission() {
+    state = state.copyWith(status: AuthorizationStatus.authorized);
   }
 
-  void _onForegroundMessage() {
-    FirebaseMessaging.onMessage.listen(handleRemoteMessage);
-  }
-
-  void requestPermission() async {
-    final NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: true,
-      provisional: false,
-      sound: true,
-    );
-
-    state = state.copyWith(status: settings.authorizationStatus);
-  }
-
-  void _initialStatusCheck() async {
-    final settings = await FirebaseMessaging.instance.getNotificationSettings();
-    state = state.copyWith(status: settings.authorizationStatus);
+  Future<void> _refresh() async {
+    if (ApiClient.tenantId.isEmpty || ApiClient.instance.accessToken == null) {
+      return;
+    }
+    try {
+      final response = await ApiClient.instance.request(
+        'GET',
+        '/customer/tenants/${ApiClient.tenantId}/notifications',
+      ) as List<dynamic>;
+      final notifications = response.map((raw) {
+        final item = raw as Map<String, dynamic>;
+        final payload = item['payload'] as Map<String, dynamic>? ?? const {};
+        return PushMessage(
+          messageId: item['id'] as String,
+          title: item['templateKey']?.toString() ?? 'Actualización del pedido',
+          body: payload['message']?.toString() ?? 'Tu pedido cambió de estado',
+          sentDate: DateTime.tryParse(item['createdAt']?.toString() ?? '') ??
+              DateTime.now(),
+          data: Map<String, dynamic>.from(payload),
+        );
+      }).toList();
+      state = state.copyWith(notifications: notifications);
+    } catch (_) {
+      // The order timeline remains available even if polling temporarily fails.
+    }
   }
 
   PushMessage? getMessageById(String pushMessageId) {
-    final exist = state.notifications.any((element) => element.messageId == pushMessageId);
-    if (!exist) return null;
+    for (final notification in state.notifications) {
+      if (notification.messageId == pushMessageId) return notification;
+    }
+    return null;
+  }
 
-    return state.notifications.firstWhere((element) => element.messageId == pushMessageId);
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
-
-
 
 class NotificationsState {
   final AuthorizationStatus status;
@@ -90,8 +76,8 @@ class NotificationsState {
     AuthorizationStatus? status,
     List<PushMessage>? notifications,
   }) =>
-    NotificationsState(
-      status: status ?? this.status,
-      notifications: notifications ?? this.notifications,
-    );
+      NotificationsState(
+        status: status ?? this.status,
+        notifications: notifications ?? this.notifications,
+      );
 }

@@ -148,8 +148,8 @@ class _InfoPlatoView extends ConsumerWidget {
               children: [
                 FilledButton(
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
                   ),
                   onPressed: () => ref.watch( counterPlatoProvider.notifier ).decreaseQuantityPlato(plato.id, 1),
                   child: const Icon(Icons.remove),                
@@ -160,8 +160,8 @@ class _InfoPlatoView extends ConsumerWidget {
             
                 FilledButton(
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
                   ),
                   onPressed: () => ref.watch( counterPlatoProvider.notifier ).increaseQuantityPlato(plato.id, 1), 
                   child: const Icon(Icons.add),                
@@ -171,8 +171,8 @@ class _InfoPlatoView extends ConsumerWidget {
             
                 FilledButton(
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
                   ),
                   onPressed: (){
                     final DetallePedido newItem = DetallePedido(plato: plato, cantidadPlato: counterPlato, valorTotal: counterPlato * plato.precio);

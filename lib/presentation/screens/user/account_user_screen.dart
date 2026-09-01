@@ -214,9 +214,9 @@ class UpdateDataFormState extends ConsumerState<_UpdateDataForm> {
           Center(
             child: FilledButton(
               style: ButtonStyle(
-                minimumSize: MaterialStateProperty.all(const Size(300, 40)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                backgroundColor: MaterialStateProperty.all(const Color(0xff023047)),
+                minimumSize: WidgetStateProperty.all(const Size(300, 40)),
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                backgroundColor: WidgetStateProperty.all(const Color(0xff023047)),
               ),
               onPressed: () {
                 final isValid = globalKeyForm.currentState!.validate();

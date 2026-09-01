@@ -55,10 +55,10 @@ class _OrderSuccessView extends StatelessWidget {
     
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red),
-                textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 15, color: Colors.white )),
-                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-                shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),                
+                backgroundColor: WidgetStateProperty.all(Colors.red),
+                textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 15, color: Colors.white )),
+                padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                shape: WidgetStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),                
               ),
               onPressed: () {
                 context.go("/");

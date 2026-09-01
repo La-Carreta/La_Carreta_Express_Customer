@@ -108,9 +108,9 @@ class _SiguimientoPedidoView extends ConsumerWidget {
           //Boton de detalles de pedido
           FilledButton(
             style: ButtonStyle(
-              minimumSize: MaterialStateProperty.all(const Size(300, 40)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-              backgroundColor: MaterialStateProperty.all(const Color(0xFFe9ecef))
+              minimumSize: WidgetStateProperty.all(const Size(300, 40)),
+              shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+              backgroundColor: WidgetStateProperty.all(const Color(0xFFe9ecef))
             ),
             onPressed: ()=> context.push("/detalle-pedido/${pedido.id}"), 
             child: const Row(

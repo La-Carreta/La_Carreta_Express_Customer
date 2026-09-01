@@ -1,16 +1,18 @@
-# La Carreta Express - Customer
+# La Carreta Express — Cliente
 
-Ejecutar el comando --flutter pub run build_runner build
+App Flutter conectada exclusivamente a NestJS/PostgreSQL para Auth, catálogo,
+pedido, seguimiento y notificaciones in-app. El carrito local es sólo un borrador;
+precios, impuestos, totales y estados los decide el backend.
 
-## Getting Started
+```bash
+flutter run \
+  --dart-define=API_BASE_URL=http://10.0.2.2:3000/api/v1 \
+  --dart-define=TENANT_ID=<uuid> \
+  --dart-define=BRANCH_ID=<uuid> \
+  --dart-define=TABLE_ID=<uuid>
+```
 
-This project is a starting point for a Flutter application.
+`TABLE_ID` es una configuración temporal para el piloto. Antes de producción debe
+resolverse mediante QR/deep link firmado para no generar una build por mesa.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Validación: `flutter analyze`. Firebase ya no forma parte de esta aplicación.

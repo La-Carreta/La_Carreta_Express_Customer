@@ -127,9 +127,9 @@ class _FormResetPassword extends ConsumerWidget {
             actions: [
               FilledButton(
                 style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(100, 40)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xffe63946))
+                  minimumSize: WidgetStateProperty.all(const Size(100, 40)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: WidgetStateProperty.all(const Color(0xffe63946))
                 ),
                 onPressed: (){
                   context.pop();
@@ -172,9 +172,9 @@ class _FormResetPassword extends ConsumerWidget {
             Center(
               child: FilledButton(
                 style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(300, 40)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(Colors.black)
+                  minimumSize: WidgetStateProperty.all(const Size(300, 40)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: WidgetStateProperty.all(Colors.black)
                 ),
                 onPressed: (){
                   if(!formKey.currentState!.validate()) return;

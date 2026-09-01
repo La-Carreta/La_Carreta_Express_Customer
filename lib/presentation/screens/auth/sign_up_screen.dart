@@ -73,9 +73,9 @@ class _SignUpView extends StatelessWidget {
               Center(
                 child: FilledButton(
                   style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(300, 40)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                    backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                    minimumSize: WidgetStateProperty.all(const Size(300, 40)),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                    backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
                   ),
                   onPressed: () => debugPrint("Sign Up"), 
                   child: const Text("Sign Up", style: TextStyle(fontSize: 17),)

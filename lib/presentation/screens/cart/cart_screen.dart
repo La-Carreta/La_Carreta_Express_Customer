@@ -115,9 +115,9 @@ class _DetallePedido extends ConsumerWidget{
             actions: [
               FilledButton(
                 style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(100, 40)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xffe63946))
+                  minimumSize: WidgetStateProperty.all(const Size(100, 40)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: WidgetStateProperty.all(const Color(0xffe63946))
                 ),
                 onPressed: (){
                   context.pop();
@@ -127,9 +127,9 @@ class _DetallePedido extends ConsumerWidget{
 
               FilledButton(
                 style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(120, 40)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-                  backgroundColor: MaterialStateProperty.all(const Color(0xff023047))
+                  minimumSize: WidgetStateProperty.all(const Size(120, 40)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+                  backgroundColor: WidgetStateProperty.all(const Color(0xff023047))
                 ),
                 onPressed: (){
                   ref.watch( ordenPedidoProvider.notifier ).createNewOrder(ordenPedido);
@@ -193,7 +193,7 @@ class _DetallePedido extends ConsumerWidget{
               SizedBox(
                 width: 60,
                 child: DropdownButtonFormField(
-                  value: numMesa,
+                  initialValue: numMesa,
                   items: List.generate(15, (index) => DropdownMenuItem(value: index + 1, child: Text("${index + 1}"),)), 
                   onChanged: (value) => ref.watch( numMesaProvider.notifier ).state = value ?? 1,
                 ),
@@ -223,9 +223,9 @@ class _DetallePedido extends ConsumerWidget{
 
           FilledButton(
             style: ButtonStyle(
-              minimumSize: MaterialStateProperty.all(const Size(170, 40)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
-              backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+              minimumSize: WidgetStateProperty.all(const Size(170, 40)),
+              shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0))),
+              backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
             ),
             onPressed: (){
               final observaciones = observacionesController.text;
@@ -307,7 +307,7 @@ class _ItemCartPlato extends ConsumerWidget {
                       icon: const Icon(Icons.remove), 
                       color: Colors.white,
                       style: ButtonStyle(                        
-                        backgroundColor: MaterialStateProperty.all(const Color.fromARGB(126, 88, 47, 14))
+                        backgroundColor: WidgetStateProperty.all(const Color.fromARGB(126, 88, 47, 14))
                       ),
                     ),
                     Text("${item.cantidadPlato}", style: const TextStyle(fontSize: 20),),
@@ -319,7 +319,7 @@ class _ItemCartPlato extends ConsumerWidget {
                       icon: const Icon(Icons.add), 
                       color: Colors.white,
                       style: ButtonStyle(                        
-                        backgroundColor: MaterialStateProperty.all(const Color(0xff582F0E))
+                        backgroundColor: WidgetStateProperty.all(const Color(0xff582F0E))
                       ),
                     ),
                   ],
